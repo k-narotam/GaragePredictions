@@ -1,0 +1,20 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="ApiName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ApiNamespace" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ApiParameter" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="Constructor" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="FullJavaName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="FullMethodName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="InvalidParameterAnnotations" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="LossyEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MethodName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MethodParameterType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MethodReturnType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="NamedResource" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="NonAsciiCharacters" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ResourceParameter" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RestSignature" enabled="false" level="ERROR" enabled_by_default="false" />
+  </profile>
+</component>

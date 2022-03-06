@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_manager/theme.dart';
 import 'package:provider/provider.dart';
-import 'screens/input_page.dart';
-import 'screens/welcome_page.dart';
+import 'screens/check_future_page.dart';
+import 'screens/home_page.dart';
 import 'screens/results_page.dart';
 import 'screens/settings_page.dart';
 import 'screens/login_page.dart';
@@ -43,16 +43,17 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         print("MyApp Read requireLogin $_requireLogin");
-        _requireLogin == true
+        /*_requireLogin == true
             ? _initialRoute = '/login'
-            : _initialRoute = '/welcome';
+            : _initialRoute = '/home';*/
+        _initialRoute = '/login';
         return MaterialApp(
           theme: themeProvider.getTheme,
           debugShowCheckedModeBanner: false,
           initialRoute: _initialRoute, //'/welcome',
           routes: {
             LoginPage.id: (context) => LoginPage(),
-            WelcomePage.id: (context) => WelcomePage(),
+            HomePage.id: (context) => HomePage(),
             ResultsPage.id: (context) => ResultsPage(),
             SettingsPage.id: (context) => SettingsPage(title: 'Settings Page'),
           },

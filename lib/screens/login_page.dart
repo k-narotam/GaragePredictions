@@ -3,16 +3,19 @@ import 'package:get/get.dart'; //May migrate to use get later
 import 'package:provider/provider.dart';
 import 'package:theme_manager/theme.dart';
 import '../constants.dart';
-import '../screens/input_page.dart';
+import '../screens/check_future_page.dart';
 import '../screens/profile_page.dart';
-import '../screens/welcome_page.dart';
+import '../screens/register_page.dart';
+import '../screens/home_page.dart';
 import '../screens/nav_drawer.dart';
+import '../screens/forgot_password_page.dart';
 
 import '../user.dart';
 
 class LoginPage extends StatelessWidget {
   static const String id = '/login';
-  String name = "";
+  String password = "";
+  String email;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,7 @@ class LoginPage extends StatelessWidget {
                         .headline4
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text("Enter your Full Name to login below"),
+                  Text("Enter your Email and password to login below"),
                   SizedBox(width: 50.0, height: 35.0),
                   //Spacer(flex: 1), // 1/6
                   TextField(
@@ -73,28 +76,45 @@ class LoginPage extends StatelessWidget {
                     decoration: InputDecoration(
                       // filled: true,
                       // fillColor: Color(0xFF1C2341),
-                      hintText: "User Name",
+                      hintText: "Email",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                     ),
                   ),
-                  SizedBox(width: 30.0, height: 35.0),
+                  SizedBox(width: 30.0, height: 10.0),
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      // filled: true,
+                      // fillColor: Color(0xFF1C2341),
+                      hintText: "Password",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 30.0, height: 10.0),
                   //Spacer(flex: 1), // 1/6
                   InkWell(
                     //onTap: () => Get.to(InputPage()),
                     // onTap: () => Get.to(InputPage()),
                     onTap: () {
-                      name = myController.text;
-                      ProfilePage.setName(name);
+                      email = myController.text;
+                      password = passwordController.text;
+                      print("Email: $email");
+                      print("Password: $password");
+                      ProfilePage.setName(email);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           //builder: (context) => SettingsPage(title: 'Settings'),
-                          builder: (context) => WelcomePage(),
+                          builder: (context) => HomePage(),
                         ),
                       );
                     },
+
                     child: Container(
                       width: double.infinity,
                       alignment: Alignment.center,
@@ -112,7 +132,75 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Spacer(flex: 2), // it will take 2/6 spaces
+                  SizedBox(width: 50.0, height: 10.0),
+                  InkWell(
+                    //onTap: () => Get.to(InputPage()),
+                    // onTap: () => Get.to(InputPage()),
+                    onTap: () {
+                      email = myController.text;
+                      password = passwordController.text;
+                      print("Email: $email");
+                      print("Password: $password");
+                      //name = myController.text;
+                      //ProfilePage.setName(name);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          //builder: (context) => SettingsPage(title: 'Settings'),
+                          builder: (context) => RegisterPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(kDefaultPadding * 0.75), // 15
+                      decoration: BoxDecoration(
+                        gradient: kPrimaryGradient,
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      child: Text(
+                        "Register",
+                        style: Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 30.0, height: 10.0),
+                  //Spacer(flex: 1), // 1/6
+                  InkWell(
+                    //onTap: () => Get.to(InputPage()),
+                    // onTap: () => Get.to(InputPage()),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          //builder: (context) => SettingsPage(title: 'Settings'),
+                          builder: (context) => ForgotPasswordPage(),
+                        ),
+                      );
+                    },
+
+                    child: Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(kDefaultPadding * 0.75), // 15
+                      decoration: BoxDecoration(
+                        gradient: kPrimaryGradient,
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      child: Text(
+                        "Forgot Password",
+                        style: Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  // it will take 2/6 spaces
                 ],
               ),
             ),
@@ -123,11 +211,19 @@ class LoginPage extends StatelessWidget {
   }
 
   final myController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
     //super.dispose();
+  }
+
+  bool isEmailValid(String email) {
+    Pattern pattern =
+        /*r*/ '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\$'; // unescape the $
+    RegExp regex = new RegExp(pattern);
+    return regex.hasMatch(email);
   }
 }

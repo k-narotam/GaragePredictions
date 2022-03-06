@@ -7,7 +7,7 @@ class FeedbackPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Centerline'),
+        title: Text('Garage Predictor'),
         backgroundColor: kPrimaryColor,
       ),
       body: Column(
@@ -21,6 +21,13 @@ class FeedbackPage extends StatelessWidget {
               // style: kTitleTextStyle,
             ),
           ),
+          Container(
+              padding: EdgeInsets.all(15.0),
+              child: Text(
+                'We value your feedback!',
+                textAlign: TextAlign.center,
+                // style: kTitleTextStyle,
+              )),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: kPrimaryColor,

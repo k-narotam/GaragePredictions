@@ -25,7 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Provider.of<ThemeProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Centerline'),
+        title: Text('Garage Predictor'),
         backgroundColor: kPrimaryColor,
       ),
       body: Column(

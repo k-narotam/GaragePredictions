@@ -9,7 +9,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Centerline'),
+        title: Text('Garage Predictor'),
         backgroundColor: kPrimaryColor,
       ),
       body: Column(

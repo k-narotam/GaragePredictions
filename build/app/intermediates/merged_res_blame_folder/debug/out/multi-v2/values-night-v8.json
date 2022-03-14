@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\benja\\StudioProjects\\garage_predictor\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
+            "outputFile": "C:\\Users\\benja\\StudioProjects\\GaragePredictions\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\benja\\StudioProjects\\garage_predictor\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\benja\\StudioProjects\\GaragePredictions\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

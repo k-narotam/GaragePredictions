@@ -1,4 +1,4 @@
-#Mon Mar 14 18:34:15 EDT 2022
-base.0=C\:\\Users\\benja\\StudioProjects\\GaragePredictions\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+#Mon Mar 14 21:51:10 EDT 2022
+base.0=/home/lumi/Documents/Git/GaragePredictions/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

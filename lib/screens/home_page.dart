@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(15.0),
             child: Text(
-              'Garage A: 50%\nGarage B:82%',
+              'Garage A: 50%\nGarage B: 82%',
               textAlign: TextAlign.center,
               // style: kTitleTextStyle,
             ),

@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\benja\\StudioProjects\\GaragePredictions\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-mn\\values-mn.xml",
+            "outputFile": "/home/lumi/Documents/Git/GaragePredictions/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-mn/values-mn.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\benja\\.gradle\\caches\\transforms-2\\files-2.1\\c1ebda589683e9beaa06b540aac78854\\core-1.6.0\\res\\values-mn\\values-mn.xml",
+                    "source": "/home/lumi/.gradle/caches/transforms-2/files-2.1/c1ebda589683e9beaa06b540aac78854/core-1.6.0/res/values-mn/values-mn.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

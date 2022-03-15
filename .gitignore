@@ -1,0 +1,11 @@
+# Locally affected folders
+/.dart_tool
+/build
+
+# These are changed for the local system
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+package_config_subset
+package_config.json
+

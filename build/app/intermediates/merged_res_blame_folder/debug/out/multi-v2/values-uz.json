@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\benja\\StudioProjects\\GaragePredictions\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-uz\\values-uz.xml",
+            "outputFile": "/home/lumi/Documents/Git/GaragePredictions/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-uz/values-uz.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\benja\\.gradle\\caches\\transforms-2\\files-2.1\\c1ebda589683e9beaa06b540aac78854\\core-1.6.0\\res\\values-uz\\values-uz.xml",
+                    "source": "/home/lumi/.gradle/caches/transforms-2/files-2.1/c1ebda589683e9beaa06b540aac78854/core-1.6.0/res/values-uz/values-uz.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../screens/settings_page.dart'; //Needed here if we enabled on page quick settings change, disabled for now
 import '../screens/nav_drawer.dart';
 import 'package:theme_manager/calculator_brain.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../constants.dart';
 import '../user.dart';
 
@@ -56,13 +57,18 @@ class _CheckFuturePageState extends State<CheckFuturePage> {
               // style: kTitleTextStyle,
             ),
           ),
-          Container(
-              padding: EdgeInsets.all(15.0),
-              child: Text(
-                'A calendar will appear here!',
-                textAlign: TextAlign.center,
-                // style: kTitleTextStyle,
-              )),
+          TableCalendar(
+            firstDay: DateTime.utc(2010, 10, 16),
+            lastDay: DateTime.utc(2030, 3, 14),
+            focusedDay: DateTime.now(),
+          ),
+          // Container(
+          //     padding: EdgeInsets.all(15.0),
+          //     child: Text(
+          //       'A calendar will appear here!',
+          //       textAlign: TextAlign.center,
+          //       // style: kTitleTextStyle,
+          //     )),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: kPrimaryColor,

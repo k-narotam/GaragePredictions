@@ -36,6 +36,8 @@ dependencies:
   get: ^4.1.4
   google_fonts: ^2.1.0
   table_calendar: ^3.0.4
+  flutter_map: any
+  latlong2: any
 
 dev_dependencies:
   flutter_test:

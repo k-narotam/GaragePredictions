@@ -1,3 +1,5 @@
+from imp import load_dynamic
+from json import load
 import os
 import time
 import bcrypt
@@ -38,7 +40,6 @@ class User(UserMixin):
         self.email = email
         self.id = email
         self.loaded = True
-
         return self
 
     # check if a user exists
@@ -104,6 +105,37 @@ def register():
     else:
         new_user.save()
         return jsonify({'error': ''})
+
+# login endpoint
+@app.route('/login', methods=['POST'])
+def login_end():
+    password = request.json['password'].encode('utf-8')
+    email = request.json['email']
+    my_user = User().load(email)
+    
+    if my_user.exists:
+        if (bcrypt.hashpw(password, my_user.password_salt) != my_user.password_hash):
+            return jsonify({'error': 'user does not exist'})
+        else:
+            my_user.login(my_user)
+            return jsonify({'error': ''})
+    else:
+        return jsonify({'error': 'user does not exist'})
+
+   
+# logout endpoint
+@app.route('/logout', methods=['POST'])
+def logout_end():
+    my_user = get_current_user()
+    my_user.logout(my_user)
+    return jsonify({'error': ''})
+
+
+# to be added..
+# ForgotPassword
+# (Add/Remove/List Favorites)
+# Capacity
+# Status
 
 # test endpoint
 @app.route('/time')

@@ -14,7 +14,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # REPLACE ME
-URI = None
+URI = mongodb+srv://group17poos:group17poos@group17poos.vhmnu.mongodb.net/group17poos?retryWrites=true&w=majority
 db_client = pymongo.MongoClient(URI, connectTimeoutMS=30000, socketTimeoutMS=None, connect=False, maxPoolsize=1)
 db = db_client['garage']
 

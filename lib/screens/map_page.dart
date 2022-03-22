@@ -5,8 +5,6 @@ import 'package:theme_manager/screens/nav_drawer.dart';
 import '../constants.dart';
 
 class MapPage extends StatelessWidget {
-  FlutterMap myMap;
-  TileLayerOptions myOptions;
   MapPage();
   @override
   Widget build(BuildContext context) {
@@ -18,9 +16,7 @@ class MapPage extends StatelessWidget {
         drawer: NavDrawer(),
         body: new FlutterMap(
           options: MapOptions(
-            center: latLng.LatLng(28.6, -81.2),
-            zoom: 15.0,
-          ),
+              center: latLng.LatLng(28.6, -81.2), zoom: 15.0, maxZoom: 18.0),
           layers: [
             TileLayerOptions(
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",

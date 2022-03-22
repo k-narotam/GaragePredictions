@@ -9,6 +9,7 @@ import 'package:theme_manager/calculator_brain.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../constants.dart';
 import '../user.dart';
+import 'dart:collection';
 
 class CheckFuturePage extends StatefulWidget {
   @override
@@ -16,9 +17,27 @@ class CheckFuturePage extends StatefulWidget {
 }
 
 class _CheckFuturePageState extends State<CheckFuturePage> {
+  DateTime kFirstDay = DateTime.utc(2010, 10, 16);
+  DateTime kLastDay = DateTime.utc(2030, 3, 14);
+
+  // Using a `LinkedHashSet` is recommended due to equality comparison override
+  final Set<DateTime> _selectedDays = SplayTreeSet<DateTime>();
+
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay;
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    setState(() {
+      _focusedDay = focusedDay;
+      // Update values in a Set
+      if (_selectedDays.contains(selectedDay)) {
+        _selectedDays.remove(selectedDay);
+      } else {
+        _selectedDays.add(selectedDay);
+      }
+      print("Days selected" + _selectedDays.toString());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,38 +74,26 @@ class _CheckFuturePageState extends State<CheckFuturePage> {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           TableCalendar(
-            firstDay: DateTime.utc(2010, 10, 16),
-            lastDay: DateTime.utc(2030, 3, 14),
+            headerStyle: HeaderStyle(formatButtonVisible: false),
+            firstDay: kFirstDay,
+            lastDay: kLastDay,
             focusedDay: _focusedDay,
             calendarFormat: _calendarFormat,
             selectedDayPredicate: (day) {
-              // Use `selectedDayPredicate` to determine which day is currently selected.
-              // If this returns true, then `day` will be marked as selected.
-
-              // Using `isSameDay` is recommended to disregard
-              // the time-part of compared DateTime objects.
-              return isSameDay(_selectedDay, day);
+              // Use values from Set to mark multiple days as selected
+              return _selectedDays.contains(day);
             },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                // Call `setState()` when updating the selected day
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              }
-            },
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                // Call `setState()` when updating calendar format
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
+            onDaySelected: _onDaySelected,
             onPageChanged: (focusedDay) {
-              // No need to call `setState()` here
               _focusedDay = focusedDay;
+            },
+          ),
+          ElevatedButton(
+            child: Text('Clear selection'),
+            onPressed: () {
+              setState(() {
+                _selectedDays.clear();
+              });
             },
           ),
 

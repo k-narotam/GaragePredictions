@@ -7,7 +7,7 @@ function App() {
   const [getMessage, setGetMessage] = useState({})
 
   useEffect(()=>{
-    axios.get('http://localhost:5000/time').then(response => {
+    axios.get('http://localhost:3006/time').then(response => {
       console.log("SUCCESS", response)
       setGetMessage(response)
     }).catch(error => {
@@ -19,7 +19,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Test</p>
+        <h1>Test</h1>
         <div>{getMessage.status === 200 ?
           <h3>Time: {getMessage.data.time}</h3>
           :

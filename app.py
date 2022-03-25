@@ -8,14 +8,14 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 
-app = Flask(__name__, static_url_path='', static_folder='frontend/build')
+app = Flask(__name__, static_url_path='', static_folder='frontend/public')
 CORS(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 # REPLACE ME
-URI = mongodb+srv://group17poos:group17poos@group17poos.vhmnu.mongodb.net/group17poos?retryWrites=true&w=majority
-db_client = pymongo.MongoClient(URI, connectTimeoutMS=30000, socketTimeoutMS=None, connect=False, maxPoolsize=1)
+URI = 'mongodb://group17poos:group17poos@group17poos-shard-00-00.vhmnu.mongodb.net:27017,group17poos-shard-00-01.vhmnu.mongodb.net:27017,group17poos-shard-00-02.vhmnu.mongodb.net:27017/garage?ssl=true&replicaSet=atlas-8rx2gm-shard-0&authSource=admin&retryWrites=true&w=majority'
+db_client = pymongo.MongoClient(URI, connectTimeoutMS=30000, socketTimeoutMS=None, connect=True, maxPoolsize=1)
 db = db_client['garage']
 
 def get_current_user():
@@ -142,5 +142,11 @@ def logout_end():
 def get_time():
     return jsonify({'time': time.time()})
 
+@app.route('/test', methods=["GET"])
+def test():
+    return jsonify({"response" : "This is a test"})
+
+# should be very last thing (NOTHING BELOW)
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, port=9090)
+

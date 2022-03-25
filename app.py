@@ -14,8 +14,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # REPLACE ME
-URI = 'mongodb://group17poos:group17poos@group17poos-shard-00-00.vhmnu.mongodb.net:27017,group17poos-shard-00-01.vhmnu.mongodb.net:27017,group17poos-shard-00-02.vhmnu.mongodb.net:27017/garage?ssl=true&replicaSet=atlas-8rx2gm-shard-0&authSource=admin&retryWrites=true&w=majority'
-db_client = pymongo.MongoClient(URI, connectTimeoutMS=30000, socketTimeoutMS=None, connect=True, maxPoolsize=1)
+URI = "mongodb://group17poos:group17poos@group17poos-shard-00-00.vhmnu.mongodb.net:27017,group17poos-shard-00-01.vhmnu.mongodb.net:27017,group17poos-shard-00-02.vhmnu.mongodb.net:27017/garage?ssl=true&replicaSet=atlas-8rx2gm-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_client = pymongo.MongoClient(URI, connectTimeoutMS=30000, socketTimeoutMS=None, connect=False, maxPoolsize=1)
 db = db_client['garage']
 
 def get_current_user():
@@ -127,7 +127,7 @@ def login_end():
 @app.route('/logout', methods=['POST'])
 def logout_end():
     my_user = get_current_user()
-    my_user.logout(my_user)
+    my_user.logout()
     return jsonify({'error': ''})
 
 
@@ -148,5 +148,5 @@ def test():
 
 # should be very last thing (NOTHING BELOW)
 if __name__ == '__main__':
+    print(db['users'].find_one({}))
     app.run(debug=True, port=9090)
-

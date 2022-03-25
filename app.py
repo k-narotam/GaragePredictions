@@ -135,6 +135,17 @@ def logout_end():
     return jsonify({'error': ''})
 
 
+# delete account
+@app.route('/delete_acc', methods=['POST'])
+def del_acc():
+    id = request.json['id']
+
+    if User().exists(id) is False:
+        return jsonify({"error" : "Account does not exist"})
+
+    count = db['users'].delete_one({"_id" : id})
+    return jsonify({"error" : count.deleted_count})
+
 # to be added..
 # ForgotPassword
 # (Add/Remove/List Favorites)

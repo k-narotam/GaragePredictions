@@ -4,9 +4,14 @@ import os
 import time
 import bcrypt
 import pymongo
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
+
+# load from .env file
+load_dotenv('.env')
+URI = os.getenv('URI')
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/public')
 CORS(app)
@@ -14,7 +19,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # REPLACE ME
-URI = "mongodb://group17poos:group17poos@group17poos-shard-00-00.vhmnu.mongodb.net:27017,group17poos-shard-00-01.vhmnu.mongodb.net:27017,group17poos-shard-00-02.vhmnu.mongodb.net:27017/garage?ssl=true&replicaSet=atlas-8rx2gm-shard-0&authSource=admin&retryWrites=true&w=majority"
 db_client = pymongo.MongoClient(URI, connectTimeoutMS=30000, socketTimeoutMS=None, connect=False, maxPoolsize=1)
 db = db_client['garage']
 

@@ -17,20 +17,11 @@ function App() {
     <Routes>
       <Route path="/" exact element = {<LoginPage/>}/>
       <Route path="/home" exact element = {<HomePage/>}/>
-     
-    </Routes>
-
-    <div className="container">
-
-      <br/>
-      <Routes>
       <Route path="/about" exact element={<About/>} />
       <Route path="/feedback" exact element={<Feedback/>} />
       <Route path="/map" exact element={<Map/>} />
       <Route path="/settings" exact element={<Settings/>} />
-      </Routes>
-     
-      </div>
+    </Routes>
 
   </BrowserRouter>
 

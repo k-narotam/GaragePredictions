@@ -13,7 +13,6 @@ export default class Navbar extends Component {
         
           <li className="navbar-item">
         
-        
         <Link to="/map" className="nav-link">Map</Link>
           
           </li>

@@ -2,12 +2,12 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 const About = () =>
 {
-    return(
+  return(
       
-      <div>
-      <Navbar/>
-      About page
-      </div>
-    );
+    <div>
+    <Navbar/>
+    About page
+    </div>
+  );
 };
 export default About;

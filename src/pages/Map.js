@@ -12,7 +12,7 @@ const Map = () => {
     
     <div className="map__container">
     <Navbar/>
-      <MapContainer center={defaultPosition} zoom={20} scrollWheelZoom={false} >
+      <MapContainer center={defaultPosition} zoom={20} scrollWheelZoom={false} dragging={false}>
   
         <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

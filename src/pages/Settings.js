@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-
+import Navbar from '../components/Navbar';
 
 const getStorageTheme = () => {
     let theme = 'light-theme';
@@ -29,6 +29,7 @@ const Settings = () =>
     
     return(
       <div>
+      <Navbar/>
         Settings page
         <button className="btn" onClick={toggleTheme}>
             toggle

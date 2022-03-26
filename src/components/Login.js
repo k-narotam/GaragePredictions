@@ -22,6 +22,11 @@ export default function Login() {
 
     event.preventDefault();
 
+    // api stuff
+
+    window.location.href = '/home';
+    
+
   }
 
   return (

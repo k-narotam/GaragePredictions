@@ -1,13 +1,17 @@
 import { MapContainer, TileLayer, Marker, Tooltip, Popup } from "react-leaflet";
 import { LatLngExpression } from "leaflet";
 //import 'leaflet/dist/leaflet.css';
+import Navbar from "../components/Navbar";
 
 
 const Map = () => {
+  
   const defaultPosition = [28.600574, -81.197687]; // UCF position
 
   return (
+    
     <div className="map__container">
+    <Navbar/>
       <MapContainer center={defaultPosition} zoom={20} scrollWheelZoom={false} >
   
         <TileLayer

@@ -4,6 +4,8 @@ const StartPage = () =>
 {
     return(
       <div>
+      Garage Predictions Welcome Screen & 
+      Logo
         <Start />
       </div>
     );

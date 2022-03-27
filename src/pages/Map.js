@@ -52,24 +52,6 @@ const Map = () => {
             </Popup>
         </Marker>
 
-        <Marker position={[28.606502435914777, -81.19526413069644]} icon={customIcon}>
-            <Popup>
-                Garage E
-            </Popup>
-        </Marker>
-
-        <Marker position={[28.608563174014833, -81.19654445789656]} icon={customIcon}>
-            <Popup>
-                Garage F
-            </Popup>
-        </Marker>
-
-        <Marker position={[28.608831817390655, -81.19774450482778]} icon={customIcon}>
-            <Popup>
-                Garage G
-            </Popup>
-        </Marker>
-
         <Marker position={[28.604947958016297, -81.20115972129959]} icon={customIcon}>
             <Popup>
                 Garage H

@@ -31,7 +31,7 @@ export default function Start() {
         block size="lg"
         type="submit"
         onClick={redirectRegister}>
-            Register
+            No account? Register
         </Button>
     </div>
   );

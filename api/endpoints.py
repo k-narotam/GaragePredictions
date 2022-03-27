@@ -2,8 +2,10 @@ import time
 import bcrypt
 from flask import jsonify, request, send_from_directory
 from flask_login import current_user
+
 from .structures import User
 from .database import db
+from .ml_wrapper import models
 
 def generate_endpoints(app):
     # get
@@ -73,3 +75,16 @@ def generate_endpoints(app):
     @app.route('/time')
     def get_time():
         return jsonify({'time': time.time()})
+
+    @app.route('/predict', methods=['POST'])
+    def predict():
+        try:
+            garage_id = request.json['garage_id']
+            week_hour = request.json['hour']
+            weather = 0.01 # placeholder
+            if garage_id in models:
+                return jsonify({'error': '', 'avail_prediction': models[garage_id].predict_one({'week_hour': week_hour, 'weather': weather})})
+            else:
+                return jsonify({'error': 'invalid garage id'})
+        except KeyError:
+            return jsonify({'error': 'invalid arguments'})

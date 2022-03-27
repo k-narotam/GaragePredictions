@@ -1,4 +1,4 @@
 /.env
 /.vs
 /__pycache__
-/API/__pycache__
+/api/__pycache__

@@ -8,7 +8,7 @@ To Start:
 
 Required Python packages:
 
-`pymongo bcrypt flask flask_cors flask-login`
+`pymongo bcrypt flask flask_cors flask-login sklearn pandas numpy`
 
 Required Node packages:
 

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import axios from 'axios'
+
 import Form from "react-bootstrap/Form";
 
 import Button from "react-bootstrap/Button";
@@ -12,6 +14,10 @@ export default function Register() {
 
   const [password, setPassword] = useState("");
 
+  const [errorMessage, setError] = useState("abc");
+
+  const [errorVisible, setErrorVisible] = useState("none");
+
   function validateForm() {
 
     return email.length > 0 && password.length > 0;
@@ -23,15 +29,24 @@ export default function Register() {
     event.preventDefault();
 
     // api stuff
-
-    window.location.href = '/home';
-    
-
+    axios.post("http://" + window.location.hostname + ":9090/register", {"email": email, "password": password})
+      .then(response => {
+        if (response.data.error == '') {
+          window.location.href = '/login';
+        } else {
+          setErrorVisible("block");
+          setError(response.data.error);
+        }
+      });
   }
 
   return (
 
     <div className="Register">
+
+      <div style={{"display": errorVisible}}>
+        {errorMessage}
+      </div>
 
       <Form onSubmit={handleSubmit}>
 
@@ -69,14 +84,14 @@ export default function Register() {
 
         </Form.Group>
 
-        <Button 
-        color = '#eab039' 
-        block size="lg" 
-        type="submit" 
+        <Button
+        color = '#eab039'
+        block size="lg"
+        type="submit"
         disabled={!validateForm()}>
           Register
         </Button>
-        
+
 
       </Form>
 

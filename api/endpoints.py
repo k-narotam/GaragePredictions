@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 import bcrypt
 from flask import jsonify, request, send_from_directory
-from flask_login import current_user
+from flask_login import current_user, login_required, logout_user
 
 from .constants import garage_to_id
 from .structures import User
@@ -55,14 +55,20 @@ def generate_endpoints(app):
         else:
             return jsonify({'error': 'user does not exist'})
 
-
     # logout endpoint
     @app.route('/logout', methods=['POST'])
+    @login_required
     def logout_end():
         my_user = get_current_user()
         my_user.logout()
         return jsonify({'error': ''})
 
+    # a test endpoint to ensure logins are working properly
+    @app.route('/test_profile', methods=['GET'])
+    @login_required
+    def test_profile():
+        user = get_current_user()
+        return jsonify({'email': user.email})
 
     # delete account
     @app.route('/delete_acc', methods=['POST'])

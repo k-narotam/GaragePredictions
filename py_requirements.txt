@@ -1,0 +1,10 @@
+pymongo
+bcrypt
+flask
+flask_cors
+flask-login
+sklearn
+pandas
+numpy
+bs4
+python-dotenv

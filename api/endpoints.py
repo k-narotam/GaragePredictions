@@ -120,44 +120,54 @@ def generate_endpoints(app):
     # change password 
     @app.route('/change_password', methods=['POST'])
     def change_password():
-        # getting requests
-        id = request.json['id']
-        new_password = request.json['new_password'].encode('utf-8')
-        db_info = db['users'].find_one({"_id" : id})
+        try:
+            # getting requests
+            id = request.json['id']
+            new_password = request.json['new_password'].encode('utf-8')
+            db_info = db['users'].find_one({"_id" : id})
 
-        # check if the user exists
-        if User().user_exist(id) is False:
-            return jsonify({"error" : "Account does not exist"})
+            # check if the user exists
+            if User().user_exist(id) is False:
+                return jsonify({"error" : "invalid user id"})
 
-        # generate new password
-        salt = db_info['salt']
-        new_password_hash = bcrypt.hashpw(new_password, salt)
+            # generate new password
+            salt = db_info['salt']
+            new_password_hash = bcrypt.hashpw(new_password, salt)
 
-        # update on the database
-        id_query = { "_id" : id }
-        new_query = { "$set": { "password": new_password_hash, "salt" : salt }}
-        db['users'].update_one(id_query, new_query)
+            # update on the database
+            id_query = { "_id" : id }
+            new_query = { "$set": { "password": new_password_hash, "salt" : salt }}
+            db['users'].update_one(id_query, new_query)
 
-        return jsonify({"error" : ""})
+            return jsonify({"error" : ""})
+
+        except KeyError:
+            return jsonify({'error': 'invalid arguments'})
 
     # chec password the password - PedroFC
     @app.route('/check_password', methods=['GET'])
     def check_password():
+        try:
+            # get request info
+            id = request.json['id']
+            to_check_password = request.json['password']
 
-        # get request info
-        id = request.json['id']
-        to_check_password = request.json['password']
+            # check if the user exists
+            if User().user_exist(id) is False:
+                return jsonify({"error" : "invalid user id"})
 
-        # get the info from database
-        db_info = db['users'].find_one({"_id" : id})
-        salt = db_info['salt']
+            # get the info from database
+            db_info = db['users'].find_one({"_id" : id})
+            salt = db_info['salt']
 
-        # get/create hash for passwords
-        curr_password_hash = db_info['password']
-        my_pass_hash = bcrypt.hashpw(to_check_password.encode('utf-8'), salt)
+            # get/create hash for passwords
+            curr_password_hash = db_info['password']
+            my_pass_hash = bcrypt.hashpw(to_check_password.encode('utf-8'), salt)
 
-        if (my_pass_hash != curr_password_hash):
-            return jsonify({"error" : "Passwords are not the same"})
+            if (my_pass_hash != curr_password_hash):
+                return jsonify({"error" : "passwords are not the same"})
 
-        return jsonify({"error" : ""})
-
+            return jsonify({"error" : ""})
+        
+        except KeyError:
+            return jsonify({'error': 'invalid arguments'})

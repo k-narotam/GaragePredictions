@@ -1,8 +1,12 @@
 import time
+import requests
+from bs4 import BeautifulSoup
+
 import bcrypt
 from flask import jsonify, request, send_from_directory
 from flask_login import current_user
 
+from .constants import garage_to_id
 from .structures import User
 from .database import db
 from .ml_wrapper import models
@@ -88,3 +92,21 @@ def generate_endpoints(app):
                 return jsonify({'error': 'invalid garage id'})
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
+
+    @app.route('/status', methods=['POST', 'GET'])
+    def status():
+        r = requests.get('http://secure.parking.ucf.edu/GarageCount/iframe.aspx')
+        raw_text = r.text
+        soup = BeautifulSoup(raw_text, 'html.parser')
+        garage_data = {'timestamp': time.time(), 'data': []}
+        for garage_html in list(soup.find_all('tr', {'class': 'dxgvDataRow_DevEx'})):
+            garage_cols = [col.text for col in garage_html.find_all('td')]
+            if len(garage_cols) >= 2:
+                info = {
+                    'id': garage_to_id[garage_cols[0]],
+                    'name': garage_cols[0],
+                    'spaces_avail': garage_cols[1].split('/')[0][1:],
+                    'spaces_total': garage_cols[1].split('/')[1].split('\r')[0],
+                }
+                garage_data['data'].append(info)
+        return jsonify(garage_data)

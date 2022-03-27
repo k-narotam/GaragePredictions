@@ -76,7 +76,7 @@ def generate_endpoints(app):
         return jsonify({"error" : count.deleted_count})
 
     # test endpoint
-    @app.route('/time')
+    @app.route('/time', methods=['POST', 'GET'])
     def get_time():
         return jsonify({'time': time.time()})
 
@@ -110,3 +110,48 @@ def generate_endpoints(app):
                 }
                 garage_data['data'].append(info)
         return jsonify(garage_data)
+
+    # change password 
+    @app.route('/change_password', methods=['POST'])
+    def change_password():
+        # getting requests
+        id = request.json['id']
+        new_password = request.json['new_password'].encode('utf-8')
+        db_info = db['users'].find_one({"_id" : id})
+
+        # check if the user exists
+        if User().user_exist(id) is False:
+            return jsonify({"error" : "Account does not exist"})
+
+        # generate new password
+        salt = db_info['salt']
+        new_password_hash = bcrypt.hashpw(new_password, salt)
+
+        # update on the database
+        id_query = { "_id" : id }
+        new_query = { "$set": { "password": new_password_hash, "salt" : salt }}
+        db['users'].update_one(id_query, new_query)
+
+        return jsonify({"error" : ""})
+
+    # chec password the password - PedroFC
+    @app.route('/check_password', methods=['GET'])
+    def check_password():
+
+        # get request info
+        id = request.json['id']
+        to_check_password = request.json['password']
+
+        # get the info from database
+        db_info = db['users'].find_one({"_id" : id})
+        salt = db_info['salt']
+
+        # get/create hash for passwords
+        curr_password_hash = db_info['password']
+        my_pass_hash = bcrypt.hashpw(to_check_password.encode('utf-8'), salt)
+
+        if (my_pass_hash != curr_password_hash):
+            return jsonify({"error" : "Passwords are not the same"})
+
+        return jsonify({"error" : ""})
+

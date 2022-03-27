@@ -2,7 +2,7 @@
 
 To Start:
 
-`npm start` in the `frontend_folder`
+`npm start` in the `frontend` folder
 
 `python3 app.py` in the root folder
 

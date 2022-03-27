@@ -3,13 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 
 import bcrypt
-from flask import jsonify, request, send_from_directory
+from flask import jsonify, request, send_from_directory, url_for, render_template
 from flask_login import current_user, login_required, logout_user
+from flask_mail import Mail, Message
 
 from .constants import garage_to_id
-from .structures import User
+from .structures import User, Prediction
 from .database import db
 from .ml_wrapper import models
+from .emailtoken import confirm_token, generate_confirmation_token, send_email
 
 def generate_endpoints(app):
     # get
@@ -171,3 +173,34 @@ def generate_endpoints(app):
         
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
+
+    # calls 
+    @app.route('/emailVerification', methods=['POST', 'GET'])
+    def emailVerification():
+        my_user = get_current_user()
+       
+        mail = Mail(app)
+
+        if my_user.exists:
+            secret_key = request.json['secret_key'].encode('utf-8')
+            salt = bcrypt.gensalt()
+
+            # generates 
+            token = generate_confirmation_token(secret_key, salt, my_user.email)
+
+            try:
+
+                email = confirm_token(token, secret_key, salt, 3600)
+                confirm_url = url_for('confirm_email', token=token, _external=True)
+                html = render_template('mail.html', confirm_url=confirm_url)
+                subject = "Change your password"
+
+                send_email(my_user.email, subject, html, mail)
+
+                change_password()
+
+            except:
+                return jsonify({'error': 'link is invalid/expired'})
+            
+        else:
+            return jsonify({'error': 'account does not exist'})

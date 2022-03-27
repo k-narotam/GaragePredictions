@@ -1,5 +1,6 @@
 from flask_login import LoginManager, login_user, logout_user, UserMixin
 from .database import db
+from .constants import garage_to_id
 
 login_manager = LoginManager()
 
@@ -63,3 +64,22 @@ class User(UserMixin):
         if db['users'].find_one({'_id': id}):
             return True
         return False
+
+# class for predictions for use on favorites endpoint
+class Prediction():
+
+    def __init__(self):
+        self.garage_ids = garage_to_id
+        self.garage_fullness = []
+        self.weekday = None
+        self.time = None
+        self.id = None
+
+    # initialize a prediction based on fullness, day, and hour
+    def create(self, garage_fullness, weekday, time, id):
+        self.garage_fullness = garage_fullness
+        self.weekday = weekday
+        self.time = time
+        self.id = id
+
+        return self

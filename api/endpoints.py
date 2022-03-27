@@ -6,7 +6,7 @@ import bcrypt
 from flask import jsonify, request, send_from_directory
 from flask_login import current_user, login_required, logout_user
 
-from .constants import garage_to_id
+from .constants import garage_to_id, GeneralErros
 from .structures import User
 from .database import db
 from .ml_wrapper import models
@@ -27,33 +27,41 @@ def generate_endpoints(app):
     # register
     @app.route('/register', methods=['POST'])
     def register():
-        password = request.json['password'].encode('utf-8')
-        email = request.json['email']
-        salt = bcrypt.gensalt()
-        password_hash = bcrypt.hashpw(password, salt)
-        new_user = User().create(password_hash, salt, email)
-        print(password, email, salt, password_hash)
-        if new_user.exists:
-            return jsonify({'error': 'user already exists'})
-        else:
-            new_user.save()
-            return jsonify({'error': ''})
+        try:
+            password = request.json['password'].encode('utf-8')
+            email = request.json['email']
+            salt = bcrypt.gensalt()
+            password_hash = bcrypt.hashpw(password, salt)
+            new_user = User().create(password_hash, salt, email)
+            print(password, email, salt, password_hash)
+            if new_user.exists:
+                return jsonify({'error': 'user already exists'})
+            else:
+                new_user.save()
+                return jsonify({'error': ''})
+        
+        except KeyError:
+            return GeneralErros.invalid_args()
 
     # login endpoint
     @app.route('/login', methods=['POST'])
     def login_end():
-        password = request.json['password'].encode('utf-8')
-        email = request.json['email']
-        my_user = User().load(email)
+        try:
+            password = request.json['password'].encode('utf-8')
+            email = request.json['email']
+            my_user = User().load(email)
 
-        if my_user.exists:
-            if (bcrypt.hashpw(password, my_user.password_salt) != my_user.password_hash):
-                return jsonify({'error': 'user does not exist'})
+            if my_user.exists:
+                if (bcrypt.hashpw(password, my_user.password_salt) != my_user.password_hash):
+                    return jsonify({'error': 'user does not exist'})
+                else:
+                    my_user.login()
+                    return GeneralErros.no_error()
             else:
-                my_user.login()
-                return jsonify({'error': ''})
-        else:
-            return jsonify({'error': 'user does not exist'})
+                return jsonify({'error': 'user does not exist'})
+
+        except KeyError:
+            return GeneralErros.invalid_args()
 
     # logout endpoint
     @app.route('/logout', methods=['POST'])
@@ -61,7 +69,7 @@ def generate_endpoints(app):
     def logout_end():
         my_user = get_current_user()
         my_user.logout()
-        return jsonify({'error': ''})
+        return GeneralErros.no_error()
 
     # a test endpoint to ensure logins are working properly
     @app.route('/test_profile', methods=['GET'])
@@ -73,13 +81,17 @@ def generate_endpoints(app):
     # delete account
     @app.route('/delete_acc', methods=['POST'])
     def del_acc():
-        id = request.json['id']
+        try:
+            id = request.json['id']
 
-        if User().exists(id) is False:
-            return jsonify({"error" : "Account does not exist"})
+            if User().user_exist(id) is False:
+                return GeneralErros.invalid_id("user")
 
-        count = db['users'].delete_one({"_id" : id})
-        return jsonify({"error" : count.deleted_count})
+            db['users'].delete_one({"_id" : id})
+            return GeneralErros.no_error()
+
+        except KeyError:
+            return GeneralErros.invalid_args()
 
     # test endpoint
     @app.route('/time', methods=['POST', 'GET'])
@@ -95,9 +107,9 @@ def generate_endpoints(app):
             if garage_id in models:
                 return jsonify({'error': '', 'avail_prediction': models[garage_id].predict_one({'week_hour': week_hour, 'weather': weather})})
             else:
-                return jsonify({'error': 'invalid garage id'})
+                return GeneralErros.invalid_id("garage")
         except KeyError:
-            return jsonify({'error': 'invalid arguments'})
+            return GeneralErros.invalid_args()
 
     @app.route('/status', methods=['POST', 'GET'])
     def status():
@@ -128,7 +140,7 @@ def generate_endpoints(app):
 
             # check if the user exists
             if User().user_exist(id) is False:
-                return jsonify({"error" : "invalid user id"})
+                return GeneralErros.invalid_id("user")
 
             # generate new password
             salt = db_info['salt']
@@ -139,10 +151,10 @@ def generate_endpoints(app):
             new_query = { "$set": { "password": new_password_hash, "salt" : salt }}
             db['users'].update_one(id_query, new_query)
 
-            return jsonify({"error" : ""})
+            return GeneralErros.no_error()
 
         except KeyError:
-            return jsonify({'error': 'invalid arguments'})
+            return GeneralErros.invalid_args()
 
     # chec password the password - PedroFC
     @app.route('/check_password', methods=['GET'])
@@ -154,7 +166,7 @@ def generate_endpoints(app):
 
             # check if the user exists
             if User().user_exist(id) is False:
-                return jsonify({"error" : "invalid user id"})
+                return GeneralErros.invalid_id("user")
 
             # get the info from database
             db_info = db['users'].find_one({"_id" : id})
@@ -167,7 +179,7 @@ def generate_endpoints(app):
             if (my_pass_hash != curr_password_hash):
                 return jsonify({"error" : "passwords are not the same"})
 
-            return jsonify({"error" : ""})
+            return GeneralErros.no_error()
         
         except KeyError:
-            return jsonify({'error': 'invalid arguments'})
+            return GeneralErros.invalid_args()

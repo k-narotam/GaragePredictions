@@ -1,31 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios'
+import React from 'react';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter as Router, Route, Routes, Navigate, Switch, BrowserRouter} from "react-router-dom";
+
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import Dashboard from './pages/Dashboard';
+import About from "./pages/About";
+import Feedback from "./pages/Feedback";
+import Map from "./pages/Map";
+import Settings from './pages/Settings';
+import StartPage from './pages/StartPage';
+import Navbar from './components/Navbar';
+import TrendsPage from './pages/TrendsPage.js';
 
 function App() {
-  const [getMessage, setGetMessage] = useState({})
-
-  useEffect(()=>{
-    axios.get('http://localhost:3006/time').then(response => {
-      console.log("SUCCESS", response)
-      setGetMessage(response)
-    }).catch(error => {
-      console.log(error)
-    })
-
-  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Test</h1>
-        <div>{getMessage.status === 200 ?
-          <h3>Time: {getMessage.data.time}</h3>
-          :
-          <h3>LOADING</h3>}</div>
-      </header>
-    </div>
+
+    <BrowserRouter >
+    <Routes>
+      <Route path="/" element={<StartPage />} />
+      <Route path="/login" exact element = {<LoginPage/>}/>
+      <Route path="/register" exact element = {<RegisterPage/>}/>
+      <Route path="/home" exact element = {<Dashboard/>}/>
+      <Route path="/about" exact element={<About/>} />
+      <Route path="/feedback" exact element={<Feedback/>} />
+      <Route path="/map" exact element={<Map/>} />
+      <Route path="/settings" exact element={<Settings/>} />
+      <Route path="/trends" exact element={<TrendsPage/>} />
+    </Routes>
+
+  </BrowserRouter>
   );
 }
 

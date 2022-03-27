@@ -56,4 +56,4 @@ class User(UserMixin):
 
     # log a user out through flask-login
     def logout(self):
-        logout_user(self)
+        logout_user()

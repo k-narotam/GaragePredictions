@@ -30,7 +30,7 @@ class User(UserMixin):
     # check if a user exists
     @property
     def exists(self):
-        if db['users'].find_one({'_id': self.email}):
+        if db['users'].find_one({'_id': self.id}):
             return True
         return False
 
@@ -57,3 +57,9 @@ class User(UserMixin):
     # log a user out through flask-login
     def logout(self):
         logout_user(self)
+
+    @staticmethod
+    def user_exist(id):
+        if db['users'].find_one({'_id': id}):
+            return True
+        return False

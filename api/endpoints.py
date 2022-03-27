@@ -3,13 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 
 import bcrypt
-from flask import jsonify, request, send_from_directory
+from flask import jsonify, request, send_from_directory, url_for, render_template
 from flask_login import current_user, login_required, logout_user
+from flask_mail import Mail, Message
 
-from .constants import garage_to_id, GeneralErros
-from .structures import User
+from .constants import garage_to_id
+from .structures import User, Prediction
 from .database import db
 from .ml_wrapper import models
+from .emailtoken import confirm_token, generate_confirmation_token, send_email
 
 def generate_endpoints(app):
     # get
@@ -27,41 +29,33 @@ def generate_endpoints(app):
     # register
     @app.route('/register', methods=['POST'])
     def register():
-        try:
-            password = request.json['password'].encode('utf-8')
-            email = request.json['email']
-            salt = bcrypt.gensalt()
-            password_hash = bcrypt.hashpw(password, salt)
-            new_user = User().create(password_hash, salt, email)
-            print(password, email, salt, password_hash)
-            if new_user.exists:
-                return jsonify({'error': 'user already exists'})
-            else:
-                new_user.save()
-                return jsonify({'error': ''})
-        
-        except KeyError:
-            return GeneralErros.invalid_args()
+        password = request.json['password'].encode('utf-8')
+        email = request.json['email']
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(password, salt)
+        new_user = User().create(password_hash, salt, email)
+        print(password, email, salt, password_hash)
+        if new_user.exists:
+            return jsonify({'error': 'user already exists'})
+        else:
+            new_user.save()
+            return jsonify({'error': ''})
 
     # login endpoint
     @app.route('/login', methods=['POST'])
     def login_end():
-        try:
-            password = request.json['password'].encode('utf-8')
-            email = request.json['email']
-            my_user = User().load(email)
+        password = request.json['password'].encode('utf-8')
+        email = request.json['email']
+        my_user = User().load(email)
 
-            if my_user.exists:
-                if (bcrypt.hashpw(password, my_user.password_salt) != my_user.password_hash):
-                    return jsonify({'error': 'user does not exist'})
-                else:
-                    my_user.login()
-                    return GeneralErros.no_error()
-            else:
+        if my_user.exists:
+            if (bcrypt.hashpw(password, my_user.password_salt) != my_user.password_hash):
                 return jsonify({'error': 'user does not exist'})
-
-        except KeyError:
-            return GeneralErros.invalid_args()
+            else:
+                my_user.login()
+                return jsonify({'error': ''})
+        else:
+            return jsonify({'error': 'user does not exist'})
 
     # logout endpoint
     @app.route('/logout', methods=['POST'])
@@ -69,7 +63,7 @@ def generate_endpoints(app):
     def logout_end():
         my_user = get_current_user()
         my_user.logout()
-        return GeneralErros.no_error()
+        return jsonify({'error': ''})
 
     # a test endpoint to ensure logins are working properly
     @app.route('/test_profile', methods=['GET'])
@@ -81,17 +75,13 @@ def generate_endpoints(app):
     # delete account
     @app.route('/delete_acc', methods=['POST'])
     def del_acc():
-        try:
-            id = request.json['id']
+        id = request.json['id']
 
-            if User().user_exist(id) is False:
-                return GeneralErros.invalid_id("user")
+        if User().exists(id) is False:
+            return jsonify({"error" : "Account does not exist"})
 
-            db['users'].delete_one({"_id" : id})
-            return GeneralErros.no_error()
-
-        except KeyError:
-            return GeneralErros.invalid_args()
+        count = db['users'].delete_one({"_id" : id})
+        return jsonify({"error" : count.deleted_count})
 
     # test endpoint
     @app.route('/time', methods=['POST', 'GET'])
@@ -107,9 +97,9 @@ def generate_endpoints(app):
             if garage_id in models:
                 return jsonify({'error': '', 'avail_prediction': models[garage_id].predict_one({'week_hour': week_hour, 'weather': weather})})
             else:
-                return GeneralErros.invalid_id("garage")
+                return jsonify({'error': 'invalid garage id'})
         except KeyError:
-            return GeneralErros.invalid_args()
+            return jsonify({'error': 'invalid arguments'})
 
     @app.route('/status', methods=['POST', 'GET'])
     def status():
@@ -140,7 +130,7 @@ def generate_endpoints(app):
 
             # check if the user exists
             if User().user_exist(id) is False:
-                return GeneralErros.invalid_id("user")
+                return jsonify({"error" : "invalid user id"})
 
             # generate new password
             salt = db_info['salt']
@@ -151,10 +141,10 @@ def generate_endpoints(app):
             new_query = { "$set": { "password": new_password_hash, "salt" : salt }}
             db['users'].update_one(id_query, new_query)
 
-            return GeneralErros.no_error()
+            return jsonify({"error" : ""})
 
         except KeyError:
-            return GeneralErros.invalid_args()
+            return jsonify({'error': 'invalid arguments'})
 
     # chec password the password - PedroFC
     @app.route('/check_password', methods=['GET'])
@@ -166,7 +156,7 @@ def generate_endpoints(app):
 
             # check if the user exists
             if User().user_exist(id) is False:
-                return GeneralErros.invalid_id("user")
+                return jsonify({"error" : "invalid user id"})
 
             # get the info from database
             db_info = db['users'].find_one({"_id" : id})
@@ -179,7 +169,38 @@ def generate_endpoints(app):
             if (my_pass_hash != curr_password_hash):
                 return jsonify({"error" : "passwords are not the same"})
 
-            return GeneralErros.no_error()
+            return jsonify({"error" : ""})
         
         except KeyError:
-            return GeneralErros.invalid_args()
+            return jsonify({'error': 'invalid arguments'})
+
+    # calls 
+    @app.route('/emailVerification', methods=['POST', 'GET'])
+    def emailVerification():
+        my_user = get_current_user()
+       
+        mail = Mail(app)
+
+        if my_user.exists:
+            secret_key = request.json['secret_key'].encode('utf-8')
+            salt = bcrypt.gensalt()
+
+            # generates 
+            token = generate_confirmation_token(secret_key, salt, my_user.email)
+
+            try:
+
+                email = confirm_token(token, secret_key, salt, 3600)
+                confirm_url = url_for('confirm_email', token=token, _external=True)
+                html = render_template('mail.html', confirm_url=confirm_url)
+                subject = "Change your password"
+
+                send_email(my_user.email, subject, html, mail)
+
+                change_password()
+
+            except:
+                return jsonify({'error': 'link is invalid/expired'})
+            
+        else:
+            return jsonify({'error': 'account does not exist'})

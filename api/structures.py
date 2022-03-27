@@ -1,6 +1,14 @@
-from flask_login import login_user, logout_user, UserMixin
-from Application import db, user_sessions
+from flask_login import LoginManager, login_user, logout_user, UserMixin
+from .database import db
 
+login_manager = LoginManager()
+
+user_sessions = {}
+
+# a required flask-login utility function
+@login_manager.user_loader
+def load_user(user_id):
+    return user_sessions[user_id]
 
 class User(UserMixin):
     def __init__(self):
@@ -49,4 +57,3 @@ class User(UserMixin):
     # log a user out through flask-login
     def logout(self):
         logout_user(self)
-

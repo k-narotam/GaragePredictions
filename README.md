@@ -4,7 +4,7 @@ To Start:
 
 `npm start` in the `frontend_folder`
 
-`flask run` in the root folder
+`python3 app.py` in the root folder
 
 Required Python packages:
 

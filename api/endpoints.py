@@ -174,29 +174,29 @@ def generate_endpoints(app):
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
 
-    # calls 
-    @app.route('/emailVerification', methods=['POST', 'GET'])
-    def emailVerification():
-        my_user = get_current_user()
-       
+    # json needs to aligned with changepassword + "secret_key"
+    @app.route('/email_verification', methods=['POST'])
+    def email_verification():
+        
+        id = request.json['id']
+        my_user = User.load(my_user, id)
+
         mail = Mail(app)
 
         if my_user.exists:
             secret_key = request.json['secret_key'].encode('utf-8')
             salt = bcrypt.gensalt()
 
-            # generates 
+            # generates token based on secret key and salt
             token = generate_confirmation_token(secret_key, salt, my_user.email)
 
             try:
-
                 email = confirm_token(token, secret_key, salt, 3600)
                 confirm_url = url_for('confirm_email', token=token, _external=True)
-                html = render_template('mail.html', confirm_url=confirm_url)
+                html = render_template('api/mail.html', confirm_url=confirm_url)
                 subject = "Change your password"
 
                 send_email(my_user.email, subject, html, mail)
-
                 change_password()
 
             except:

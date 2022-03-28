@@ -3,6 +3,7 @@ bcrypt
 flask
 flask_cors
 flask-login
+flask_mail
 sklearn
 pandas
 numpy

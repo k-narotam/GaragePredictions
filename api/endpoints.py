@@ -6,6 +6,7 @@ import bcrypt
 from flask import jsonify, request, send_from_directory, url_for, render_template
 from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
+from flask_cors import cross_origin
 
 from .constants import garage_to_id
 from .structures import User, Prediction
@@ -29,6 +30,7 @@ def generate_endpoints(app):
 
     # register
     @app.route('/register', methods=['POST'])
+    @cross_origin()
     def register():
         password = request.json['password'].encode('utf-8')
         email = request.json['email']
@@ -44,6 +46,7 @@ def generate_endpoints(app):
 
     # login endpoint
     @app.route('/login', methods=['POST'])
+    @cross_origin()
     def login_end():
         password = request.json['password'].encode('utf-8')
         email = request.json['email']

@@ -10,7 +10,6 @@ import Feedback from "./pages/Feedback";
 import Map from "./pages/Map";
 import Settings from './pages/Settings';
 import StartPage from './pages/StartPage';
-import Navbar from './components/Navbar';
 import TrendsPage from './pages/TrendsPage.js';
 
 function App() {

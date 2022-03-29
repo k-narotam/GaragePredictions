@@ -29,7 +29,7 @@ export default function Login() {
     event.preventDefault();
 
     // api stuff
-    axios.post("http://" + window.location.hostname + ":9090/login", {"email": email, "password": password})
+    axios.post("https://group17poos-api.herokuapp.com/login", {"email": email, "password": password})
       .then(response => {
         if (response.data.error == '') {
           window.location.href = '/home';

@@ -19,6 +19,7 @@ class CheckFuturePage extends StatefulWidget {
 class _CheckFuturePageState extends State<CheckFuturePage> {
   DateTime kFirstDay = DateTime.utc(2010, 10, 16);
   DateTime kLastDay = DateTime.utc(2030, 3, 14);
+  int selectedValue = 1;
 
   // Using a `LinkedHashSet` is recommended due to equality comparison override
   final Set<DateTime> _selectedDays = SplayTreeSet<DateTime>();
@@ -96,6 +97,40 @@ class _CheckFuturePageState extends State<CheckFuturePage> {
               });
             },
           ),
+
+          DropdownButton(
+              value: selectedValue,
+              items: [
+                DropdownMenuItem(
+                  child: Text("Garage A"),
+                  value: 1,
+                ),
+                DropdownMenuItem(
+                  child: Text("Garage C"),
+                  value: 2,
+                ),
+                DropdownMenuItem(
+                  child: Text("Garage D"),
+                  value: 3,
+                ),
+                DropdownMenuItem(
+                  child: Text("Garage H"),
+                  value: 4,
+                ),
+                DropdownMenuItem(
+                  child: Text("Garage I"),
+                  value: 5,
+                ),
+                DropdownMenuItem(
+                  child: Text("Garage Libra"),
+                  value: 6,
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  selectedValue = value;
+                });
+              }),
 
           ElevatedButton(
             style: ElevatedButton.styleFrom(

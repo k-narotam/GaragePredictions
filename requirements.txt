@@ -9,3 +9,6 @@ pandas
 numpy
 bs4
 python-dotenv
+gunicorn
+Werkzeug~=2.0.0
+requests

@@ -33,11 +33,14 @@ dependencies:
   flutter_settings_screens: ^0.2.2+1
   hive: ^2.0.4
   flutter_launcher_icons: ^0.9.0
+  flutter_dotenv: any
   get: ^4.1.4
   google_fonts: ^2.1.0
   table_calendar: ^3.0.4
   flutter_map: any
   latlong2: any
+assets:
+  - .env
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +57,7 @@ flutter_icons:
 flutter:
   assets:
     - images/
+    - .env
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

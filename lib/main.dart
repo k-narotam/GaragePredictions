@@ -7,11 +7,14 @@ import 'screens/home_page.dart';
 import 'screens/results_page.dart';
 import 'screens/settings_page.dart';
 import 'screens/login_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:async';
 
 bool _requireLogin = true;
 String _initialRoute = "";
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.getInstance().then((prefs) {
     var isDarkTheme = prefs.getBool("isDarkTheme") ?? true;

@@ -9,3 +9,5 @@
 package_config_subset
 package_config.json
 
+# Keep API url secret
+*.env

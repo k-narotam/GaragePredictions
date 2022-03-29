@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; //May migrate to use get later
 import 'package:provider/provider.dart';
@@ -9,15 +11,74 @@ import '../screens/register_page.dart';
 import '../screens/home_page.dart';
 import '../screens/nav_drawer.dart';
 import '../screens/forgot_password_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../user.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const String id = '/login';
+  LoginPageState createState() => LoginPageState();
+}
+
+class LoginPageState extends State<LoginPage> {
   String password = "";
   String email;
 
+  final myController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    //super.dispose();
+  }
+
+  bool isEmailValid(String email) {
+    Pattern pattern =
+        /*r*/ '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\$'; // unescape the $
+    RegExp regex = new RegExp(pattern);
+    return regex.hasMatch(email);
+  }
+
+  void initState() {}
+
+  Future<int> login(String email, String password) async {
+    try {
+      final http.Response answer = await http
+          .post(
+            Uri.parse(dotenv.env['url']),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(
+                <String, dynamic>{'email': email, 'password': password}),
+          )
+          .timeout(Duration(seconds: 5));
+      Map<String, dynamic> output = jsonDecode(answer.body);
+      if (output["error"] == "") {
+        // Success
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            //builder: (context) => SettingsPage(title: 'Settings'),
+            builder: (context) => HomePage(),
+          ),
+        );
+        return 0;
+      } else {
+        print(output["error"]);
+        return 1;
+      }
+    } catch (e) {
+      print(e.toString());
+      return 1;
+    }
+    return 1;
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       // No appbar until logged in
@@ -100,19 +161,14 @@ class LoginPage extends StatelessWidget {
                   InkWell(
                     //onTap: () => Get.to(InputPage()),
                     // onTap: () => Get.to(InputPage()),
-                    onTap: () {
+                    onTap: () async {
+                      // Call login
                       email = myController.text;
                       password = passwordController.text;
                       print("Email: $email");
                       print("Password: $password");
                       ProfilePage.setName(email);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          //builder: (context) => SettingsPage(title: 'Settings'),
-                          builder: (context) => HomePage(),
-                        ),
-                      );
+                      await login(email, password);
                     },
 
                     child: Container(
@@ -208,22 +264,5 @@ class LoginPage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  final myController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    //super.dispose();
-  }
-
-  bool isEmailValid(String email) {
-    Pattern pattern =
-        /*r*/ '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\$'; // unescape the $
-    RegExp regex = new RegExp(pattern);
-    return regex.hasMatch(email);
   }
 }

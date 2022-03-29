@@ -10,7 +10,7 @@ from api.database import db
 from api.structures import login_manager
 from api.endpoints import generate_endpoints
 
-app = Flask(__name__, static_url_path='', static_folder='frontend/public')
+app = Flask(__name__)
 CORS(app)
 login_manager.init_app(app)
 generate_endpoints(app)
@@ -28,5 +28,4 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 # should be very last thing (NOTHING BELOW)
 if __name__ == '__main__':
-    print(db['users'].find_one({}))
     app.run(debug=True, port=9090)

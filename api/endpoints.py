@@ -24,7 +24,8 @@ def generate_endpoints(app):
 
     @app.route('/', defaults={'path':''})
     def root_page(path):
-        return send_from_directory(app.static_folder, 'index.html')
+        return "<h1>API Root</h1>"
+        # return send_from_directory(app.static_folder, 'index.html')
 
     # register
     @app.route('/register', methods=['POST'])

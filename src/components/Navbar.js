@@ -26,6 +26,10 @@ export default class Navbar extends Component {
           <li className="navbar-item">
         <Link to="/settings" className="nav-link">Settings</Link>
           </li>
+
+          <li className="navbar-item">
+        <Link to="/trends" className="nav-link">Future Trends</Link>
+          </li>
         </ul>
         </div>
       </nav>

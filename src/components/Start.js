@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import Form from "react-bootstrap/Form";
-
 import Button from "react-bootstrap/Button";
 
 import "./Start.css";
@@ -17,8 +15,9 @@ export default function Start() {
 
   return (
 
-    <div className="StartButtons">
-        <Button 
+    <div>
+        <Button
+        className = "start-button"
         color = '#eab039' 
         block size="lg" 
         type="submit" 
@@ -27,6 +26,7 @@ export default function Start() {
         </Button>
 
         <Button
+        className = "start-button"
         color = '#eab039'
         block size="lg"
         type="submit"

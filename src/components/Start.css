@@ -71,7 +71,7 @@ label::before {
   opacity: 0.5;
 }
 
-button {
+.start-button {
   position: relative;
   margin: 15px 0 5px 0;
   left: 50%;

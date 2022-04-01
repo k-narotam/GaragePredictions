@@ -4,6 +4,7 @@ import CurrentGarageStats from '../components/CurrentGarageStats';
 import FutureTrends from '../components/FutureTrends';
 import TrendsPage from './TrendsPage';
 import SpecificPrediction from './SpecifiedPrediction';
+import Favorites from '../components/Favorites';
 
 function viewPreds() {
   <TrendsPage/>
@@ -21,7 +22,13 @@ const Dashboard = () =>
       
       Dashboard
       <CurrentGarageStats/>
-      <button onClick={viewPreds}>View Trends</button>      
+      <button onClick={viewPreds}>View Trends</button>  
+      <br></br>
+      <br></br>
+      <Favorites/>
+
+      
+      
       </div>
     );
 };

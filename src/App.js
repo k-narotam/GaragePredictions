@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate, Switch, BrowserRouter
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
+import DashboardNew from './pages/DashboardNew';
 import About from "./pages/About";
 import Feedback from "./pages/Feedback";
 import Map from "./pages/Map";
@@ -22,7 +23,7 @@ function App() {
       <Route path="/" element={<SignIn />} />
       <Route path="/login" element={<SignIn />} />
       <Route path="/register" exact element = {<SignUp/>}/>
-      <Route path="/home" exact element = {<Dashboard/>}/>
+      <Route path="/home" exact element = {<DashboardNew/>}/>
       <Route path="/about" exact element={<About/>} />
       <Route path="/feedback" exact element={<Feedback/>} />
       <Route path="/map" exact element={<Map/>} />

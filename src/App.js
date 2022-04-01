@@ -11,15 +11,17 @@ import Map from "./pages/Map";
 import Settings from './pages/Settings';
 import StartPage from './pages/StartPage';
 import TrendsPage from './pages/TrendsPage.js';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
 
 function App() {
   return (
 
     <BrowserRouter >
     <Routes>
-      <Route path="/" element={<StartPage />} />
-      <Route path="/login" exact element = {<LoginPage/>}/>
-      <Route path="/register" exact element = {<RegisterPage/>}/>
+      <Route path="/" element={<SignIn />} />
+      <Route path="/login" element={<SignIn />} />
+      <Route path="/register" exact element = {<SignUp/>}/>
       <Route path="/home" exact element = {<Dashboard/>}/>
       <Route path="/about" exact element={<About/>} />
       <Route path="/feedback" exact element={<Feedback/>} />

@@ -8,16 +8,16 @@ import TableRow from '@mui/material/TableRow';
 import Title from './Title';
 
 // Generate Order Data
-function createData(id, favorite, prediction) {
-  return { id, favorite, prediction};
+function createData(id, favorite, garage, prediction) {
+  return { id, favorite, garage, prediction};
 }
 
 const rows = [
   createData(
-    0, 'Monday 3:00 pm', '80%'
+    0, 'Monday 3:00 pm', 'B', '80%'
   ),
   createData(
-    1, 'Tuesday 4:00 pm', '32%'
+    1, 'Tuesday 4:00 pm', 'D', '25%'
   )
 ];
 
@@ -33,14 +33,15 @@ export default function Orders() {
         <TableHead>
           <TableRow>
             <TableCell>Day & Time</TableCell>
-   
-            <TableCell>Prediction</TableCell>
+            <TableCell>Garage</TableCell>
+            <TableCell>Percent Full</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.favorite}</TableCell>
+              <TableCell>{row.garage}</TableCell>
               <TableCell> {row.prediction}</TableCell>
             </TableRow>
           ))}

@@ -114,7 +114,7 @@ function DashboardContent() {
                   <CurrentGarageStats />
                 </Paper>
               </Grid>
-              {/* Recent Deposits */}
+              
               <Grid item xs={12} md={4} lg={3}>
                 <Paper
                   sx={{

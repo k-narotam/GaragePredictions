@@ -133,10 +133,7 @@ function DashboardContent() {
               </Grid>
               
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Title>Favorite Predictions</Title>
                   <FavoritesNew />
-                </Paper>
               </Grid>
             </Grid>
             

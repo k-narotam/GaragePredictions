@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Title from './Title';
 
 /*
@@ -15,9 +16,9 @@ export default function TrendsButton() {
       <Title>See the Future at UCF</Title>
       
       <div>
-        <Link color="primary" href="/trends">
-        View Trends
-        </Link>
+        <div>
+          <Link href="/trends" color="primary">Check Future Dates</Link>
+        </div>
       </div>
     </React.Fragment>
   );

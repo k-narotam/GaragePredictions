@@ -20,6 +20,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Navbar from '../components/Navbar';
 import CurrentGarageStats from '../components/CurrentGarageStats';
 import Favorites from '../components/Favorites';
+import FavoritesNew from '../components/FavoritesNew';
+
 import TrendsPage from './TrendsPage';
 import TrendsButton from '../components/TrendsButton';
 
@@ -131,7 +133,7 @@ function DashboardContent() {
               
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Favorites />
+                  <FavoritesNew />
                 </Paper>
               </Grid>
             </Grid>

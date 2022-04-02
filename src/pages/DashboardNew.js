@@ -24,6 +24,7 @@ import FavoritesNew from '../components/FavoritesNew';
 
 import TrendsPage from './TrendsPage';
 import TrendsButton from '../components/TrendsButton';
+import Title from '../components/Title';
 
 
 const drawerWidth = 240;
@@ -133,6 +134,7 @@ function DashboardContent() {
               
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  <Title>Favorite Predictions</Title>
                   <FavoritesNew />
                 </Paper>
               </Grid>

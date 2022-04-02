@@ -3,10 +3,11 @@ import Navbar from '../components/Navbar';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+
+import emailjs from '@emailjs/browser';
 
 export default function Feedback () {
   const [email, setEmail] = useState("");
@@ -15,11 +16,30 @@ export default function Feedback () {
 
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (event) => {
+  function validateForm(unit) {
+
+    return unit.length < 0;
+
+  }
+
+  const handleEmail = (event) => {
     event.preventDefault();
-    console.log(email);
- 
-    // Email self with feedback
+
+    if (email.length <= 0 || name.length <= 0 || message.length <= 0){
+      return;
+    }
+    var templateParams = {
+      name: name,
+      email: email,
+      message: message
+    };
+
+    emailjs.send('garage-prediction-email', 'feedback-email-template', templateParams, 'f1PCaYkQUptAotcdK')
+      .then((result) => {
+          console.log(result.text);
+      }, (error) => {
+          console.log(error.text);
+      });
   };
 
     return(
@@ -30,49 +50,55 @@ export default function Feedback () {
           direction="column"
           alignItems="center"
           justify="center"
-          onSubmit={handleSubmit}>
-              <Typography variant="h5" color="primary">Send us a message!</Typography>
-              <TextField
-                    margin="normal"
-                    required
-                    id="name"
-                    label="Name"
-                    name="name"
-                    value = {name}
-                    onChange={(e) => setName(e.target.value)}
-                    autoComplete="email"
-                    autoFocus
-                    style={{width: 'auto'}}
-                  />
-              <TextField
+          onSubmit={handleEmail}>
+            <Typography variant="h4" color="primary" m={2}>Send us a message!</Typography>
+            <TextField
                   margin="normal"
                   required
-                  name="email"
-                  value = {email}
-                  label="Email"
-                  type="email"
-                  id="email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="name"
+                  label="Name"
+                  name="name"
+                  value = {name}
+                  error={validateForm(name)}
+                  helperText={validateForm(name) ? "Name is required" : ""}
+                  onChange={(e) => setName(e.target.value)}
+                  autoComplete="email"
+                  autoFocus
                   style={{width: 'auto'}}
                 />
-              <TextField
-                  variant="outlined"
-                  label=" "
-                  placeholder="Message"
-                  InputLabelProps={{shrink: false}}
-                  multiline
-                  rows={15}
-                  onChange={(e) => setMessage(e.target.value)}
-                  style={{width: '50%'}}
-                />
-            <Box component="form">
-                <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth>
-                    Send message
-                </Button>
-              </Box>
+            <TextField
+                margin="normal"
+                required
+                name="email"
+                value = {email}
+                label="Email"
+                type="email"
+                id="email"
+                error={validateForm(email)}
+                helperText={validateForm(email) ? "Email is required" : ""}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{width: 'auto'}}
+              />
+            <TextField
+                variant="outlined"
+                label=" "
+                placeholder="Message"
+                InputLabelProps={{shrink: false}}
+                multiline
+                rows={15}
+                error={validateForm(message)}
+                helperText={validateForm(message) ? "Message is required" : ""}
+                onChange={(e) => setMessage(e.target.value)}
+                style={{width: '50%'}}
+              />
+            <Box component="form" m={2}>
+              <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth>
+                  Send message
+              </Button>
+            </Box>
         </Grid>
       </div>
     );

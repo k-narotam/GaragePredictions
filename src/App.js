@@ -2,15 +2,11 @@ import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Route, Routes, Navigate, Switch, BrowserRouter} from "react-router-dom";
 
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import Dashboard from './pages/Dashboard';
 import DashboardNew from './pages/DashboardNew';
 import About from "./pages/About";
 import Feedback from "./pages/Feedback";
 import Map from "./pages/Map";
 import Settings from './pages/Settings';
-import StartPage from './pages/StartPage';
 import TrendsPage from './pages/TrendsPage.js';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';

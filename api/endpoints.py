@@ -1,3 +1,4 @@
+import json
 import time
 import requests
 from bs4 import BeautifulSoup
@@ -15,6 +16,8 @@ from .ml_wrapper import models
 from .emailtoken import confirm_token, generate_confirmation_token, send_email
 
 def generate_endpoints(app):
+
+    mail = Mail(app)
     # get
     def get_current_user():
         try:
@@ -29,7 +32,7 @@ def generate_endpoints(app):
         # return send_from_directory(app.static_folder, 'index.html')
 
     # register
-    @app.route('/register', methods=['POST'])
+    @app.route('/register', methods=['POST', 'GET'])
     @cross_origin()
     def register():
         password = request.json['password'].encode('utf-8')
@@ -37,11 +40,19 @@ def generate_endpoints(app):
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(password, salt)
         new_user = User().create(password_hash, salt, email)
+
         print(password, email, salt, password_hash)
         if new_user.exists:
             return jsonify({'error': 'user already exists'})
         else:
             new_user.save()
+            # email verification - not operational
+           # token = generate_confirmation_token(email)
+            #confirm_url = url_for('confirm_email', token=token, _external=True)
+            #html = render_template('mail.html', confirm_url=confirm_url)
+            #subject = "Confirm your email"
+            #send_email(new_user.email, subject, html, mail)
+
             return jsonify({'error': ''})
 
     # login endpoint
@@ -178,33 +189,57 @@ def generate_endpoints(app):
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
 
-    # json needs to aligned with changepassword + "secret_key"
-    @app.route('/email_verification', methods=['POST'])
-    def email_verification():
-        
-        id = request.json['id']
-        my_user = User.load(my_user, id)
+    # for use to change email confirmation, not called by anything yet
+    @app.route('/confirm/<token>')
+    def confirm_email(token):
+        email = confirm_token(token)
+        my_user = get_current_user()
 
-        mail = Mail(app)
+        if email == False:
+            return False
 
-        if my_user.exists:
-            secret_key = request.json['secret_key'].encode('utf-8')
-            salt = bcrypt.gensalt()
-
-            # generates token based on secret key and salt
-            token = generate_confirmation_token(secret_key, salt, my_user.email)
-
-            try:
-                email = confirm_token(token, secret_key, salt, 3600)
-                confirm_url = url_for('confirm_email', token=token, _external=True)
-                html = render_template('api/mail.html', confirm_url=confirm_url)
-                subject = "Change your password"
-
-                send_email(my_user.email, subject, html, mail)
-                change_password()
-
-            except:
-                return jsonify({'error': 'link is invalid/expired'})
-            
+        if my_user.confirmed == True:
+            return False
         else:
-            return jsonify({'error': 'account does not exist'})
+            my_user.confirmed = True
+            return my_user
+
+    # adds a favorite prediction to a list
+    @app.route('/addFavorite', methods = ['POST'])
+    @login_required
+    def add_favorite():
+
+        my_user = get_current_user()
+        try:
+            garage_id = request.json['garage_id']
+            weekday = request.json['weekday']
+            time = request.json['time']
+            
+            if garage_id in models:
+                garage_full = get_data()
+                # creates an instance of a prediction and adds it to the list of favorites for user
+                fav = Prediction.create(garage_full, weekday, time, my_user.id)
+                my_user.favorites.append(fav)
+            else:
+                return jsonify({'error': 'invalid garage id'})
+
+        except KeyError:
+            return jsonify({"error" : "invalid arguments"})
+
+        return jsonify({"error" : ""})
+
+    # similar as status endpoint to call from favorites, returns float percentage of each fullness of garage
+    def get_data():
+        r = requests.get('http://secure.parking.ucf.edu/GarageCount/iframe.aspx')
+        raw_text = r.text
+        soup = BeautifulSoup(raw_text, 'html.parser')
+        garage_full = []
+        for garage_html in list(soup.find_all('tr', {'class': 'dxgvDataRow_DevEx'})):
+            garage_cols = [col.text for col in garage_html.find_all('td')]
+            if len(garage_cols) >= 2:
+                spaces_avail = garage_cols[1].split('/')[0][1:]
+                spaces_total = garage_cols[1].split('/')[1].split('\r')[0]
+                fullness = float(spaces_avail)/float(spaces_total)
+                garage_full.append(fullness)
+
+        return garage_full

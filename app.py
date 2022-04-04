@@ -19,12 +19,6 @@ generate_endpoints(app)
 SECRET_KEY = os.urandom(24)
 app.config['SECRET_KEY'] = SECRET_KEY
 
-# to be added..
-# ForgotPassword
-# (Add/Remove/List Favorites)
-# Capacity
-# Status
-
 
 # should be very last thing (NOTHING BELOW)
 if __name__ == '__main__':

@@ -18,6 +18,8 @@ class User(UserMixin):
         self.email = None
         self.id = None
         self.logged_on = False
+        self.confirmed = False
+        self.favorites = []
 
     # use to initialize a user from data (only used in registration)
     def create(self, password_hash, password_salt, email):
@@ -26,6 +28,8 @@ class User(UserMixin):
         self.email = email
         self.id = email
         self.logged_on = True
+        self.confirmed = False
+        self.favorites = []
         return self
 
     # check if a user exists
@@ -37,7 +41,7 @@ class User(UserMixin):
 
     # save a user to the database (WILL OVERWRITE)
     def save(self):
-        db['users'].update_many({'_id': self.id}, {'$set': {'email': self.email, 'password': self.password_hash, 'salt': self.password_salt}}, upsert=True)
+        db['users'].update_many({'_id': self.id}, {'$set': {'email': self.email, 'password': self.password_hash, 'salt': self.password_salt, 'confirmed': self.confirmed}}, upsert=True)
 
     # load a user from the database based on an email
     def load(self, email):
@@ -65,11 +69,12 @@ class User(UserMixin):
             return True
         return False
 
+
 # class for predictions for use on favorites endpoint
 class Prediction():
 
     def __init__(self):
-        self.garage_ids = garage_to_id
+        self.garage_ids = {'a', 'b', 'c', 'd', 'h', 'i', 'l'}
         self.garage_fullness = []
         self.weekday = None
         self.time = None

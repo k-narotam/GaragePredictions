@@ -218,7 +218,7 @@ def generate_endpoints(app):
             if garage_id in models:
                 garage_full = get_data()
                 # creates an instance of a prediction and adds it to the list of favorites for user
-                fav = Prediction.create(garage_full, weekday, time, my_user.id)
+                fav = Prediction.create(garage_full, weekday, time, garage_id)
                 my_user.favorites.append(fav)
             else:
                 return jsonify({'error': 'invalid garage id'})

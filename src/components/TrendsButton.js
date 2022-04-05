@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Link from '@mui/material/Link';
 import Title from './Title';
 

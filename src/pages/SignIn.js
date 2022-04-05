@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+// import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 
@@ -29,17 +29,17 @@ export default function SignInSide() {
 
     const [errorVisible, setErrorVisible] = useState("none");
 
-    function validateForm() {
+    // function validateForm() {
 
-        return email.length > 0 && password.length > 0;
+    //     return email.length > 0 && password.length > 0;
 
-    }
+    // }
   const handleSubmit = (event) => {
     event.preventDefault();
     // api stuff
     axios.post("https://group17poos-api.herokuapp.com/login", {"email": email, "password": password})
       .then(response => {
-        if (response.data.error == '') {
+        if (response.data.error === '') {
           window.location.href = '/home';
         } else {
           setErrorVisible("block");

@@ -1,5 +1,5 @@
-import { MapContainer, useMap, useMapEvent, Rectangle,  TileLayer, Marker, Tooltip, Popup } from "react-leaflet";
-import { LatLngExpression, Icon} from "leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Icon} from "leaflet";
 import markerIconPng from "leaflet/dist/images/marker-icon.png"
 import "leaflet/dist/leaflet.css";
 import Navbar from "../components/Navbar";

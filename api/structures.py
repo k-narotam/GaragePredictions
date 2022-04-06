@@ -19,7 +19,6 @@ class User(UserMixin):
         self.id = None
         self.logged_on = False
         self.confirmed = False
-        self.favorites = []
 
     # use to initialize a user from data (only used in registration)
     def create(self, password_hash, password_salt, email):
@@ -29,7 +28,6 @@ class User(UserMixin):
         self.id = email
         self.logged_on = True
         self.confirmed = False
-        self.favorites = []
         return self
 
     # check if a user exists
@@ -71,7 +69,7 @@ class User(UserMixin):
 
 
 # class for predictions for use on favorites endpoint
-class Prediction():
+class Favorite():
 
     def __init__(self):
         self.garage_ids = ['a', 'b', 'c', 'd', 'h', 'i', 'l']
@@ -79,12 +77,23 @@ class Prediction():
         self.weekday = None
         self.time = None
         self.id = None
+        self.title = None
 
     # initialize a prediction based on fullness, day, and hour
-    def create(self, garage_fullness, weekday, time, id):
+    def create(self, garage_fullness, weekday, time, id, title):
         self.garage_fullness = garage_fullness
         self.weekday = weekday
         self.time = time
         self.id = id
-
+        self.title = title
         return self
+
+    def save(self):
+        db['favorites'].update_many({'_id' : self.title}, {'$set': {'user_id' : self.id, 'garage_fullness': self.garage_fullness, 'weekday': self.weekday, 'hour': self.time}}, upsert=True)
+
+    @staticmethod
+    def exists(id, title):
+        if db['favorites'].find_one({'_id' : title, 'user_id' : id}):
+            return True
+        else:
+            return False

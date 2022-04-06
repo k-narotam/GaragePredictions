@@ -9,8 +9,8 @@ from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
 
-from .constants import garage_to_id
-from .structures import User, Prediction
+from .constants import garage_to_id, weekdays
+from .structures import User, Favorite
 from .database import db
 from .ml_wrapper import models
 from .emailtoken import confirm_token, generate_confirmation_token, send_email
@@ -204,28 +204,43 @@ def generate_endpoints(app):
             my_user.confirmed = True
             return my_user
 
-    # adds a favorite prediction to a list
-    @app.route('/addFavorite', methods = ['POST'])
+    # adds a prediction to favorites collection
+    @app.route('/add_favorite', methods = ['POST'])
     @login_required
     def add_favorite():
         my_user = get_current_user()
-        try:
-            garage_id = request.json['garage_id']
-            weekday = request.json['weekday']
-            time = request.json['time']
-            
-            if garage_id in models:
-                garage_full = get_data()
-                # creates an instance of a prediction and adds it to the list of favorites for user
-                fav = Prediction().create(garage_full, weekday, time, garage_id)
-                my_user.favorites.append(fav)
-            else:
-                return jsonify({'error': 'invalid garage id'})
+        
+        # title acts as unique identifier for favorite (like a given name)
+        title = request.json['title']
+        weekday = request.json['weekday']
+        time = request.json['time']
 
-        except KeyError:
-            return jsonify({"error" : "invalid arguments"})
+        if weekday in weekdays:
+            if Favorite().exists(my_user.id, title) == True:
+                return jsonify({"error" : "favorite prediction already exists"})
+
+            garage_full = get_data()
+            # creates an instance of a prediction and adds to favorites db with user_id
+            fav = Favorite().create(garage_full, weekday, time, my_user.id, title)
+            fav.save()
+        else:
+            return jsonify({"error" : "invalid day of the week"})
 
         return jsonify({"error" : ""})
+
+    # delete from favorites collection
+    @app.route('/delete_favorite', methods = ['POST'])
+    @login_required
+    def delete_favorite():
+        my_user = get_current_user()
+
+        title = request.json['title']
+
+        if Favorite().exists(my_user.id, title) == False:
+            return jsonify({"error" : "favorite prediction does not exist"})
+        else:
+            db['favorites'].find_one_and_delete({'_id': title, 'user_id' : my_user.id})
+            return jsonify({"error" : ""})
 
     # similar as status endpoint to call from favorites, returns float percentage of each fullness of garage
     def get_data():

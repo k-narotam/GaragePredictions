@@ -11,6 +11,8 @@ garage_to_id = {
     'Garage Libra': 'l',
 }
 
+weekdays = {'mon', 'tue', 'wed', 'thr', 'fri', 'sat', 'sun'}
+
 class GeneralErros():
 
     @staticmethod

@@ -208,7 +208,6 @@ def generate_endpoints(app):
     @app.route('/addFavorite', methods = ['POST'])
     @login_required
     def add_favorite():
-
         my_user = get_current_user()
         try:
             garage_id = request.json['garage_id']
@@ -218,7 +217,7 @@ def generate_endpoints(app):
             if garage_id in models:
                 garage_full = get_data()
                 # creates an instance of a prediction and adds it to the list of favorites for user
-                fav = Prediction.create(garage_full, weekday, time, garage_id)
+                fav = Prediction().create(garage_full, weekday, time, garage_id)
                 my_user.favorites.append(fav)
             else:
                 return jsonify({'error': 'invalid garage id'})

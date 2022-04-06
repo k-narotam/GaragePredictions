@@ -74,7 +74,7 @@ class User(UserMixin):
 class Prediction():
 
     def __init__(self):
-        self.garage_ids = {'a', 'b', 'c', 'd', 'h', 'i', 'l'}
+        self.garage_ids = ['a', 'b', 'c', 'd', 'h', 'i', 'l']
         self.garage_fullness = []
         self.weekday = None
         self.time = None

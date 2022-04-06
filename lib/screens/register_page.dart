@@ -8,16 +8,89 @@ import '../screens/check_future_page.dart';
 import '../screens/profile_page.dart';
 import '../screens/home_page.dart';
 import '../screens/nav_drawer.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 
 import '../user.dart';
 
-class RegisterPage extends StatelessWidget {
-  final GlobalKey<FormFieldState> formFieldKey = GlobalKey();
+class RegisterPage extends StatefulWidget {
+  String password = "";
+  String email;
+  RegisterPage(String email, String password) {
+    this.email = email;
+    this.password = password;
+    print("Email = " + email);
+  }
+  RegisterPageState createState() => RegisterPageState();
   static const String id = '/register';
+}
+
+class RegisterPageState extends State<RegisterPage> {
+  final GlobalKey<FormFieldState> formFieldKey = GlobalKey();
   int code = -1;
   bool validCode = true;
 
+  final myController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    //super.dispose();
+  }
+
+  bool isEmailValid(String email) {
+    Pattern pattern =
+        /*r*/ '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\$'; // unescape the $
+    RegExp regex = new RegExp(pattern);
+    return regex.hasMatch(email);
+  }
+
+  Future<int> register(String email, String password) async {
+    String tmp = dotenv.env['register'];
+    try {
+      final http.Response answer = await http
+          .post(
+            Uri.parse(dotenv.env['register']),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(
+                <String, dynamic>{'email': email, 'password': password}),
+          )
+          .timeout(Duration(seconds: 5));
+      Map<String, dynamic> output = jsonDecode(answer.body);
+      if (output["error"] == "") {
+        // Success
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            //builder: (context) => SettingsPage(title: 'Settings'),
+            builder: (context) => HomePage(),
+          ),
+        );
+        return 0;
+      } else {
+        print(output["error"]);
+        return 1;
+      }
+    } catch (e) {
+      print(e.toString());
+      return 1;
+    }
+    return 1;
+  }
+
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       // No appbar until logged in
@@ -84,6 +157,7 @@ class RegisterPage extends StatelessWidget {
                         ),
                       ),
                       validator: (value) {
+                        print("Value is " + value);
                         if (value.isEmpty ||
                             !isNumeric(value) ||
                             value.length != 6) {
@@ -98,7 +172,7 @@ class RegisterPage extends StatelessWidget {
                   InkWell(
                     //onTap: () => Get.to(InputPage()),
                     // onTap: () => Get.to(InputPage()),
-                    onTap: () {
+                    onTap: () async {
                       formFieldKey.currentState.validate();
                       try {
                         code = int.parse(myController.text);
@@ -107,16 +181,25 @@ class RegisterPage extends StatelessWidget {
                         print(error);
                         print("Error");
                       }
-                      print("Button pressed. Code = $code");
+                      print(
+                          "Button pressed. Code = $code. Valid code =$validCode");
+                      // Need to make the initial call at the login page and then retrieve the code here? Or, get code there and pass it securely
+                      // Replace with correct API call to email verification
                       if ((validCode) && (code == 1)) {
-                        ProfilePage.setName("Temp");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            //builder: (context) => SettingsPage(title: 'Settings'),
-                            builder: (context) => HomePage(),
-                          ),
-                        );
+                        int result =
+                            await register(widget.email, widget.password);
+                        if (result == 0) {
+                          ProfilePage.setName("Temp");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              //builder: (context) => SettingsPage(title: 'Settings'),
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        } else {
+                          print("Error");
+                        }
                       }
                     },
                     child: Container(
@@ -170,20 +253,4 @@ class RegisterPage extends StatelessWidget {
       ),
     );
   }
-
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    //super.dispose();
-  }
-}
-
-bool isNumeric(String s) {
-  if (s == null) {
-    return false;
-  }
-  return double.parse(s, (e) => null) != null;
 }

@@ -49,7 +49,7 @@ class LoginPageState extends State<LoginPage> {
     try {
       final http.Response answer = await http
           .post(
-            Uri.parse(dotenv.env['url']),
+            Uri.parse(dotenv.env['login']),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -73,6 +73,7 @@ class LoginPageState extends State<LoginPage> {
         return 1;
       }
     } catch (e) {
+      print("Caught exception");
       print(e.toString());
       return 1;
     }
@@ -193,6 +194,7 @@ class LoginPageState extends State<LoginPage> {
                     //onTap: () => Get.to(InputPage()),
                     // onTap: () => Get.to(InputPage()),
                     onTap: () {
+                      // Call register
                       email = myController.text;
                       password = passwordController.text;
                       print("Email: $email");
@@ -203,7 +205,7 @@ class LoginPageState extends State<LoginPage> {
                         context,
                         MaterialPageRoute(
                           //builder: (context) => SettingsPage(title: 'Settings'),
-                          builder: (context) => RegisterPage(),
+                          builder: (context) => RegisterPage(email, password),
                         ),
                       );
                     },

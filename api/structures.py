@@ -72,24 +72,24 @@ class User(UserMixin):
 class Favorite():
 
     def __init__(self):
-        self.garage_ids = ['a', 'b', 'c', 'd', 'h', 'i', 'l']
+        self.garage_ids = list(garage_to_id.values())
         self.garage_fullness = []
         self.weekday = None
         self.time = None
-        self.id = None
+        self.user_id = None
         self.title = None
 
     # initialize a prediction based on fullness, day, and hour
-    def create(self, garage_fullness, weekday, time, id, title):
+    def create(self, garage_fullness, weekday, time, user_id, title):
         self.garage_fullness = garage_fullness
         self.weekday = weekday
         self.time = time
-        self.id = id
+        self.user_id = user_id
         self.title = title
         return self
 
     def save(self):
-        db['favorites'].update_many({'_id' : self.title}, {'$set': {'user_id' : self.id, 'garage_fullness': self.garage_fullness, 'weekday': self.weekday, 'hour': self.time}}, upsert=True)
+        db['favorites'].update_many({'_id' : self.title}, {'$set': {'user_id' : self.user_id, 'garage_fullness': self.garage_fullness, 'weekday': self.weekday, 'hour': self.time}}, upsert=True)
 
     @staticmethod
     def exists(id, title):

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import tableIcons from "./TableIcons";
 import MaterialTable from 'material-table';
 import Title from '../components/Title';

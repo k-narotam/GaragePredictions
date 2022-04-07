@@ -219,7 +219,7 @@ def generate_endpoints(app):
             if Favorite().exists(my_user.id, title) == True:
                 return jsonify({"error" : "favorite prediction already exists"})
 
-            garage_full = get_data()
+            garage_full = get_percentage_fullness()
             # creates an instance of a prediction and adds to favorites db with user_id
             fav = Favorite().create(garage_full, weekday, time, my_user.id, title)
             fav.save()
@@ -243,7 +243,7 @@ def generate_endpoints(app):
             return jsonify({"error" : ""})
 
     # similar as status endpoint to call from favorites, returns float percentage of each fullness of garage
-    def get_data():
+    def get_percentage_fullness():
         r = requests.get('http://secure.parking.ucf.edu/GarageCount/iframe.aspx')
         raw_text = r.text
         soup = BeautifulSoup(raw_text, 'html.parser')
@@ -257,3 +257,17 @@ def generate_endpoints(app):
                 garage_full.append(fullness)
 
         return garage_full
+
+    @app.route('/list_favorites', methods=['GET'])
+    @login_required
+    def list_favorites():
+        my_user = get_current_user()
+
+        # fetch all favorites with that user ID
+        test_list = db['favorites'].find({'user_id' : my_user.id})
+  
+        # Converting to the JSON (for some reason "pretty" comes out weird in Postman, but indetation is correct when checked on "raw")
+        json_data = json.dumps(list(test_list), indent = 4) 
+
+        # returns json data (even if it's empty)
+        return json_data

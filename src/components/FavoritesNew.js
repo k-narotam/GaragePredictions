@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import tableIcons from "./TableIcons";
 import MaterialTable from 'material-table';
 import Title from '../components/Title';
@@ -25,8 +25,8 @@ const rows = [
 
 export default function StickyHeadTable() {
 
-  const [selectedData, setSelectedData] = React.useState([]);
-  const [tableData, setTableData] = React.useState(rows);
+  const [selectedData, setSelectedData] = useState([]);
+  const [tableData, setTableData] = useState(rows);
 
   const columns = [
     { title: "Time", field: "time", minWidth: 170 },

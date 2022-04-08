@@ -51,7 +51,7 @@ export default function Feedback () {
           alignItems="center"
           justify="center"
           onSubmit={handleEmail}>
-            <Typography variant="h4" color="primary" m={2}>Send us a message!</Typography>
+            <Typography variant="h4" color="#c79632" m={2}>Send us a message!</Typography>
         
             <TextField
                 margin="normal"

@@ -5,8 +5,9 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
-
+import Title from './Title';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+//import { Title } from "react-bootstrap/lib/Modal";
 
 const data = [
   {
@@ -125,9 +126,10 @@ export default function FutureTrends() {
     if (weekday === '' && garage === '') {
       return (
         <div>
-          <Typography variant="h6" color="#c79632" fontWeight= "bold" gutterBottom>
-            Select a weekday and a garage to see the future trends.
-          </Typography>
+        <h2 style={{textAlign: "center"}}><Title>Select Weekday & Garage</Title></h2>
+        
+          
+          
         </div>
       );
     }

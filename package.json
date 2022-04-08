@@ -19,6 +19,7 @@
     "dotenv": "^16.0.0",
     "leaflet": "^1.7.1",
     "material-table": "^2.0.3",
+    "material-ui-image": "^3.3.2",
     "mdbreact": "^5.2.0",
     "react": "^17.0.2",
     "react-bootstrap": "^2.2.1",

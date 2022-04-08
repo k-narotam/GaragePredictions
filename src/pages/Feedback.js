@@ -7,11 +7,12 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import emailjs from '@emailjs/browser';
-
+//import SignIn from './SignIn';
 export default function Feedback () {
+  //const email = SignIn.email;
   const [email, setEmail] = useState("");
 
-  const [name, setName] = useState("");
+  //const [name, setName] = useState("");
 
   const [message, setMessage] = useState("");
 
@@ -24,11 +25,11 @@ export default function Feedback () {
   const handleEmail = (event) => {
     event.preventDefault();
 
-    if (email.length <= 0 || name.length <= 0 || message.length <= 0){
+    if (email.length <= 0 || message.length <= 0){
       return;
     }
     var templateParams = {
-      name: name,
+      //name: name,
       email: email,
       message: message
     };
@@ -51,20 +52,7 @@ export default function Feedback () {
           justify="center"
           onSubmit={handleEmail}>
             <Typography variant="h4" color="primary" m={2}>Send us a message!</Typography>
-            <TextField
-                  margin="normal"
-                  required
-                  id="name"
-                  label="Name"
-                  name="name"
-                  value = {name}
-                  error={validateForm(name)}
-                  helperText={validateForm(name) ? "Name is required" : ""}
-                  onChange={(e) => setName(e.target.value)}
-                  autoComplete="email"
-                  autoFocus
-                  style={{width: 'auto'}}
-                />
+        
             <TextField
                 margin="normal"
                 required

@@ -26,7 +26,7 @@ import FavoritesNew from '../components/FavoritesNew';
 import TrendsButton from '../components/TrendsButton';
 // import Title from '../components/Title';
 import Title from "../components/Title";
-
+import Image from '../components/cars.png';
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -74,23 +74,27 @@ function DashboardContent() {
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
+            backgroundImage: `url(${Image})`
           }}
         >
+        
           <Toolbar />
+          
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
-              <Grid item xs={0} md={25} lg={25}>
+              <Grid item xs={12} md={5} lg={8}>
                 <Paper
                   sx={{
+                    backgroundColor: "white",
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 600,
+                    height: 250,
                   }}
                   
                 >
-                <h2 style={{textAlign: "center"}}><Title>Garage Predictions Description & Motivation</Title></h2>
+                <h2 style={{textAlign: "center"}}><Title>We hope our app has been helpful in predicting UCF garage capacity! Our aim is to help you plan accordingly where to park based on the days you need to attend campus. This should help save time knowing exactly which garage to head to upon arrival. We also offer mobile app support, and are continously striving to improve our features. We would love to hear your insights and how you use our app! We are Group 17, Super Amazing Garage Predictions!</Title></h2>
                  
                 </Paper>
               </Grid>

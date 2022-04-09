@@ -7,16 +7,15 @@ import 'package:flutter/material.dart';
 // const kBlackColor = Color(0xFF101010);
 
 const kPrimaryGradient = LinearGradient(
-  colors: [Color(0xFF46A0AE), Color(0xFF00FFCB)],
+  colors: [Color(0xFFEAB039), Color(0xFFE38A00)],
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
 );
 
-
 //const kPrimaryColor = Color(0xFF00BF6D); //green
-const kPrimaryColor = Color(0xFF336ad6); //blue
+const kPrimaryColor = Color(0xffffcf06); //gold
 const kSecondaryColor = Color(0xFFFE9901);
-const kContentColorLightTheme = Color(0xFF1D1D35);
+const kContentColorLightTheme = Color(0xFF07090F);
 const kContentColorDarkTheme = Color(0xFFF5FCF9);
 const kWarninngColor = Color(0xFFF3BB1C);
 const kErrorColor = Color(0xFFF03738);

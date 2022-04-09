@@ -94,7 +94,7 @@ function DashboardContent() {
                   }}
                   
                 >
-                <h2 style={{textAlign: "center"}}><Title>We hope our app has been helpful in predicting UCF garage capacity! Our aim is to help you plan accordingly where to park based on the days you need to attend campus. This should help save time knowing exactly which garage to head to upon arrival. We also offer mobile app support, and are continously striving to improve our features. We would love to hear your insights and how you use our app! We are Group 17, Super Amazing Garage Predictions!</Title></h2>
+                <h2 style={{textAlign: "center"}}><Title>We hope our app has been helpful in predicting UCF garage capacity! We aim to help you plan accordingly where to park based on the days you need to attend campus. This helps save time knowing the specific garage to head to upon arrival. We also offer mobile app support and continuously strive to improve our features. We would love to hear your insights and how you use our app! We are Group 17, Super Amazing Garage Predictions!</Title></h2>
                  
                 </Paper>
               </Grid>

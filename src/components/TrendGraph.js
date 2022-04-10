@@ -135,9 +135,10 @@ export default function TrendGraph(props) {
             axios.post("https://group17poos-api.herokuapp.com/trend", { "garage_id": props.garage, "day": props.weekday })
                 .then(response => {
                     if (response.data.error === '') {
-                        for (let i = 0; i < 24; i++) {
-                            newPredictions[i].filled = 1 - capPrediction(response.data.predictions[i] / garage_spaces[props.garage]);
-                        }
+                        newPredictions.forEach((prediction, index) => {
+                            prediction.filled = 1 - capPrediction(response.data.predictions[index] / garage_spaces[props.garage]);
+                        });
+
                         setPredictions(newPredictions);
                         setLoading(false);
                     }
@@ -200,7 +201,7 @@ export default function TrendGraph(props) {
                                 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" />
-                                <YAxis />
+                                <YAxis domain={[0, 1]}/>
                                 <Tooltip />
                                 <Area type="monotone" dataKey="filled" stroke="#8884d8" activeDot={{ r: 8 }} />
                             </AreaChart>

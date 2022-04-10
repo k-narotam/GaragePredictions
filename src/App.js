@@ -10,6 +10,8 @@ import Settings from './pages/Settings';
 import TrendsPage from './pages/TrendsPage.js';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import ChangePasswordEmail from './pages/ChangePasswordEmail';
+import ChangePasswordNew from './pages/ChangePasswordNew';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
       <Route path="/" element={<SignIn />} />
       <Route path="/login" element={<SignIn />} />
       <Route path="/register" exact element = {<SignUp/>}/>
+      <Route path="/change_password_email" exact element = {<ChangePasswordEmail/>}/>
+      <Route path="/change_password_new" exact element = {<ChangePasswordNew/>}/>
       <Route path="/home" exact element = {<DashboardNew/>}/>
       <Route path="/about" exact element={<About/>} />
       <Route path="/feedback" exact element={<Feedback/>} />

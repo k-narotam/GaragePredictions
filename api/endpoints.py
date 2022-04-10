@@ -116,6 +116,22 @@ def generate_endpoints(app):
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
 
+    @app.route('/trend', methods=['POST'])
+    def predict_trend():
+        try:
+            garage_id = request.json['garage_id']
+            week_hour = 24 * request.json['day']
+            weather = 0.01 # placeholder
+            if garage_id in models:
+                preds_day = []
+                for i in range(24):
+                    preds_day.append(models[garage_id].predict_one({'week_hour': week_hour + i, 'weather': weather}))
+                return jsonify({'error': '', 'predictions': preds_day})
+            else:
+                return jsonify({'error': 'invalid garage id'})
+        except KeyError:
+            return jsonify({'error': 'invalid arguments'})
+
     @app.route('/status', methods=['POST', 'GET'])
     def status():
         r = requests.get('http://secure.parking.ucf.edu/GarageCount/iframe.aspx')

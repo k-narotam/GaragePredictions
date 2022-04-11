@@ -23,8 +23,6 @@ export default function ChangePasswordEmail() {
 
     const [email, setEmail] = useState("");
 
-    const [new_password, setPassword] = useState("");
-
     const [errorMessage, setError] = useState("abc");
 
     const [errorVisible, setErrorVisible] = useState("none");
@@ -35,7 +33,7 @@ export default function ChangePasswordEmail() {
 
         var tempPassword;
 
-        axios.post("https://group17poos-api.herokuapp.com/change_password", {"id": email, "new_password": new_password})
+        axios.post("https://group17poos-api.herokuapp.com/confirm_email", {"email": email})
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/change_password_new';
@@ -66,9 +64,9 @@ export default function ChangePasswordEmail() {
               <Typography component="h1" variant="h5">
                 Password Recovery
               </Typography>
-
+              <Typography component="h1">
                 Enter your email below to reset your password
-
+              </Typography>
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
             

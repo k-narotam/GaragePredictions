@@ -32,7 +32,7 @@ def generate_endpoints(app):
         # return send_from_directory(app.static_folder, 'index.html')
 
     # register
-    @app.route('/register', methods=['POST', 'GET'])
+    @app.route('/register', methods=['POST'])
     @cross_origin()
     def register():
         password = request.json['password'].encode('utf-8')
@@ -46,13 +46,6 @@ def generate_endpoints(app):
             return jsonify({'error': 'user already exists'})
         else:
             new_user.save()
-            # email verification - not operational
-           # token = generate_confirmation_token(email)
-            #confirm_url = url_for('confirm_email', token=token, _external=True)
-            #html = render_template('mail.html', confirm_url=confirm_url)
-            #subject = "Confirm your email"
-            #send_email(new_user.email, subject, html, mail)
-
             return jsonify({'error': ''})
 
     # login endpoint
@@ -205,20 +198,20 @@ def generate_endpoints(app):
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
 
-    # for use to change email confirmation, not called by anything yet
-    @app.route('/confirm/<token>')
-    def confirm_email(token):
-        email = confirm_token(token)
-        my_user = get_current_user()
+    # for use to change email confirmation, email verification not operational
+    @app.route('/confirm_email', methods=['POST'])
+    def confirm_email():
+        id = request.json['email']
 
-        if email == False:
-            return False
+        if User.user_exist(id) is False:
+            return jsonify({"error" : "invalid user id"})
 
-        if my_user.confirmed == True:
-            return False
-        else:
-            my_user.confirmed = True
-            return my_user
+        # placeholder until email verification is up and running
+        id_query = { "_id" : id }
+        new_query = { "$set": { "confirmed": True}}
+        db['users'].update_one(id_query, new_query)
+
+        return jsonify({'error' : ""})
 
     # adds a prediction to favorites collection
     @app.route('/add_favorite', methods = ['POST'])

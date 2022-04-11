@@ -27,4 +27,54 @@ export default function ChangePasswordNew() {
 
     const [errorVisible, setErrorVisible] = useState("none");
 
-};
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        axios.post("https://group17poos-api.herokuapp.com/change_password", {"new_password": new_password})
+        .then(response => {
+            if (response.data.error === '') {
+                window.location.href = '/login';
+            } else {
+                setErrorVisible("block");
+                setError(response.data.error);
+            }
+        });
+    };
+
+    return (
+        <ThemeProvider theme={theme}>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            
+            <Box
+              sx={{
+                
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: '#c79632' }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Password Recovery
+              </Typography>
+
+                Enter your email below fgfgf reset your password
+                
+                <Grid container justifyContent="flex-end">
+                  <Grid item>
+                    <Link href="/login" variant="body2">
+                        Remember your Password? Sign In
+                    </Link>
+                  </Grid>
+                </Grid>
+              </Box>
+              </Container>
+        </ThemeProvider>
+    );
+}
+

@@ -23,18 +23,19 @@ export default function ChangePasswordEmail() {
 
     const [email, setEmail] = useState("");
 
+    const [new_password, setPassword] = useState("");
+
     const [errorMessage, setError] = useState("abc");
 
     const [errorVisible, setErrorVisible] = useState("none");
 
-    function validateForm() {
-        return email.length > 0;
-    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post("https://group17poos-api.herokuapp.com/change_password", {"id": email})
+        var tempPassword;
+
+        axios.post("https://group17poos-api.herokuapp.com/change_password", {"id": email, "new_password": new_password})
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/change_password_new';
@@ -84,17 +85,19 @@ export default function ChangePasswordEmail() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </Grid>         
-     
+
                 </Grid>
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
-                  disabled={!validateForm()}
                 >
                   Reset your Password
                 </Button>
+
+                
+
                 <Grid container justifyContent="flex-end">
                   <Grid item>
                     <Link href="/login" variant="body2">

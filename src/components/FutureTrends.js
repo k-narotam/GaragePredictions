@@ -80,7 +80,7 @@ export default function FutureTrends() {
         </Grid>
       </Grid>
 
-      <Grid item >
+      <Grid item>
         <TrendGraph 
           weekday={weekday}
           garage={garage}

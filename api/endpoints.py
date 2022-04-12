@@ -288,7 +288,7 @@ def generate_endpoints(app):
         return garage_full
 
     @app.route('/list_favorites', methods=['GET'])
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @cross_origin(supports_credentials=True)
     @login_required
     def list_favorites():
         my_user = get_current_user()

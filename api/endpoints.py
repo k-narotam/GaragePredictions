@@ -1,10 +1,13 @@
+from audioop import cross
 import json
+import re
+from sre_constants import OP_IGNORE
 import time
 import requests
 from bs4 import BeautifulSoup
 
 import bcrypt
-from flask import jsonify, request, send_from_directory, url_for, render_template
+from flask import jsonify, make_response, request, send_from_directory, url_for, render_template, Response
 from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
@@ -51,9 +54,9 @@ def generate_endpoints(app):
     # login endpoint
     @app.route('/login', methods=['POST'])
     @cross_origin(
-        expose_headers=['Set-Cookie'],
+        expose_headers=['Authorization', 'Content-Type', 'Set-Cookie', 'set-cookie'],
         supports_credentials=True,
-
+        origins=['http://localhost:3000', 'https://group17poos.herokuapp.com', 'localhost:3000']
     )
     def login_end():
         password = request.json['password'].encode('utf-8')
@@ -65,7 +68,8 @@ def generate_endpoints(app):
                 return jsonify({'error': 'user does not exist'})
             else:
                 my_user.login()
-                return jsonify({'error': ''})
+                resp = make_response(jsonify({'error': ''}))
+                return resp
         else:
             return jsonify({'error': 'user does not exist'})
 
@@ -78,7 +82,14 @@ def generate_endpoints(app):
         return jsonify({'error': ''})
 
     # a test endpoint to ensure logins are working properly
+    # @app.route('/test_profile', methods=['GET'])
+    # @cross_origin(
+    #     expose_headers=['Authorization', 'Content-Type', 'Set-Cookie', 'set-cookie'],
+    #     supports_credentials=True,
+    #     origins=['http://localhost:3000', 'https://group17poos.herokuapp.com', 'localhost:3000']
+    # )
     @app.route('/test_profile', methods=['GET'])
+    @cross_origin(supports_credentials=True)
     @login_required
     def test_profile():
         user = get_current_user()
@@ -285,6 +296,7 @@ def generate_endpoints(app):
         return garage_full
 
     @app.route('/list_favorites', methods=['GET'])
+    @cross_origin(supports_credentials=True)
     @login_required
     def list_favorites():
         my_user = get_current_user()

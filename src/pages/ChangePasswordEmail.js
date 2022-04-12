@@ -64,17 +64,17 @@ export default function ChangePasswordEmail() {
               <Typography component="h1" variant="h5">
                 Password Recovery
               </Typography>
-              <Typography component="h1">
+              <Typography component="body1" variant="h9">
                 Enter your email below to reset your password
               </Typography>
-              <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt:3}}>
                 <Grid container spacing={2}>
             
                   <Grid item xs={12}>
                     <TextField
                       required
                       fullWidth
-                      type = "email"
+                      type = "required"
                       id="email"
                       label="Email Address"
                       name="email"
@@ -94,9 +94,8 @@ export default function ChangePasswordEmail() {
                   Reset your Password
                 </Button>
 
-                
-
-                <Grid container justifyContent="flex-end">
+        
+                <Grid container justifyContent="center">
                   <Grid item>
                     <Link href="/login" variant="body2">
                         Remember your Password? Sign In

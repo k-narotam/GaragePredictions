@@ -21,27 +21,38 @@ const theme = createTheme();
 
 export default function ChangePasswordNew() {
 
+    const [email, setEmail] = useState("");
+
     const [new_password, setPassword] = useState("");
+
+    const [confirm_password, confirmPassword] = useState("");
     
     const [errorMessage, setError] = useState("abc");
 
     const [errorVisible, setErrorVisible] = useState("none");
 
+    function comparePassword(pass1, pass2) {
+      return new_password == confirm_password;
+    }
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post("https://group17poos-api.herokuapp.com/change_password", {"new_password": new_password})
+        axios.post("https://group17poos-api.herokuapp.com/change_password", {"id": email, "new_password": new_password})
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/login';
             } else {
                 setErrorVisible("block");
                 setError(response.data.error);
+
+                console.log("");
             }
         });
     };
 
+    
     return (
         <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
@@ -62,10 +73,68 @@ export default function ChangePasswordNew() {
               <Typography component="h1" variant="h5">
                 Password Recovery
               </Typography>
+              <Typography component="body1" variant="h9">
+                Click the link in a sent email to reset your password
+              </Typography>
+              <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt:3}}>
+                <Grid container spacing={2}>
 
-                Enter your email below fgfgf reset your password
-                
-                <Grid container justifyContent="flex-end">
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      type = "required"
+                      id="email"
+                      label="Repeat Email Address"
+                      name="email"
+                      value={email}
+                      autoComplete="email"
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      type = "password"
+                      id="outlined-password-input"
+                      label="New Password"
+                      name="newpassword"
+                      value={new_password}
+                      autoComplete="newpassword"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      type = "password"
+                      id="confirmpassword"
+                      label="Confirm Password"
+                      name="confirmpassword"
+                      value={confirm_password}
+                      autoComplete="confirmpassword"
+                      onChange={(e) => confirmPassword(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  disabled={!comparePassword(new_password, confirm_password)}
+                >
+                  Change your Password
+                </Button>
+              </Box>
+
+                <Grid container justifyContent="center">
                   <Grid item>
                     <Link href="/login" variant="body2">
                         Remember your Password? Sign In

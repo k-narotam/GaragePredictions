@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 import bcrypt
-from flask import jsonify, make_response, request, send_from_directory, url_for, render_template, Response
+from flask import jsonify, make_response, request, redirect, send_from_directory, url_for, render_template, Response
 from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
@@ -18,9 +18,8 @@ from .database import db
 from .ml_wrapper import models
 from .emailtoken import confirm_token, generate_confirmation_token, send_email
 
-def generate_endpoints(app):
+def generate_endpoints(app, mail):
 
-    mail = Mail(app)
     # get
     def get_current_user():
         try:
@@ -213,11 +212,31 @@ def generate_endpoints(app):
             return jsonify({"error" : "invalid user id"})
 
         # placeholder until email verification is up and running
+        
+         # token = generate_confirmation_token(id)
+        #try:
+        #    email = confirm_token(token)
+       # except:
+        #    return jsonify({'error' : "confirmation link expired"})
+        
+        #confirm_url = url_for('/test', token, _external = True)
+        #html = render_template('mail.html', confirm_url)
+       # subject = "Confirm Email"
+      #  send_email(id, subject, html)
         id_query = { "_id" : id }
         new_query = { "$set": { "confirmed": True}}
         db['users'].update_one(id_query, new_query)
 
         return jsonify({'error' : ""})
+
+    def send_email(to , subject, template):
+        msg = Message(subject, recipients=[to], html = template, sender="garagepredictions@gmail.com")
+        mail.send(msg)
+
+   # @app.route("/test/<token>")
+    #def test():
+     #   return redirect(url_for("main.home"))
+
 
     # adds a prediction to favorites collection
     @app.route('/add_favorite', methods = ['POST'])

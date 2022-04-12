@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
 import math
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import pickle
 from sklearn.metrics import r2_score
 
@@ -29,7 +29,7 @@ garage_ids = {
     'Garage I': 'i',
 }
 
-figure, axis = plt.subplots(2, math.ceil(len(garages) / 2))
+#figure, axis = plt.subplots(2, math.ceil(len(garages) / 2))
 
 df = pd.read_csv('api/dataset.csv')
 

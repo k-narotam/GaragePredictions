@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import  React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import ProfileMenu from './Profile';
+
 
 export default class Navbar extends Component {
 
@@ -25,6 +27,15 @@ export default class Navbar extends Component {
           </li>
         </ul>
         </div>
+
+        <div className="nav navbar-nav navbar-right">
+        <ul className="navbar-nav mr-auto">
+            <ProfileMenu>
+              
+            </ProfileMenu>
+        </ul>
+        </div>
+
       </nav>
     );
   }

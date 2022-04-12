@@ -18,7 +18,10 @@ generate_endpoints(app)
 # this is used when creating session tokens among other things
 SECRET_KEY = os.urandom(24)
 app.config['SECRET_KEY'] = SECRET_KEY
-
+print(app.config['SESSION_COOKIE_HTTPONLY'])
+app.config['SESSION_COOKIE_HTTPONLY'] = False
+print(app.config['SESSION_COOKIE_HTTPONLY'])
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 
 # should be very last thing (NOTHING BELOW)
 if __name__ == '__main__':

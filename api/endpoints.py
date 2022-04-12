@@ -50,7 +50,11 @@ def generate_endpoints(app):
 
     # login endpoint
     @app.route('/login', methods=['POST'])
-    @cross_origin()
+    @cross_origin(
+        expose_headers=['Set-Cookie'],
+        supports_credentials=True,
+
+    )
     def login_end():
         password = request.json['password'].encode('utf-8')
         email = request.json['email']

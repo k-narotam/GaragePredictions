@@ -14,9 +14,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios'
-import Image from '../components/cars.png'
-
+import axios from 'axios';
+import Image from '../components/cars.png';
+import AlertRegister from '../components/AlertRegister';
 
 
 const theme = createTheme();
@@ -30,6 +30,8 @@ export default function SignUp() {
     const [errorMessage, setError] = useState("abc");
 
     const [errorVisible, setErrorVisible] = useState("none");
+    const [alert, setAlert] = useState(false);
+    const [alertContent, setAlertContent] = useState('');
 
     function validateForm() {
 
@@ -42,8 +44,13 @@ export default function SignUp() {
     axios.post(global.config.host + "/register", {"email": email, "password": password})
       .then(response => {
         if (response.data.error === '') {
+          setAlertContent(response.data.result);
+          setAlert(true);
           window.location.href = '/login';
+          
         } else {
+          setAlertContent(response.data.result);
+          setAlert(true);
           setErrorVisible("block");
           setError(response.data.error);
         }
@@ -114,6 +121,9 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
+            <div>
+            {alert ? <AlertRegister severity='error'>{alertContent}</AlertRegister> : <></> }
+            </div>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/login" variant="body2">

@@ -71,6 +71,7 @@ def generate_endpoints(app):
 
     # logout endpoint
     @app.route('/logout', methods=['POST'])
+    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
     @login_required
     def logout_end():
         my_user = get_current_user()
@@ -79,7 +80,7 @@ def generate_endpoints(app):
 
     # a test endpoint to ensure logins are working properly
     @app.route('/test_profile', methods=['GET'])
-    @cross_origin(supports_credentials=True)
+    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
     @login_required
     def test_profile():
         user = get_current_user()
@@ -220,7 +221,7 @@ def generate_endpoints(app):
 
     # adds a prediction to favorites collection
     @app.route('/add_favorite', methods = ['POST'])
-    @cross_origin(supports_credentials=True)
+    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
     @login_required
     def add_favorite():
         my_user = get_current_user()
@@ -249,7 +250,7 @@ def generate_endpoints(app):
 
     # delete from favorites collection
     @app.route('/delete_favorite', methods = ['POST'])
-    @cross_origin(supports_credentials=True)
+    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
     @login_required
     def delete_favorite():
         my_user = get_current_user()

@@ -143,7 +143,7 @@ def generate_endpoints(app, mail):
             if garage_id in models:
                 preds_day = []
                 for i in range(24):
-                    preds_day.append(models[garage_id].predict([{'week_hour': week_hour + i, 'weather': weather}]))
+                    preds_day.append(models[garage_id].predict([{'week_progress': week_hour + i, 'weather': weather}]))
                 return jsonify({'error': '', 'predictions': preds_day})
             else:
                 return jsonify({'error': 'invalid garage id'})

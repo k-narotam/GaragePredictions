@@ -1,6 +1,9 @@
+import itertools
+
 from flask_login import LoginManager, login_user, logout_user, UserMixin
 from .database import db
 from .constants import garage_to_id
+
 
 login_manager = LoginManager()
 
@@ -71,29 +74,32 @@ class User(UserMixin):
 # class for predictions for use on favorites endpoint
 class Favorite():
 
+    newid = itertools.count()
+
     def __init__(self):
-        self.garage_ids = list(garage_to_id.values())
-        self.garage_fullness = []
+        self.garage_fullness = None
         self.weekday = None
         self.time = None
         self.user_id = None
-        self.title = None
+        self.garage_id = None
+        self.fav_id = None
 
     # initialize a prediction based on fullness, day, and hour
-    def create(self, garage_fullness, weekday, time, user_id, title):
+    def create(self, garage_fullness, weekday, time, user_id, garage_id):
         self.garage_fullness = garage_fullness
         self.weekday = weekday
         self.time = time
         self.user_id = user_id
-        self.title = title
+        self.garage_id = garage_id
+        self.fav_id = next(self.newid)
         return self
 
     def save(self):
-        db['favorites'].update_many({'_id' : self.title}, {'$set': {'user_id' : self.user_id, 'garage_fullness': self.garage_fullness, 'weekday': self.weekday, 'hour': self.time}}, upsert=True)
+        db['favorites'].update_many({'_id' : self.fav_id}, {'$set': {'user_id' : self.user_id, 'garage_fullness': self.garage_fullness, 'weekday': self.weekday, 'time': self.time, 'garage_id': self.garage_id}}, upsert=True)
 
     @staticmethod
-    def exists(id, title):
-        if db['favorites'].find_one({'_id' : title, 'user_id' : id}):
+    def exists(user_id, garage_id, time, weekday):
+        if db['favorites'].find_one({'user_id' : user_id, 'garage_id' : garage_id, 'time' : time, 'weekday' : weekday}):
             return True
         else:
             return False

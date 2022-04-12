@@ -39,11 +39,15 @@ export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // api stuff
-    axios.post("https://group17poos-api.herokuapp.com/login", {"email": email, "password": password})
+    axios.post("https://group17poos-api.herokuapp.com/login",
+      {"email": email, "password": password}, 
+      {withCredentials: true}
+      )
       .then(response => {
         if (response.data.error === '') {
           window.location.href = '/home';
         } else {
+          console.log("error");
           setErrorVisible("block");
           setError(response.data.error);
         }

@@ -264,9 +264,15 @@ export default function TrendGraph(props) {
     }
 
     const handleFavoriteClick = () => {
-        console.log(api_days[props.weekday], prediction_hour);
+        console.log(props.garage, api_days[props.weekday], prediction_hour);
         /* Doesn't work yet */
-        axios.post("https://group17poos-api.herokuapp.com/add_favorite", {"title": "idk", "weekday": api_days[props.weekday], "time": prediction_hour})
+        axios.get("https://group17poos-api.herokuapp.com/test_profile", 
+            {withCredentials: true},
+            // {"garage_id": props.garage, "weekday":api_days[props.weekday], "time": prediction_hour},
+        ).then(res => {
+            console.log(res.data);
+        });
+        
         setFavorite(false);
     }
     const cancelFavorite = () => {

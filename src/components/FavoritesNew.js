@@ -2,26 +2,13 @@ import React, { useState } from 'react';
 import tableIcons from "./TableIcons";
 import MaterialTable from 'material-table';
 import Title from '../components/Title';
+import axios from 'axios';
 
-function createData(time, garage, prediction) {
-  return { time, garage, prediction };
+function createData(day, time, garage, prediction) {
+  return { day, time, garage, prediction };
 }
 
-const rows = [
-  createData('Monday 3:00 PM', 'A', '30%'),
-  createData('Tuesday 4:45 PM', 'D', '25%'),
-  createData('Tuesday 6:35 PM', 'B', '25%'),
-  createData('Monday 7:45 AM', 'C', '75%'),
-  createData('Thursday 1:00 PM', 'H', '41%'),
-  createData('Friday 9:00 AM', 'I', '81%'),
-  createData('Thursday 3:20 PM', 'A', '0%'),
-  createData('Wednesday 2:20 PM', 'D', '45%'),
-  createData('Friday 1:45 PM', 'B', '15%'),
-  createData('Tuesday 7:35 AM', 'D', '75%'),
-  createData('Wednesday 8:45 PM', 'I', '1%'),
-  createData('Friday 12:45 PM', 'C', '8%'),
-  createData('Tuesday 4:44 PM', 'A', '0%'),
-]//.sort((a, b) => (a.calories < b.calories ? -1 : 1));
+const rows = []//.sort((a, b) => (a.calories < b.calories ? -1 : 1));
 
 export default function StickyHeadTable() {
 
@@ -45,6 +32,11 @@ export default function StickyHeadTable() {
     const updatedData = tableData.filter(row=>!selectedData.includes(row))
     setTableData(updatedData)
   }
+
+  axios.get("https://group17poos-api.herokuapp.com/list_favorites", {withCredentials: true})
+    .then(response => {
+      console.log(response.data);
+    });
 
   return (
     <MaterialTable

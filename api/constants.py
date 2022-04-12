@@ -11,7 +11,38 @@ garage_to_id = {
     'Garage Libra': 'l',
 }
 
+garages = {'a', 'b', 'c', 'd', 'h', 'i', 'l'}
+
 weekdays = {'mon', 'tue', 'wed', 'thr', 'fri', 'sat', 'sun'}
+
+def garage_pos(garage_id):
+    match garage_id:
+        case 'a':
+            return 0
+        case 'b':
+            return 1
+        case 'c':
+            return 2
+        case 'd':
+            return 3
+        case 'h':
+            return 4
+        case 'i':
+            return 5
+        case 'l':
+            return 6
+
+def detGarage(garage_id):
+    if garage_id in garages:
+        return True
+    else:
+        return False
+
+def detWeek(weekday):
+    if weekday in weekdays:
+        return True
+    else:
+        return False
 
 class GeneralErros():
 

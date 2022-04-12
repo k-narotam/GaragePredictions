@@ -9,7 +9,7 @@ from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
 
-from .constants import garage_to_id, weekdays
+from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek
 from .structures import User, Favorite
 from .database import db
 from .ml_wrapper import models
@@ -219,23 +219,27 @@ def generate_endpoints(app):
     def add_favorite():
         my_user = get_current_user()
         
-        # title acts as unique identifier for favorite (like a given name)
-        title = request.json['title']
+        garage_id = request.json['garage_id']
+        if detGarage(garage_id) == False:
+            return jsonify({"error" : "invalid garage id"})
+
         weekday = request.json['weekday']
-        time = request.json['time']
-
-        if weekday in weekdays:
-            if Favorite().exists(my_user.id, title) == True:
-                return jsonify({"error" : "favorite prediction already exists"})
-
-            garage_full = get_percentage_fullness()
-            # creates an instance of a prediction and adds to favorites db with user_id
-            fav = Favorite().create(garage_full, weekday, time, my_user.id, title)
-            fav.save()
-        else:
+        if detWeek(weekday) == False:
             return jsonify({"error" : "invalid day of the week"})
+  
+        time = request.json['time']
+        num = garage_pos(garage_id)
+
+        if Favorite().exists(my_user.id, garage_id, time, weekday) == True:
+            return jsonify({"error" : "favorite prediction already exists"})
+
+        garage_full = get_percentage_fullness()
+        # creates an instance of a prediction and adds to favorites db with user_id
+        fav = Favorite().create(garage_full[num], weekday, time, my_user.id, garage_id)
+        fav.save()
 
         return jsonify({"error" : ""})
+
 
     # delete from favorites collection
     @app.route('/delete_favorite', methods = ['POST'])
@@ -243,12 +247,21 @@ def generate_endpoints(app):
     def delete_favorite():
         my_user = get_current_user()
 
-        title = request.json['title']
+        garage_id = request.json['garage_id']
+        if detGarage(garage_id) == False:
+            return jsonify({"error" : "invalid garage id"})
 
-        if Favorite().exists(my_user.id, title) == False:
+        weekday = request.json['weekday']
+        if detWeek(weekday) == False:
+            return jsonify({"error" : "invalid day of the week"})
+  
+        time = request.json['time']
+        num = garage_pos(garage_id)
+
+        if Favorite().exists(my_user.id, garage_id, time, weekday) == False:
             return jsonify({"error" : "favorite prediction does not exist"})
         else:
-            db['favorites'].find_one_and_delete({'_id': title, 'user_id' : my_user.id})
+            db['favorites'].find_one_and_delete({'user_id' : my_user.id, 'garage_id' : garage_id, 'time' : time, 'weekday' : weekday})
             return jsonify({"error" : ""})
 
     # similar as status endpoint to call from favorites, returns float percentage of each fullness of garage

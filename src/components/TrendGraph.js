@@ -192,12 +192,12 @@ const days = {
 
 const api_days = {
     0: 'sun',
-    1: 'mon', 
-    2: 'tue', 
-    3: 'wed', 
+    1: 'mon',
+    2: 'tue',
+    3: 'wed',
     4: 'thr',
-    5: 'fri', 
-    6: 'sat', 
+    5: 'fri',
+    6: 'sat',
 }
 
 export default function TrendGraph(props) {
@@ -266,13 +266,13 @@ export default function TrendGraph(props) {
     const handleFavoriteClick = () => {
         console.log(props.garage, api_days[props.weekday], prediction_hour);
         /* Doesn't work yet */
-        axios.get("https://group17poos-api.herokuapp.com/test_profile", 
+        axios.get(global.config.host + "/test_profile",
             {withCredentials: true},
             // {"garage_id": props.garage, "weekday":api_days[props.weekday], "time": prediction_hour},
         ).then(res => {
             console.log(res.data);
         });
-        
+
         setFavorite(false);
     }
     const cancelFavorite = () => {
@@ -290,7 +290,7 @@ export default function TrendGraph(props) {
 
             let newPredictions = structuredClone(data);
 
-            axios.post("https://group17poos-api.herokuapp.com/trend", { "garage_id": props.garage, "day": props.weekday })
+            axios.post(global.config.host + "/trend", { "garage_id": props.garage, "day": props.weekday })
                 .then(response => {
                     if (response.data.error === '') {
                         newPredictions.forEach((prediction, index) => {
@@ -388,10 +388,10 @@ export default function TrendGraph(props) {
                                     <Typography variant="h6" color="primary" fontWeight="bold" gutterBottom textAlign={'center'}>
                                         {`${prediction_spaces} Spaces, ${formatPercentage(prediction)} Filled`}
                                     </Typography>
-                                    <Box 
+                                    <Box
                                         textAlign="center"
-                                        marginTop={'20px'}   
-                                        marginBottom={'20px'} 
+                                        marginTop={'20px'}
+                                        marginBottom={'20px'}
                                     >
                                         <Button
                                             variant="contained"
@@ -402,10 +402,10 @@ export default function TrendGraph(props) {
                                             Favorite
                                         </Button>
                                     </Box>
-                                    <Box 
+                                    <Box
                                         textAlign="center"
-                                        marginTop={'20px'}   
-                                        marginBottom={'20px'} 
+                                        marginTop={'20px'}
+                                        marginBottom={'20px'}
                                     >
                                         <Button
                                             variant="contained"

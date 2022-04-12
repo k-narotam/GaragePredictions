@@ -30,7 +30,7 @@ export default function ProfileMenu() {
     const handleLogout = (event) => {
         event.preventDefault();
 
-        axios.post("https://group17poos-api.herokuapp.com/logout")
+        axios.post(global.config.host + "/logout")
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/login';
@@ -40,7 +40,7 @@ export default function ProfileMenu() {
             }
         });
     }
-    
+
     return(
         <React.Fragment>
             <Box sx={{ display: 'flex', alighItems: 'center', textAlign: 'center'}}>
@@ -128,7 +128,7 @@ export default function ProfileMenu() {
             >
                 DELETE ACCOUNT
             </Button>
-            
+
         </MenuItem>
         </Menu>
         </React.Fragment>

@@ -26,7 +26,7 @@ export default function ChangePasswordNew() {
     const [new_password, setPassword] = useState("");
 
     const [confirm_password, confirmPassword] = useState("");
-    
+
     const [errorMessage, setError] = useState("abc");
 
     const [errorVisible, setErrorVisible] = useState("none");
@@ -39,7 +39,7 @@ export default function ChangePasswordNew() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post("https://group17poos-api.herokuapp.com/change_password", {"id": email, "new_password": new_password})
+        axios.post(global.config.host + "/change_password", {"id": email, "new_password": new_password})
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/login';
@@ -52,15 +52,15 @@ export default function ChangePasswordNew() {
         });
     };
 
-    
+
     return (
         <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
             <CssBaseline />
-            
+
             <Box
               sx={{
-                
+
                 marginTop: 8,
                 display: 'flex',
                 flexDirection: 'column',
@@ -146,4 +146,3 @@ export default function ChangePasswordNew() {
         </ThemeProvider>
     );
 }
-

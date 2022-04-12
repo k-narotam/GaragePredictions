@@ -33,7 +33,7 @@ export default function StickyHeadTable() {
     setTableData(updatedData)
   }
 
-  axios.get("https://group17poos-api.herokuapp.com/list_favorites", {withCredentials: true})
+  axios.get(global.config.host + "/list_favorites", {withCredentials: true})
     .then(response => {
       console.log(response.data);
     });
@@ -69,7 +69,7 @@ export default function StickyHeadTable() {
           const updatedData=[...tableData]
           updatedData[updatedData.indexOf(oldData)]=newData
           setTableData(updatedData)
-          
+
           setTimeout(() => resolve(), 100)
         }),
       }}

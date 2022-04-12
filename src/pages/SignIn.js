@@ -20,7 +20,7 @@ import Image from '../components/logo.png'
 const theme = createTheme();
 
 export default function SignInSide() {
-  
+
     const [email, setEmail] = useState("");
 
     const [password, setPassword] = useState("");
@@ -29,7 +29,7 @@ export default function SignInSide() {
 
     const [errorVisible, setErrorVisible] = useState("none");
 
-    
+
 
     // function validateForm() {
 
@@ -39,8 +39,8 @@ export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // api stuff
-    axios.post("https://group17poos-api.herokuapp.com/login",
-      {"email": email, "password": password}, 
+    axios.post(global.config.host + "/login",
+      {"email": email, "password": password},
       {withCredentials: true}
       )
       .then(response => {
@@ -53,21 +53,21 @@ export default function SignInSide() {
         }
       });
 
-      
+
     };
 
   return (
     <ThemeProvider theme={theme}>
      <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
-        
+
         <Grid
           item
           xs={false}
           sm={4}
           md={7}
           sx={{
-            
+
             backgroundImage: `url(${Image})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
@@ -148,4 +148,3 @@ export default function SignInSide() {
 </ThemeProvider>
   );
 }
-

@@ -31,7 +31,7 @@ export default function ChangePasswordEmail() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post("https://group17poos-api.herokuapp.com/confirm_email", {"email": email})
+        axios.post(global.config.host + "/confirm_email", {"email": email})
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/change_password_new';
@@ -46,10 +46,10 @@ export default function ChangePasswordEmail() {
         <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
             <CssBaseline />
-            
+
             <Box
               sx={{
-                
+
                 marginTop: 8,
                 display: 'flex',
                 flexDirection: 'column',
@@ -67,7 +67,7 @@ export default function ChangePasswordEmail() {
               </Typography>
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt:3}}>
                 <Grid container spacing={2}>
-            
+
                   <Grid item xs={12}>
                     <TextField
                       required
@@ -80,7 +80,7 @@ export default function ChangePasswordEmail() {
                       autoComplete="email"
                       onChange={(e) => setEmail(e.target.value)}
                     />
-                  </Grid>         
+                  </Grid>
 
                 </Grid>
                 <Button
@@ -92,7 +92,7 @@ export default function ChangePasswordEmail() {
                   Reset your Password
                 </Button>
 
-        
+
                 <Grid container justifyContent="center">
                   <Grid item>
                     <Link href="/login" variant="body2">

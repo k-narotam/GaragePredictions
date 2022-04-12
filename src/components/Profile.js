@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -7,9 +7,14 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import { deepPurple } from '@mui/material/colors';
+import axios from 'axios'
 
 
 export default function ProfileMenu() {
+
+    const [errorMessage, setError] = useState("abc");
+
+    const [errorVisible, setErrorVisible] = useState("none");
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -20,6 +25,20 @@ export default function ProfileMenu() {
 
     const handleClose = (event) => {
         setAnchorEl(null);
+    }
+
+    const handleLogout = (event) => {
+        event.preventDefault();
+
+        axios.post("https://group17poos-api.herokuapp.com/logout")
+        .then(response => {
+            if (response.data.error === '') {
+                window.location.href = '/login';
+            } else {
+                setErrorVisible("block");
+                setError(response.data.error);
+            }
+        });
     }
     
     return(
@@ -77,12 +96,26 @@ export default function ProfileMenu() {
             Your email
         </MenuItem>
         <MenuItem>
-            Logout
+            Customize Avatar
         </MenuItem>
         <MenuItem>
             Reset Password
         </MenuItem>
         <MenuItem>
+        <Button
+                id="logout-button"
+                aria-controls={open ? 'logout-button' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                variant ="contained"
+                color ="success"
+                size = "medium"
+                sx = {{fullWidth: "true"}}
+            >
+                LOGOUT ACCOUNT
+            </Button>
+        </MenuItem>
+        <MenuItem component="form" noValidate onSubmit={handleLogout}>
             <Button
                 id="delete-button"
                 aria-controls={open ? 'delete-button' : undefined}
@@ -90,6 +123,8 @@ export default function ProfileMenu() {
                 aria-expanded={open ? 'true' : undefined}
                 variant ="contained"
                 color ="error"
+                size="medium"
+                sx = {{fullWidth: "true"}}
             >
                 DELETE ACCOUNT
             </Button>

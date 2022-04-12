@@ -12,6 +12,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import ChangePasswordEmail from './pages/ChangePasswordEmail';
 import ChangePasswordNew from './pages/ChangePasswordNew';
+import Delete from './pages/Delete';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route path="/map" exact element={<Map/>} />
       <Route path="/settings" exact element={<Settings/>} />
       <Route path="/trends" exact element={<TrendsPage/>} />
+      <Route path="/delete" exact element={<Delete/>} />
     </Routes>
 
   </BrowserRouter>

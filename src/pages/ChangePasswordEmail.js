@@ -31,8 +31,6 @@ export default function ChangePasswordEmail() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        var tempPassword;
-
         axios.post("https://group17poos-api.herokuapp.com/confirm_email", {"email": email})
         .then(response => {
             if (response.data.error === '') {

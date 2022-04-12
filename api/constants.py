@@ -15,22 +15,18 @@ garages = {'a', 'b', 'c', 'd', 'h', 'i', 'l'}
 
 weekdays = {'mon', 'tue', 'wed', 'thr', 'fri', 'sat', 'sun'}
 
+garage_pos_map = {
+    'a': 0,
+    'b': 1,
+    'c': 2,
+    'd': 3,
+    'h': 4,
+    'i': 5,
+    'l': 6,
+}
+
 def garage_pos(garage_id):
-    match garage_id:
-        case 'a':
-            return 0
-        case 'b':
-            return 1
-        case 'c':
-            return 2
-        case 'd':
-            return 3
-        case 'h':
-            return 4
-        case 'i':
-            return 5
-        case 'l':
-            return 6
+    return garage_pos_map[garage_id]
 
 def detGarage(garage_id):
     if garage_id in garages:

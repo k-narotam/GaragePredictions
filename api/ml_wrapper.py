@@ -1,5 +1,4 @@
-import pickle
-import pandas as pd
+from .train_models import models_raw
 
 garages = ['Garage Libra', 'Garage A', 'Garage C', 'Garage D', 'Garage I']
 
@@ -13,29 +12,25 @@ garage_ids = {
 
 models = {}
 
-def load_pickle(filename):
-    f = open(filename, 'rb')
-    obj = pickle.load(f)
-    f.close()
-    return obj
-
 class ModelWrapper:
     def __init__(self, id):
-        self.scaler = load_pickle('pickles/garage_scaler_' + garage + '.pkl')
-        self.poly = load_pickle('pickles/garage_poly_' + garage + '.pkl')
-        self.model = load_pickle('pickles/garage_model_' + garage + '.pkl')
-
-    def scale_input(self, samples):
-        scaled_samples = self.scaler.transform(samples)
-        poly_samples = self.poly.transform(scaled_samples)
-        return poly_samples
+        try:
+            self.model_base = models_raw[id][0]
+            self.model_weather = models_raw[id][1]
+            print('loaded model', garage)
+        except FileNotFoundError:
+            self.model_base = None
+            self.model_weather = None
+            print('could not find models for garage', garage)
 
     def predict(self, samples):
-        return self.model.predict(self.scale_input(samples))
-
-    def predict_one(self, sample):
-        samples = pd.DataFrame({k : [sample[k]] for k in sample})
-        return self.predict(samples)[0]
+        predictions = []
+        if self.model_base and self.model_weather:
+            for sample in samples:
+                print(sample)
+                print(self.model_base.predict('week_progress', sample['week_progress']), self.model_weather.predict('weather', sample['weather']))
+                predictions.append([self.model_base.predict('week_progress', sample['week_progress'] / 168) + self.model_weather.predict('weather', sample['weather'])])
+        return predictions
 
 for i, garage in enumerate(garage_ids.values()):
     models[garage] = ModelWrapper(garage)

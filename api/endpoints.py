@@ -108,11 +108,31 @@ def generate_endpoints(app, mail):
             week_hour = request.json['hour']
             weather = 0.01 # placeholder
             if garage_id in models:
-                return jsonify({'error': '', 'avail_prediction': models[garage_id].predict_one({'week_hour': week_hour, 'weather': weather})})
+                return jsonify({'error': '', 'avail_prediction': models[garage_id].predict([{'week_progress': week_hour, 'weather': weather}])})
             else:
                 return jsonify({'error': 'invalid garage id'})
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
+
+    @app.route('/predict_many', methods=['POST'])
+    def predict_many():
+        samples = []
+        garage_id = request.json['garage_id']
+        try:
+            for sample in request.json['samples']:
+                new_sample = {
+                    'week_progress': sample['hour'],
+                    'weather': 0.01, # placeholder
+                }
+                samples.append(new_sample)
+            if garage_id in models:
+                print(samples)
+                return jsonify({'error': '', 'avail_prediction': models[garage_id].predict(samples)})
+            else:
+                return jsonify({'error': 'invalid garage id'})
+        except KeyError:
+            return jsonify({'error': 'invalid arguments'})
+
 
     @app.route('/trend', methods=['POST'])
     def predict_trend():
@@ -148,7 +168,7 @@ def generate_endpoints(app, mail):
                 garage_data['data'].append(info)
         return jsonify(garage_data)
 
-    # change password 
+    # change password
     @app.route('/change_password', methods=['POST'])
     def change_password():
         try:
@@ -199,7 +219,7 @@ def generate_endpoints(app, mail):
                 return jsonify({"error" : "passwords are not the same"})
 
             return jsonify({"error" : ""})
-        
+
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
 
@@ -212,13 +232,13 @@ def generate_endpoints(app, mail):
             return jsonify({"error" : "invalid user id"})
 
         # placeholder until email verification is up and running
-        
+
          # token = generate_confirmation_token(id)
         #try:
         #    email = confirm_token(token)
        # except:
         #    return jsonify({'error' : "confirmation link expired"})
-        
+
         #confirm_url = url_for('/test', token, _external = True)
         #html = render_template('mail.html', confirm_url)
        # subject = "Confirm Email"
@@ -244,7 +264,7 @@ def generate_endpoints(app, mail):
     @login_required
     def add_favorite():
         my_user = get_current_user()
-        
+
         garage_id = request.json['garage_id']
         if detGarage(garage_id) == False:
             return jsonify({"error" : "invalid garage id"})
@@ -252,7 +272,7 @@ def generate_endpoints(app, mail):
         weekday = request.json['weekday']
         if detWeek(weekday) == False:
             return jsonify({"error" : "invalid day of the week"})
-  
+
         time = request.json['time']
         num = garage_pos(garage_id)
 
@@ -281,7 +301,7 @@ def generate_endpoints(app, mail):
         weekday = request.json['weekday']
         if detWeek(weekday) == False:
             return jsonify({"error" : "invalid day of the week"})
-  
+
         time = request.json['time']
         num = garage_pos(garage_id)
 
@@ -315,9 +335,9 @@ def generate_endpoints(app, mail):
 
         # fetch all favorites with that user ID
         test_list = db['favorites'].find({'user_id' : my_user.id})
-  
+
         # Converting to the JSON (for some reason "pretty" comes out weird in Postman, but indetation is correct when checked on "raw")
-        json_data = json.dumps(list(test_list), indent = 4) 
+        json_data = json.dumps(list(test_list), indent = 4)
 
         # returns json data (even if it's empty)
         return json_data

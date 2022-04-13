@@ -75,6 +75,7 @@ export default function FutureTrends() {
               <MenuItem value={'c'}>C</MenuItem>
               <MenuItem value={'d'}>D</MenuItem>
               <MenuItem value={'i'}>I</MenuItem>
+              <MenuItem value={'l'}>Libra</MenuItem>
             </Select>
           </FormControl>
         </Grid>

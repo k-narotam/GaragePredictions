@@ -200,6 +200,14 @@ const api_days = {
     6: 'sat',
 }
 
+const garages = {
+    "a": "A",
+    "c": "C",
+    "d": "D",
+    "i": "I",
+    "l": "Libra",
+}
+
 export default function TrendGraph(props) {
     const [isLoading, setLoading] = useState(true);
     const [predictions, setPredictions] = useState(data);
@@ -266,9 +274,9 @@ export default function TrendGraph(props) {
     const handleFavoriteClick = () => {
         console.log(props.garage, api_days[props.weekday], prediction_hour);
         /* Doesn't work yet */
-        axios.get(global.config.host + "/test_profile",
+        axios.post(global.config.host + "/add_favorite",
+            {"garage_id": props.garage, "weekday":api_days[props.weekday], "time": prediction_hour},
             {withCredentials: true},
-            // {"garage_id": props.garage, "weekday":api_days[props.weekday], "time": prediction_hour},
         ).then(res => {
             console.log(res.data);
         });
@@ -383,7 +391,7 @@ export default function TrendGraph(props) {
                                         Save Time?
                                     </Typography>
                                     <Typography variant="h6" color="primary" fontWeight="bold" gutterBottom textAlign={'center'}>
-                                        {`${days[props.weekday]}, ${prediction_time} at Garage ${props.garage.toUpperCase()}`}
+                                        {`${days[props.weekday]}, ${prediction_time} at Garage ${garages[props.garage]}`}
                                     </Typography>
                                     <Typography variant="h6" color="primary" fontWeight="bold" gutterBottom textAlign={'center'}>
                                         {`${prediction_spaces} Spaces, ${formatPercentage(prediction)} Filled`}

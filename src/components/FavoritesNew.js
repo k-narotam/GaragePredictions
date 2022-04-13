@@ -3,6 +3,7 @@ import tableIcons from "./TableIcons";
 import MaterialTable from 'material-table';
 import Title from '../components/Title';
 import axios from 'axios';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 const days = {
   "mon": "Monday",
@@ -14,21 +15,29 @@ const days = {
   "sun": "Sunday"
 };
 
-function createData(day, time, garage, prediction) {
-  return { day, time, garage, prediction };
+const garages = {
+  "a": "A",
+  "c": "C",
+  "d": "D",
+  "i": "I",
+  "l": "Libra",
+}
+function createData(day, time, garage_id, garage_fullness) {
+  return { day, time, garage_id, garage_fullness };
 
 }
 
 function convertNumToTime(number) {
-  // Check sign of given number
-  let sign = (number >= 0) ? 1 : -1;
 
   // Set positive value of number of sign negative
-  number = number * sign;
+  number = Math.abs(number);
 
   // Separate the int from the decimal part
   let hour = Math.floor(number);
+  let half = (hour >= 12) ? " PM" : " AM";
   let decpart = number - hour;
+  hour = (hour > 12) ? hour - 12 : hour;
+  hour = (hour === 0) ? 12 : hour;
 
   let min = 1 / 60;
   // Round to nearest minute
@@ -37,20 +46,18 @@ function convertNumToTime(number) {
   let minute = Math.floor(decpart * 60) + '';
 
   // Add padding if need
+  console.log(minute);
   if (minute.length < 2) {
-  minute = '0' + minute; 
+    minute = '0' + minute;
   }
 
-  // Add Sign in final result
-  sign = sign == 1 ? '' : '-';
-
   // Concate hours and minutes
-  let time = sign + hour + ':' + minute;
+  let time = hour + ':' + minute + half;
 
   return time;
 }
 
-function formatPercentage (value) {
+function formatPercentage(value) {
   return `${Math.round(value * 100)}%`;
 }
 
@@ -59,92 +66,114 @@ export default function StickyHeadTable() {
   const [selectedData, setSelectedData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [init, setInit] = useState(true);
 
   const columns = [
-    { title: "Weekday", field: "day", minWidth: 170},
-    { title: "Time", field: "time", minWidth: 170 },
-    { title: "Garage", field: "garage", minWidth: 100 },
-    {
-      title: 'Prediction',
-      field: 'prediction',
+    { title: "Weekday", 
+      field: "day", 
+      minWidth: 100, 
+      lookup: days },
+
+    { title: "Time", 
+      field: "time", 
+      align: 'left', 
+      minWidth: 100, 
+      type:"numeric", 
+      render: rowData => convertNumToTime(rowData.time), },
+
+    { title: "Garage", 
+      field: "garage_id", 
+      minWidth: 100, 
+      lookup: garages },
+
+    { title: 'Prediction',
+      field: 'garage_fullness',
       align: 'right',
       minWidth: 170,
       editable: 'never',
+      render: rowData => formatPercentage(rowData.garage_fullness)
       //format: (value) => value.toLocaleString('en-US'),
     }
   ];
 
-  const handleBulkDelete = () => {
-    const updatedData = tableData.filter(row=>!selectedData.includes(row))
-    setTableData(updatedData)
+  const handleGetFavorites = () => {
+    setLoading(true);
+      axios.get(global.config.host + '/list_favorites', { withCredentials: true })
+        .then(res => {
+          const data = res.data.map(row => {
+            return createData(row.weekday, row.time, row.garage_id, row.garage_fullness);
+          });
+          setTableData(data);
+          setLoading(false);
+        })
   }
 
   useEffect(() => {
-    if (tableData.length === 0) {
-      setLoading(true);
-      axios.get(global.config.host + '/list_favorites', {withCredentials: true})
-      .then(res => {
-        const data = res.data.map(row => {
-          return createData(days[row.weekday], convertNumToTime(row.time), row.garage_id, formatPercentage(row.garage_fullness));
-        });
-        console.log(data);
-        setTableData(data);
-        console.log(tableData.length);
-        setLoading(false);
-      })
+    if (init) {
+      handleGetFavorites();
+      setInit(false);
     }
-
-    // axios.get(global.config.host + "/list_favorites", {withCredentials: true})
-    // .then(response => {
-    //   // console.log(response.data);
-    //   const data = response.data.map(row => {
-    //     return createData(row.day, convertNumToTime(row.time), row.garage_id.toUpperCase(), formatPercentage(row.garage_fullness));
-    //   }
-    //   );
-    //   setTableData(data);
-    //   // console.log(data);
-    // });
-    }
+  }
   );
 
   return (
     <div>
       {loading ? <div>Loading...</div> :
-      <MaterialTable
-      title={<Title>Favorite Predictions</Title>}
-      data={tableData}
-      columns={columns}
-      icons={tableIcons}
-      onSelectionChange={(data) => setSelectedData(data)}
-      options={{
-        pageSize: 10,
-        pageSizeOptions: [10, 50, 100],
-        selection: true,
-        addRowPosition: 'first',
-        actionsColumnIndex: -1,
-        paginationType: 'stepped',
-      }}
-      actions={[
-        {
-          icon: tableIcons.Delete,
-          tooltip: 'Delete Favorites',
-          onClick:() => handleBulkDelete()
-        }
-      ]}
-      editable={{
-        onRowAdd: (newData) => new Promise((resolve, reject) => {
-         setTableData([...tableData, newData])
-         setTimeout(() => resolve(), 100)
-        }),
-        onRowUpdate:(newData, oldData) => new Promise((resolve, reject) => {
-          const updatedData=[...tableData]
-          updatedData[updatedData.indexOf(oldData)]=newData
-          setTableData(updatedData)
-
-          setTimeout(() => resolve(), 100)
-        }),
-      }}
-    />}
+        <MaterialTable
+          title={<Title>Favorite Predictions</Title>}
+          data={tableData}
+          columns={columns}
+          icons={tableIcons}
+          options={{
+            pageSize: 10,
+            pageSizeOptions: [10, 50, 100],
+            addRowPosition: 'first',
+            actionsColumnIndex: -1,
+            paginationType: 'stepped',
+          }}
+          editable={{
+            onRowAdd: (newData) => new Promise((resolve, reject) => {
+              axios.post(global.config.host + '/add_favorite',
+                {"garage_id": newData.garage_id,
+                  "weekday": newData.day,
+                  "time": newData.time},
+                {withCredentials: true}
+              ).then(res => {
+                setInit(true);
+              });
+              resolve();
+            }),
+            onRowDelete: (oldData) => new Promise((resolve) => {
+              axios.post(global.config.host + '/delete_favorite',
+                {"garage_id": oldData.garage_id,
+                  "weekday": oldData.day,
+                  "time": oldData.time},
+                {withCredentials: true}
+              ).then(res => {
+                setInit(true);
+              });
+              resolve();
+            }),
+            onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
+              axios.post(global.config.host + '/delete_favorite',
+                {"garage_id": oldData.garage_id,
+                  "weekday": oldData.day,
+                  "time": oldData.time},
+                  {withCredentials: true}
+                  ).then(res => {
+                    axios.post(global.config.host + '/add_favorite',
+                      {"garage_id": newData.garage_id,
+                        "weekday": newData.day,
+                        "time": newData.time},
+                      {withCredentials: true}
+                    ).then(res => {
+                      setInit(true);
+                    });
+                  });
+              resolve();
+            }),
+          }}
+        />}
     </div>
   );
 }

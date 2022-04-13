@@ -33,7 +33,6 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-
 const mdTheme = createTheme();
 
 function DashboardContent() {

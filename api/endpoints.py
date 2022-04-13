@@ -3,11 +3,12 @@ import json
 import re
 from sre_constants import OP_IGNORE
 import time
+import datetime # to track tokens
 import requests
 from bs4 import BeautifulSoup
 
 import bcrypt
-from flask import jsonify, make_response, request, redirect, send_from_directory, url_for, render_template, Response, session
+from flask import jsonify, flash, make_response, request, redirect, send_from_directory, url_for, render_template, Response, session
 from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
@@ -16,7 +17,7 @@ from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek, o
 from .structures import User, Favorite, user_sessions
 from .database import db
 from .ml_wrapper import models
-from .emailtoken import confirm_token, generate_confirmation_token, send_email
+from .emailtoken import confirm_token, generate_confirmation_token
 
 def generate_endpoints(app, mail):
 
@@ -230,19 +231,12 @@ def generate_endpoints(app, mail):
 
         # placeholder until email verification is up and running
 
-         # token = generate_confirmation_token(id)
-        #try:
-        #    email = confirm_token(token)
-       # except:
-        #    return jsonify({'error' : "confirmation link expired"})
+        token = generate_confirmation_token(id)
 
-        #confirm_url = url_for('/test', token, _external = True)
-        #html = render_template('mail.html', confirm_url)
-       # subject = "Confirm Email"
-      #  send_email(id, subject, html)
-        id_query = { "_id" : id }
-        new_query = { "$set": { "confirmed": True}}
-        db['users'].update_one(id_query, new_query)
+        confirm_url = 'http://localhost:9090/test/' + token
+        html = render_template('mail.html', confirm_url=confirm_url)
+        subject = "Confirm Email"
+        send_email(id, subject, html)
 
         return jsonify({'error' : ""})
 
@@ -250,9 +244,24 @@ def generate_endpoints(app, mail):
         msg = Message(subject, recipients=[to], html = template, sender="garagepredictions@gmail.com")
         mail.send(msg)
 
-   # @app.route("/test/<token>")
-    #def test():
-     #   return redirect(url_for("main.home"))
+    @app.route("/test/<token>")
+    def test(token):
+        try:
+           email = confirm_token(token)
+        except:
+           return jsonify({'error' : "confirmation link expired"})
+
+        my_user = User().load(email)
+
+        if my_user.confirmed:
+            flash("You are already confirmed dummy")
+        else:
+            id_query = { "_id" : email }
+            new_query = { "$set": { "confirmed": True}}
+            db['users'].update_one(id_query, new_query)
+            flash("You have confirmed your account")
+
+        return redirect(url_for("app.py"))
 
 
     # adds a prediction to favorites collection

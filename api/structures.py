@@ -14,6 +14,11 @@ user_sessions = {}
 def load_user(user_id):
     return user_sessions[user_id]
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    print('FLASK LOGIN UNAUTHORIZED')
+    return 'flask-login unauthorized'
+
 class User(UserMixin):
     def __init__(self):
         self.password_hash = None

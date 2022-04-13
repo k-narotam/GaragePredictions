@@ -345,5 +345,6 @@ def generate_endpoints(app, mail):
     @app.errorhandler(401)
     @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
     def page_not_found(e):
+        print(current_user.is_authenticated, 'AUTHENTICATED?')
         print(request.headers)
         return 'a', 401

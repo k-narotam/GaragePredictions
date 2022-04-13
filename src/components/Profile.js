@@ -8,8 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import { deepPurple } from '@mui/material/colors';
 import axios from 'axios'
-
-
+import Dialog from "../components/Dialog";
 export default function ProfileMenu() {
 
     const [errorMessage, setError] = useState("abc");
@@ -18,6 +17,7 @@ export default function ProfileMenu() {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    const [deleteClick, setDeleteClick] = useState(false);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -28,9 +28,43 @@ export default function ProfileMenu() {
     }
 
     const handleLogout = (event) => {
+        console.log("handle logout");
+        event.preventDefault();
+        axios.post(global.config.host + "/logout")
+        .then(response => {
+            if (response.data.error === "") {
+                window.location.href = '/login';
+            } else {
+                console.log("error");
+                setErrorVisible("block");
+                setError(response.data.error);
+                console.log(response.data.error);
+            }
+        });
+    }
+
+    /*
+    const OpenDialog = () => {
+        <Dialog/>
+    };
+
+    */
+   
+    const handleDelete = (event) => {
+        console.log("delete clicked");
+
+        setDeleteClick(true);
+
+        const email = Dialog.email;
+
+        console.log(email);
         event.preventDefault();
 
-        axios.post(global.config.host + "/logout")
+        /*
+        axios.post(global.config.host + "/delete_acc",
+      {"email": email},
+      {withCredentials: true}
+      )
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/login';
@@ -39,7 +73,30 @@ export default function ProfileMenu() {
                 setError(response.data.error);
             }
         });
+        */
     }
+
+    const handleReset = (event) => {
+        console.log("reset password clicked");
+
+        event.preventDefault();
+
+        /*
+        axios.post(global.config.host + "/change_password",
+      {"new_password": newPassword},
+      {withCredentials: true}
+      )
+        .then(response => {
+            if (response.data.error === '') {
+                window.location.href = '/login';
+            } else {
+                setErrorVisible("block");
+                setError(response.data.error);
+            }
+        });
+        */
+    }
+
 
     return(
         <React.Fragment>
@@ -53,7 +110,7 @@ export default function ProfileMenu() {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar sx={{ width: 42, height: 42, bgcolor: deepPurple[500] }}>RE</Avatar>
+                        <Avatar sx={{ width: 42, height: 42, bgcolor: "#c79632" }}></Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -92,44 +149,58 @@ export default function ProfileMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+       
+   
         <MenuItem>
-            Your email
-        </MenuItem>
-        <MenuItem>
-            Customize Avatar
-        </MenuItem>
-        <MenuItem>
-            Reset Password
+        <Button
+        onClick={handleReset}
+        
+                id="reset-button"
+                aria-controls={open ? 'reset-button' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                variant ="contained"
+                size = "small"
+                sx = {{width : 150}}
+            >
+                Reset Password
+            </Button>
         </MenuItem>
         <MenuItem>
         <Button
+        onClick={handleLogout}
+        
                 id="logout-button"
                 aria-controls={open ? 'logout-button' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 variant ="contained"
                 color ="success"
-                size = "medium"
-                sx = {{fullWidth: "true"}}
+                size = "small"
+                sx = {{width : 150}}
             >
-                LOGOUT ACCOUNT
+                Logout
             </Button>
+            
         </MenuItem>
-        <MenuItem component="form" noValidate onSubmit={handleLogout}>
+        <MenuItem>
             <Button
+            onClick={handleDelete}
+             //onClick={OpenDialog()}
                 id="delete-button"
                 aria-controls={open ? 'delete-button' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 variant ="contained"
                 color ="error"
-                size="medium"
-                sx = {{fullWidth: "true"}}
+                size="small"
+                sx = {{width : 150}}
             >
-                DELETE ACCOUNT
+                Delete Account
             </Button>
 
         </MenuItem>
+        
         </Menu>
         </React.Fragment>
     );

@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 import bcrypt
-from flask import jsonify, make_response, request, redirect, send_from_directory, url_for, render_template, Response
+from flask import jsonify, make_response, request, redirect, send_from_directory, url_for, render_template, Response, session
 from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
@@ -353,6 +353,7 @@ def generate_endpoints(app, mail):
     def header_print():
         print('USER SESSIONS -------------')
         print(user_sessions)
+        print(session.get("_user_id"), 'FLASK SESSION')
         try:
             print(current_user.email, 'AAAAAAAAAA')
         except:

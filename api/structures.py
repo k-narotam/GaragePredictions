@@ -7,6 +7,7 @@ from .constants import garage_to_id
 
 login_manager = LoginManager()
 
+print('RELOADED STRUCTURES <<<<<<<<<<<<<<<<<<<<<<<<<<\n|\n|\n|\n>>>>>>>>')
 user_sessions = {}
 
 # a required flask-login utility function

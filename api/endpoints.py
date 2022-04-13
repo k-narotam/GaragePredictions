@@ -353,6 +353,7 @@ def generate_endpoints(app, mail):
     def header_print():
         print('USER SESSIONS -------------')
         print(user_sessions)
+        print(session)
         print(session.get("_user_id"), 'FLASK SESSION')
         try:
             print(current_user.email, 'AAAAAAAAAA')

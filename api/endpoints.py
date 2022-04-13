@@ -341,3 +341,9 @@ def generate_endpoints(app, mail):
 
         # returns json data (even if it's empty)
         return json_data
+
+    @app.errorhandler(401)
+    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    def page_not_found(e):
+        print(request.headers)
+        return 'a', 401

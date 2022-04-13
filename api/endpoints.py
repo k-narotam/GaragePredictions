@@ -43,7 +43,6 @@ def generate_endpoints(app, mail):
         password_hash = bcrypt.hashpw(password, salt)
         new_user = User().create(password_hash, salt, email)
 
-        print(password, email, salt, password_hash)
         if new_user.exists:
             return jsonify({'error': 'user already exists'})
         else:
@@ -126,7 +125,6 @@ def generate_endpoints(app, mail):
                 }
                 samples.append(new_sample)
             if garage_id in models:
-                print(samples)
                 return jsonify({'error': '', 'avail_prediction': models[garage_id].predict(samples)})
             else:
                 return jsonify({'error': 'invalid garage id'})
@@ -341,25 +339,3 @@ def generate_endpoints(app, mail):
 
         # returns json data (even if it's empty)
         return json_data
-
-    @app.errorhandler(401)
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
-    def page_not_found(e):
-        print(current_user.is_authenticated, 'AUTHENTICATED?')
-        print(request.headers)
-        return 'a', 401
-
-    @app.before_request
-    def header_print():
-        print('USER SESSIONS -------------')
-        print(user_sessions)
-        print(session)
-        print(session.get("_user_id"), 'FLASK SESSION')
-        try:
-            print(current_user.email, 'AAAAAAAAAA')
-        except:
-            print(current_user)
-        if 'Cookie' in request.headers:
-            print(request.headers)
-        else:
-            print('NO COOKIE')

@@ -7,20 +7,13 @@ from .constants import garage_to_id
 
 login_manager = LoginManager()
 
-print('RELOADED STRUCTURES <<<<<<<<<<<<<<<<<<<<<<<<<<\n|\n|\n|\n>>>>>>>>')
 user_sessions = {}
 
 # a required flask-login utility function
 @login_manager.user_loader
 def load_user(user_id):
-    print('LOADING USER', user_id)
     return user_sessions[user_id]
-
-@login_manager.unauthorized_handler
-def unauthorized():
-    print('FLASK LOGIN UNAUTHORIZED')
-    return 'flask-login unauthorized'
-
+    
 class User(UserMixin):
     def __init__(self):
         self.password_hash = None

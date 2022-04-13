@@ -13,7 +13,7 @@ from flask_mail import Mail, Message
 from flask_cors import cross_origin
 
 from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek
-from .structures import User, Favorite
+from .structures import User, Favorite, user_sessions
 from .database import db
 from .ml_wrapper import models
 from .emailtoken import confirm_token, generate_confirmation_token, send_email
@@ -351,6 +351,8 @@ def generate_endpoints(app, mail):
 
     @app.before_request
     def header_print():
+        print('USER SESSIONS -------------')
+        print(user_sessions)
         try:
             print(current_user.email, 'AAAAAAAAAA')
         except:

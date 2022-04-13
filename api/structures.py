@@ -12,6 +12,7 @@ user_sessions = {}
 # a required flask-login utility function
 @login_manager.user_loader
 def load_user(user_id):
+    print('LOADING USER', user_id)
     return user_sessions[user_id]
 
 @login_manager.unauthorized_handler

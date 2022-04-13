@@ -25,6 +25,8 @@ garage_pos_map = {
     'l': 6,
 }
 
+origins = ["localhost:3000", "https://ucfgaragepredictions.herokuapp.com"]
+
 def garage_pos(garage_id):
     return garage_pos_map[garage_id]
 

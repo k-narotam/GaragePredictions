@@ -27,12 +27,8 @@ export default function ChangePasswordNew() {
 
     const [confirm_password, confirmPassword] = useState("");
 
-    const [errorMessage, setError] = useState("abc");
-
-    const [errorVisible, setErrorVisible] = useState("none");
-
     function comparePassword(pass1, pass2) {
-      return new_password == confirm_password;
+      return new_password === confirm_password;
     }
 
 
@@ -43,11 +39,6 @@ export default function ChangePasswordNew() {
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/login';
-            } else {
-                setErrorVisible("block");
-                setError(response.data.error);
-
-                console.log("");
             }
         });
     };

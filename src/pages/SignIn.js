@@ -25,10 +25,6 @@ export default function SignInSide() {
 
     const [password, setPassword] = useState("");
 
-    const [errorMessage, setError] = useState("abc");
-
-    const [errorVisible, setErrorVisible] = useState("none");
-
     const [alert, setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState('');
 
@@ -54,8 +50,6 @@ export default function SignInSide() {
           setAlertContent(response.data.result);
           setAlert(true);
           console.log("error");
-          setErrorVisible("block");
-          setError(response.data.error);
         }
       });
 

@@ -30,7 +30,7 @@ export default function ProfileMenu() {
     const handleLogout = (event) => {
         console.log("handle logout");
         event.preventDefault();
-        axios.post(global.config.host + "/logout")
+        axios.post(global.config.host + "/logout", {}, {withCredentials: true})
         .then(response => {
             if (response.data.error === "") {
                 window.location.href = '/login';

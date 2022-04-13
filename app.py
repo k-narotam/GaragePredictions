@@ -27,7 +27,7 @@ mail = Mail(app)
 generate_endpoints(app, mail)
 
 # this is used when creating session tokens among other things
-SECRET_KEY = 5
+SECRET_KEY = 'projectsecret'
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SESSION_COOKIE_HTTPONLY'] = False
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'

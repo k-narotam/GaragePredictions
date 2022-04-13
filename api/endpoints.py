@@ -86,14 +86,13 @@ def generate_endpoints(app, mail):
 
     # delete account
     @app.route('/delete_acc', methods=['POST'])
+    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @login_required
     def del_acc():
-        id = request.json['id']
+        my_user = get_current_user()
 
-        if User().exists(id) is False:
-            return jsonify({"error" : "Account does not exist"})
-
-        count = db['users'].delete_one({"_id" : id})
-        return jsonify({"error" : count.deleted_count})
+        count = db['users'].delete_one({"_id" : my_user.id})
+        return jsonify({"error" : ""})
 
     # test endpoint
     @app.route('/time', methods=['POST', 'GET'])
@@ -107,7 +106,7 @@ def generate_endpoints(app, mail):
             week_hour = request.json['hour']
             weather = 0.01 # placeholder
             if garage_id in models:
-                return jsonify({'error': '', 'avail_prediction': models[garage_id].predict([{'week_progress': week_hour, 'weather': weather}])})
+                return jsonify({'error': '', 'avail_prediction': models[garage_id].predict([{'week_progress': week_hour, 'weather': weather}])[0]})
             else:
                 return jsonify({'error': 'invalid garage id'})
         except KeyError:
@@ -141,7 +140,7 @@ def generate_endpoints(app, mail):
             if garage_id in models:
                 preds_day = []
                 for i in range(24):
-                    preds_day.append(models[garage_id].predict([{'week_progress': week_hour + i, 'weather': weather}]))
+                    preds_day.append(models[garage_id].predict([{'week_progress': week_hour + i, 'weather': weather}])[0])
                 return jsonify({'error': '', 'predictions': preds_day})
             else:
                 return jsonify({'error': 'invalid garage id'})
@@ -334,8 +333,5 @@ def generate_endpoints(app, mail):
         # fetch all favorites with that user ID
         test_list = db['favorites'].find({'user_id' : my_user.id})
 
-        # Converting to the JSON (for some reason "pretty" comes out weird in Postman, but indetation is correct when checked on "raw")
-        json_data = json.dumps(list(test_list), indent = 4)
-
         # returns json data (even if it's empty)
-        return json_data
+        return jsonify({'favorites': list(test_list), 'error': ''})

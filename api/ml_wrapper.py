@@ -27,9 +27,7 @@ class ModelWrapper:
         predictions = []
         if self.model_base and self.model_weather:
             for sample in samples:
-                print(sample)
-                print(self.model_base.predict('week_progress', sample['week_progress']), self.model_weather.predict('weather', sample['weather']))
-                predictions.append([self.model_base.predict('week_progress', sample['week_progress'] / 168) + self.model_weather.predict('weather', sample['weather'])])
+                predictions.append(self.model_base.predict('week_progress', sample['week_progress'] / 168) + self.model_weather.predict('weather', sample['weather']))
         return predictions
 
 for i, garage in enumerate(garage_ids.values()):

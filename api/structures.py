@@ -13,7 +13,7 @@ user_sessions = {}
 @login_manager.user_loader
 def load_user(user_id):
     return user_sessions[user_id]
-    
+
 class User(UserMixin):
     def __init__(self):
         self.password_hash = None
@@ -62,7 +62,7 @@ class User(UserMixin):
 
     # log a user out through flask-login
     def logout(self):
-        logout_user(self)
+        logout_user()
 
     @staticmethod
     def user_exist(id):

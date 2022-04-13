@@ -348,3 +348,10 @@ def generate_endpoints(app, mail):
         print(current_user.is_authenticated, 'AUTHENTICATED?')
         print(request.headers)
         return 'a', 401
+
+    @app.before_request
+    def header_print():
+        if 'Cookie' in request.headers:
+            print(request.headers['Cookie'])
+        else:
+            print('NO COOKIE')

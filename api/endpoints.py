@@ -352,6 +352,6 @@ def generate_endpoints(app, mail):
     @app.before_request
     def header_print():
         if 'Cookie' in request.headers:
-            print(request.headers['Cookie'])
+            print(request.headers)
         else:
             print('NO COOKIE')

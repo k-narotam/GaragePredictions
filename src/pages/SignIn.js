@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import Image from '../components/logo.png'
-
+import AlertLogin from '../components/AlertLogin';
 const theme = createTheme();
 
 export default function SignInSide() {
@@ -29,6 +29,8 @@ export default function SignInSide() {
 
     const [errorVisible, setErrorVisible] = useState("none");
 
+    const [alert, setAlert] = useState(false);
+    const [alertContent, setAlertContent] = useState('');
 
 
     // function validateForm() {
@@ -45,8 +47,12 @@ export default function SignInSide() {
       )
       .then(response => {
         if (response.data.error === '') {
+          setAlertContent(response.data.result);
+          setAlert(true);
           window.location.href = '/home';
         } else {
+          setAlertContent(response.data.result);
+          setAlert(true);
           console.log("error");
           setErrorVisible("block");
           setError(response.data.error);
@@ -93,6 +99,7 @@ export default function SignInSide() {
             Sign in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+       
             <TextField
               margin="normal"
               required
@@ -129,6 +136,9 @@ export default function SignInSide() {
             >
               Sign In
             </Button>
+            <div>
+            {alert ? <AlertLogin severity='error'>{alertContent}</AlertLogin> : <></> }
+            </div>
             <Grid container>
               <Grid item xs>
                 <Link href="/change_password_email" variant="body2">

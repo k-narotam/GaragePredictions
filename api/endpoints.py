@@ -12,7 +12,7 @@ from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
 
-from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek
+from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek, origins
 from .structures import User, Favorite, user_sessions
 from .database import db
 from .ml_wrapper import models
@@ -69,7 +69,7 @@ def generate_endpoints(app, mail):
 
     # logout endpoint
     @app.route('/logout', methods=['POST'])
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def logout_end():
         my_user = get_current_user()
@@ -78,7 +78,7 @@ def generate_endpoints(app, mail):
 
     # a test endpoint to ensure logins are working properly
     @app.route('/test_profile', methods=['GET'])
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def test_profile():
         user = get_current_user()
@@ -257,7 +257,7 @@ def generate_endpoints(app, mail):
 
     # adds a prediction to favorites collection
     @app.route('/add_favorite', methods = ['POST'])
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def add_favorite():
         my_user = get_current_user()
@@ -286,7 +286,7 @@ def generate_endpoints(app, mail):
 
     # delete from favorites collection
     @app.route('/delete_favorite', methods = ['POST'])
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def delete_favorite():
         my_user = get_current_user()
@@ -325,7 +325,7 @@ def generate_endpoints(app, mail):
         return garage_full
 
     @app.route('/list_favorites', methods=['GET'])
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def list_favorites():
         my_user = get_current_user()

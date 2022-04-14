@@ -39,7 +39,6 @@ export default function SignUp() {
       .then(response => {
         if (response.data.error === '') {
           setAlertContent(response.data.result);
-          setAlert(true);
           window.location.href = '/login';
           
         } else {

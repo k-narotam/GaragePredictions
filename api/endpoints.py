@@ -233,7 +233,7 @@ def generate_endpoints(app, mail):
 
         token = generate_confirmation_token(id)
 
-        confirm_url = 'http://localhost:9090/test/' + token
+        confirm_url = 'https://ucfgaragepredictions.herokuapp.com/login' + token
         html = render_template('mail.html', confirm_url=confirm_url)
         subject = "Confirm Email"
         send_email(id, subject, html)
@@ -261,7 +261,7 @@ def generate_endpoints(app, mail):
             db['users'].update_one(id_query, new_query)
             flash("You have confirmed your account")
 
-        return redirect(url_for("app.py"))
+        return redirect(url_for('/confirm_email'))
 
 
     # adds a prediction to favorites collection

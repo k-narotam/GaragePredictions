@@ -8,12 +8,32 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 // import { deepPurple } from '@mui/material/colors';
 import axios from 'axios'
-import Dialog from "../components/Dialog";
+//import Dialog from "../components/Dialog";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 export default function ProfileMenu() {
+
+
+    const [errorVisible, setErrorVisible] = useState("none");
+    const [error, setError] = useState("none");
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    //const delOpen = Boolean(anchorEl);
     const [deleteClick, setDeleteClick] = useState(false);
+    const [delOpen, setDelOpen] = React.useState(false);
+
+    const handleDelClickOpen = (event) => {
+        setDelOpen(true);
+    };
+
+    const handleDelClose = () => {
+        setDelOpen(false);
+        handleClick();
+    };
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -37,27 +57,12 @@ export default function ProfileMenu() {
         });
     }
 
-    /*
-    const OpenDialog = () => {
-        <Dialog/>
-    };
-
-    */
    
     const handleDelete = (event) => {
-        setDeleteClick(true);
-        console.log("Delete clicked", deleteClick);
-
-        const email = Dialog.email;
-
-        console.log(email);
         event.preventDefault();
-
-        /*
-        axios.post(global.config.host + "/delete_acc",
-      {"email": email},
-      {withCredentials: true}
-      )
+        axios.post(global.config.host + "/delete_acc",{},
+      {withCredentials: true})
+      
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/login';
@@ -66,28 +71,14 @@ export default function ProfileMenu() {
                 setError(response.data.error);
             }
         });
-        */
+        
     }
 
     const handleReset = (event) => {
         console.log("reset password clicked");
 
         event.preventDefault();
-
-        /*
-        axios.post(global.config.host + "/change_password",
-      {"new_password": newPassword},
-      {withCredentials: true}
-      )
-        .then(response => {
-            if (response.data.error === '') {
-                window.location.href = '/login';
-            } else {
-                setErrorVisible("block");
-                setError(response.data.error);
-            }
-        });
-        */
+        window.location.href = '/change_password_email';
     }
 
 
@@ -111,8 +102,7 @@ export default function ProfileMenu() {
                 anchorEl={anchorEl}
                 id="account-menu"
                 open={open}
-                onClose={handleClose}
-                onClick={handleClose}
+                //onClick={handleClose}
                 PaperProps={{
                 elevation: 0,
                 sx: {
@@ -178,8 +168,7 @@ export default function ProfileMenu() {
         </MenuItem>
         <MenuItem>
             <Button
-            onClick={handleDelete}
-             //onClick={OpenDialog()}
+             onClick={handleDelClickOpen}
                 id="delete-button"
                 aria-controls={open ? 'delete-button' : undefined}
                 aria-haspopup="true"
@@ -191,6 +180,28 @@ export default function ProfileMenu() {
             >
                 Delete Account
             </Button>
+
+            <Dialog
+        open={delOpen}
+        onClose={handleDelClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Account?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           This action cannot be reversed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDelClose}>Cancel</Button>
+          <Button onClick={handleDelete} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
 
         </MenuItem>
         

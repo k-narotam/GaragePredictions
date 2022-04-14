@@ -381,8 +381,8 @@ export default function TrendGraph(props) {
                                                 onClick={handleGraphClick}
                                             >
                                                 <CartesianGrid strokeDasharray="3 3" />
-                                                <XAxis dataKey="name" />
-                                                <YAxis domain={[0, 1]} />
+                                                <XAxis dataKey="name" tick={{fontSize: '14px'}}/>
+                                                <YAxis domain={[0, 1]} tickFormatter={formatPercentage}/>
                                                 <Tooltip content={<CustomTooltip />} />
                                                 <Area type="monotone" dataKey="filled" stroke="#8884d8" activeDot={{ r: 8 }} />
                                             </AreaChart>

@@ -11,7 +11,8 @@ import Navbar from '../components/Navbar';
 import CurrentGarageStats from '../components/CurrentGarageStats';
 import FavoritesNew from '../components/FavoritesNew';
 import TrendsButton from '../components/TrendsButton';
-
+import MiniTrendGraph from "../components/MiniTrendGraph";
+import Title from '../components/Title';
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -41,9 +42,9 @@ function DashboardContent() {
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar >
-        <Navbar/>
+          <Navbar />
         </AppBar>
-    
+
         <Box
           component="main"
           sx={{
@@ -72,26 +73,30 @@ function DashboardContent() {
                   <CurrentGarageStats />
                 </Paper>
               </Grid>
-              
+
               <Grid item xs={12} md={4} lg={3}>
                 <Paper
                   sx={{
-                    p: 2,
+                    p: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 240,
+                    height: 350,
                   }}
-                  
+
                 >
+                  <div style={{ textAlign: 'center' }}>
+                    <Title>A Glimpse at Tomorrow</Title>
+                  </div>
+                  <MiniTrendGraph />
                   <TrendsButton />
                 </Paper>
               </Grid>
-              
+
               <Grid item xs={12}>
-                  <FavoritesNew />
+                <FavoritesNew />
               </Grid>
             </Grid>
-            
+
           </Container>
         </Box>
       </Box>

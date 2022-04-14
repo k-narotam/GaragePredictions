@@ -1,23 +1,23 @@
 import React from 'react';
 import Link from '@mui/material/Link';
-import Title from './Title';
+import Button from '@mui/material/Button';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-/*
-function preventDefault(event) {
-  event.preventDefault();
-}
-*/
-
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#c79632',
+            contrastText: '#fff',
+        },
+    },
+});
 export default function TrendsButton() {
   return (
-    <React.Fragment>
-      <Title>See the Future at UCF</Title>
-      
-      <div>
-        <div>
-          <Link href="/trends" color="primary">Check Future Dates</Link>
+    <ThemeProvider theme={theme}>
+        <div style={{ textAlign: 'center' }}>
+          {/* <Link href="/trends" color="primary">Check Future Dates</Link> */}
+          <Button href="/trends" color="primary" variant='contained' size="small">Check Future Dates</Button>
         </div>
-      </div>
-    </React.Fragment>
+    </ThemeProvider>
   );
 }

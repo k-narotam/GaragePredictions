@@ -7,6 +7,22 @@ import axios from 'axios';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import CircularProgress from '@mui/material/CircularProgress';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#c79632',
+            contrastText: '#fff',
+        },
+        cancel: {
+            main: '#000000',
+            contrastText: '#fff',
+        },
+    },
+});
 
 const days = {
   "mon": "Monday",
@@ -36,7 +52,7 @@ const garages = {
   "l": "Libra",
 }
 function createData(day, num_time, garage_id, garage_fullness) {
-  
+
   let time = new Date();
   time.setHours(Math.floor(num_time));
   time.setMinutes(Math.round((num_time - Math.floor(num_time)) * 60));
@@ -62,41 +78,45 @@ export default function StickyHeadTable() {
   const [init, setInit] = useState(true);
 
   const columns = [
-    { title: "Weekday", 
-      field: "day", 
-      minWidth: 100, 
+    {
+      title: "Weekday",
+      field: "day",
+      minWidth: 100,
       lookup: days,
     },
 
-      {
-        title: "Time",
-        field: "time",
-        minWidth: 100,
-        type: "time",
-        dateSetting: {locale: 'en-US'},
-        render: rowData => rowData.time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
-        editComponent: ({ value, onChange }) => {
-          return (
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <TimePicker
+    {
+      title: "Time",
+      field: "time",
+      minWidth: 100,
+      type: "time",
+      dateSetting: { locale: 'en-US' },
+      render: rowData => rowData.time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
+      editComponent: ({ value, onChange }) => {
+        return (
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <TimePicker
               id="time-picker"
               label="Time picker"
               value={value}
               onChange={onChange}
               renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
+            />
+          </LocalizationProvider>
 
-          );
-        }
-      },
+        );
+      }
+    },
 
-    { title: "Garage", 
-      field: "garage_id", 
-      minWidth: 100, 
-      lookup: garages },
+    {
+      title: "Garage",
+      field: "garage_id",
+      minWidth: 100,
+      lookup: garages
+    },
 
-    { title: 'Prediction',
+    {
+      title: 'Prediction',
       field: 'garage_fullness',
       align: 'right',
       minWidth: 170,
@@ -107,41 +127,41 @@ export default function StickyHeadTable() {
 
   const handleGetFavorites = () => {
     setLoading(true);
-      axios.get(global.config.host + '/list_favorites', { withCredentials: true })
-        .then(res => {
-          const data = res.data.favorites.map(row => {
-            return createData(row.weekday, row.time, row.garage_id, row.garage_fullness);
-          });
-          data.sort((a, b) => {
-            if (days_val[a.day] < days_val[b.day]) {
+    axios.get(global.config.host + '/list_favorites', { withCredentials: true })
+      .then(res => {
+        const data = res.data.favorites.map(row => {
+          return createData(row.weekday, row.time, row.garage_id, row.garage_fullness);
+        });
+        data.sort((a, b) => {
+          if (days_val[a.day] < days_val[b.day]) {
+            return -1;
+          }
+          else if (days_val[a.day] > days_val[b.day]) {
+            return 1;
+          }
+          else {
+            if (a.time < b.time) {
               return -1;
             }
-            else if (days_val[a.day] > days_val[b.day]) {
+            else if (a.time > b.time) {
               return 1;
             }
             else {
-              if (a.time < b.time) {
+              if (a.garage_id < b.garage_id) {
                 return -1;
               }
-              else if (a.time > b.time) {
+              else if (a.garage_id > b.garage_id) {
                 return 1;
               }
               else {
-                if (a.garage_id < b.garage_id) {
-                  return -1;
-                }
-                else if (a.garage_id > b.garage_id) {
-                  return 1;
-                }
-                else {
-                  return 0;
-                }
+                return 0;
               }
             }
-          });
-          setTableData(data);
-          setLoading(false);
-        })
+          }
+        });
+        setTableData(data);
+        setLoading(false);
+      })
   }
 
   useEffect(() => {
@@ -152,8 +172,11 @@ export default function StickyHeadTable() {
   }, [init]);
 
   return (
-    <div>
-      {loading ? <div>Loading...</div> :
+    <ThemeProvider theme={theme}>
+      {loading ?
+        <div style={{ textAlign: 'center' }}>
+          <CircularProgress />
+        </div> :
         <MaterialTable
           title={<Title>Favorite Predictions</Title>}
           data={tableData}
@@ -165,16 +188,18 @@ export default function StickyHeadTable() {
             addRowPosition: 'first',
             actionsColumnIndex: -1,
             paginationType: 'stepped',
-            search: false,
+            sorting: false,
           }}
 
           editable={{
             onRowAdd: (newData) => new Promise((resolve, reject) => {
               axios.post(global.config.host + '/add_favorite',
-                {"garage_id": newData.garage_id,
+                {
+                  "garage_id": newData.garage_id,
                   "weekday": newData.day,
-                  "time": convertTimeToNum(newData.time)},
-                {withCredentials: true}
+                  "time": convertTimeToNum(newData.time)
+                },
+                { withCredentials: true }
               ).then(res => {
                 setInit(true);
               });
@@ -183,10 +208,12 @@ export default function StickyHeadTable() {
 
             onRowDelete: (oldData) => new Promise((resolve) => {
               axios.post(global.config.host + '/delete_favorite',
-                {"garage_id": oldData.garage_id,
+                {
+                  "garage_id": oldData.garage_id,
                   "weekday": oldData.day,
-                  "time": convertTimeToNum(oldData.time)},
-                {withCredentials: true}
+                  "time": convertTimeToNum(oldData.time)
+                },
+                { withCredentials: true }
               ).then(res => {
                 setInit(true);
               });
@@ -194,28 +221,29 @@ export default function StickyHeadTable() {
             }),
 
             onRowUpdate: (newData, oldData) => new Promise((resolve, reject) => {
-              console.log(oldData);
-              console.log(newData);
-              console.log(convertTimeToNum(newData.time));
               axios.post(global.config.host + '/delete_favorite',
-                {"garage_id": oldData.garage_id,
+                {
+                  "garage_id": oldData.garage_id,
                   "weekday": oldData.day,
-                  "time": convertTimeToNum(oldData.time)},
-                  {withCredentials: true}
-                  ).then(res => {
-                    axios.post(global.config.host + '/add_favorite',
-                      {"garage_id": newData.garage_id,
-                        "weekday": newData.day,
-                        "time": convertTimeToNum(newData.time)},
-                      {withCredentials: true}
-                    ).then(res => {
-                      setInit(true);
-                    });
-                  });
+                  "time": convertTimeToNum(oldData.time)
+                },
+                { withCredentials: true }
+              ).then(res => {
+                axios.post(global.config.host + '/add_favorite',
+                  {
+                    "garage_id": newData.garage_id,
+                    "weekday": newData.day,
+                    "time": convertTimeToNum(newData.time)
+                  },
+                  { withCredentials: true }
+                ).then(res => {
+                  setInit(true);
+                });
+              });
               resolve();
             }),
           }}
         />}
-    </div>
+    </ThemeProvider>
   );
 }

@@ -38,7 +38,7 @@ class LoginPageState extends State<LoginPage> {
 
   bool isEmailValid(String email) {
     Pattern pattern =
-    /*r*/ '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\$'; // unescape the $
+        /*r*/ '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\$'; // unescape the $
     RegExp regex = new RegExp(pattern);
     return regex.hasMatch(email);
   }
@@ -47,22 +47,32 @@ class LoginPageState extends State<LoginPage> {
     try {
       final http.Response answer = await http
           .post(
-        Uri.parse(dotenv.env['login']),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(
-            <String, dynamic>{'email': email, 'password': password}),
-      )
-          .timeout(Duration(seconds: 5));
+            Uri.parse(dotenv.env['login']),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(
+                <String, dynamic>{'email': email, 'password': password}),
+          )
+          .timeout(Duration(seconds: 10));
       Map<String, dynamic> output = jsonDecode(answer.body);
+
       if (output["error"] == "") {
+        print("Logged in!");
+        String rawCookie = answer.headers['set-cookie'];
+        String cookie = "";
+        if (rawCookie != null) {
+          int index = rawCookie.indexOf(';');
+          cookie = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+        }
+        print("Fetched cookie");
+        //await fetchFavorites();
         // Success
         Navigator.push(
           context,
           MaterialPageRoute(
             //builder: (context) => SettingsPage(title: 'Settings'),
-            builder: (context) => HomePage(),
+            builder: (context) => HomePage.cookie(cookie),
           ),
         );
         return 0;
@@ -75,12 +85,11 @@ class LoginPageState extends State<LoginPage> {
       print(e.toString());
       return 1;
     }
-    return 1;
   }
 
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () async => false,
+        onWillPop: () async => Future.value(false),
         child: Scaffold(
           // No appbar until logged in
           appBar: AppBar(
@@ -103,7 +112,7 @@ class LoginPageState extends State<LoginPage> {
                 color: Colors.white,
                 onPressed: () {
                   ThemeProvider themeProvider =
-                  Provider.of<ThemeProvider>(context, listen: false);
+                      Provider.of<ThemeProvider>(context, listen: false);
                   themeProvider.swapTheme();
                 },
               )
@@ -116,7 +125,7 @@ class LoginPageState extends State<LoginPage> {
               SafeArea(
                 child: Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                      const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -169,8 +178,12 @@ class LoginPageState extends State<LoginPage> {
                           password = passwordController.text;
                           print("Email: $email");
                           print("Password: $password");
-                          ProfilePage.setName(email);
-                          await login(email, password);
+                          if (email != null && password != null) {
+                            ProfilePage.setName(email);
+                            await login(email, password);
+                          } else {
+                            print("Empty email or password");
+                          }
                         },
 
                         child: Container(

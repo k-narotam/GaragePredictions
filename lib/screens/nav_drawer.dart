@@ -25,7 +25,7 @@ class NavDrawer extends StatelessWidget {
             DrawerHeader(
               child: Container(
                 child: Text(
-                  'Garage Predictor',
+                  'Garage Predictions',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                   textAlign: TextAlign.left,
                 ),

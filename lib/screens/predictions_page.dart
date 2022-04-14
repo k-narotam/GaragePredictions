@@ -15,6 +15,18 @@ class PredictionsPage extends StatefulWidget {
 }
 
 class _PredictionsPageState extends State<PredictionsPage> {
+  String selectedValue;
+  List<DropdownMenuItem<String>> get dropdownItems {
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Monday"), value: "Monday"),
+      DropdownMenuItem(child: Text("Tuesday"), value: "Tuesday"),
+      DropdownMenuItem(child: Text("Wednesday"), value: "Wednesday"),
+      DropdownMenuItem(child: Text("Thursday"), value: "Thursday"),
+      DropdownMenuItem(child: Text("Friday"), value: "Friday"),
+    ];
+    return menuItems;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +75,14 @@ class _PredictionsPageState extends State<PredictionsPage> {
                 textAlign: TextAlign.center,
                 // style: kTitleTextStyle,
               )),
+          DropdownButton(
+              value: selectedValue,
+              onChanged: (String newValue) {
+                setState(() {
+                  selectedValue = newValue;
+                });
+              },
+              items: dropdownItems),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: kPrimaryColor,

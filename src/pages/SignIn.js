@@ -43,8 +43,6 @@ export default function SignInSide() {
       )
       .then(response => {
         if (response.data.error === '') {
-          setAlertContent(response.data.result);
-          setAlert(true);
           window.location.href = '/home';
         } else {
           setAlertContent(response.data.result);

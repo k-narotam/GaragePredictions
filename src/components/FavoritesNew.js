@@ -18,6 +18,16 @@ const days = {
   "sun": "Sunday"
 };
 
+const days_val = {
+  "mon": 0,
+  "tue": 1,
+  "wed": 2,
+  "thr": 3,
+  "fri": 4,
+  "sat": 5,
+  "sun": 6
+};
+
 const garages = {
   "a": "A",
   "c": "C",
@@ -103,10 +113,10 @@ export default function StickyHeadTable() {
             return createData(row.weekday, row.time, row.garage_id, row.garage_fullness);
           });
           data.sort((a, b) => {
-            if (a.day < b.day) {
+            if (days_val[a.day] < days_val[b.day]) {
               return -1;
             }
-            else if (a.day > b.day) {
+            else if (days_val[a.day] > days_val[b.day]) {
               return 1;
             }
             else {

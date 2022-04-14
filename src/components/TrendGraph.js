@@ -70,7 +70,6 @@ const data = [
         hour: 7,
         filled: 0,
         spaces: 0,
-        spaces: 0,
     },
     {
         name: '8 AM',
@@ -272,8 +271,6 @@ export default function TrendGraph(props) {
     }
 
     const handleFavoriteClick = () => {
-        console.log(props.garage, api_days[props.weekday], prediction_hour);
-        /* Doesn't work yet */
         axios.post(global.config.host + "/add_favorite",
             {"garage_id": props.garage, "weekday":api_days[props.weekday], "time": prediction_hour},
             {withCredentials: true},
@@ -296,6 +293,16 @@ export default function TrendGraph(props) {
             setLoading(true);
             cancelFavorite();
 
+            const capSpaces = (spaces) => {
+                if (spaces > garage_spaces[props.garage]) {
+                    return garage_spaces[props.garage];
+                } else if (spaces < 0) {
+                    return 0;
+                } else {
+                    return spaces;
+                }
+            }
+            
             let newPredictions = structuredClone(data);
 
             axios.post(global.config.host + "/trend", { "garage_id": props.garage, "day": props.weekday })

@@ -6,14 +6,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-import { deepPurple } from '@mui/material/colors';
+// import { deepPurple } from '@mui/material/colors';
 import axios from 'axios'
 import Dialog from "../components/Dialog";
 export default function ProfileMenu() {
-
-    const [errorMessage, setError] = useState("abc");
-
-    const [errorVisible, setErrorVisible] = useState("none");
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -36,8 +32,6 @@ export default function ProfileMenu() {
                 window.location.href = '/login';
             } else {
                 console.log("error");
-                setErrorVisible("block");
-                setError(response.data.error);
                 console.log(response.data.error);
             }
         });
@@ -51,9 +45,8 @@ export default function ProfileMenu() {
     */
    
     const handleDelete = (event) => {
-        console.log("delete clicked");
-
         setDeleteClick(true);
+        console.log("Delete clicked", deleteClick);
 
         const email = Dialog.email;
 

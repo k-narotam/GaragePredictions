@@ -35,7 +35,7 @@ export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // api stuff
-    axios.post(global.config.host + "/register", {"email": email, "password": password})
+    axios.post(global.config.host + "/register", {"email": email.toLowerCase(), "password": password})
       .then(response => {
         if (response.data.error === '') {
           setAlertContent(response.data.result);

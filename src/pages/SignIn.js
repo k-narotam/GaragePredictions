@@ -38,7 +38,7 @@ export default function SignInSide() {
     event.preventDefault();
     // api stuff
     axios.post(global.config.host + "/login",
-      {"email": email, "password": password},
+      {"email": (email.toLowerCase()), "password": password},
       {withCredentials: true}
       )
       .then(response => {

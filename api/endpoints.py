@@ -44,10 +44,15 @@ def generate_endpoints(app, mail):
         password_hash = bcrypt.hashpw(password, salt)
         new_user = User().create(password_hash, salt, email)
 
-        if new_user.exists:
-            return jsonify({'error': 'user already exists'})
+        if new_user.exists and new_user.confirmed_account:
+            return jsonify({'error': 'User Already Exists'})
         else:
             new_user.save()
+            token = generate_confirmation_token(email)
+            confirm_url = 'http://localhost:3000/verify/' + token
+            html = render_template('register.html', confirm_url=confirm_url)
+            subject = "Verify UCF Garage Predictions Account"
+            send_email(email, subject, html)
             return jsonify({'error': ''})
 
     # login endpoint
@@ -57,16 +62,63 @@ def generate_endpoints(app, mail):
         password = request.json['password'].encode('utf-8')
         email = request.json['email']
         my_user = User().load(email)
-
+        
         if my_user.exists:
             if (bcrypt.hashpw(password, my_user.password_salt) != my_user.password_hash):
-                return jsonify({'error': 'user does not exist'})
+                return jsonify({'error': 'Invalid Username/Password'})
+            
+            elif not my_user.confirmed:
+                return jsonify({'error': 'Unconfirmed Account'})
             else:
                 my_user.login()
                 resp = make_response(jsonify({'error': ''}))
                 return resp
+
         else:
-            return jsonify({'error': 'user does not exist'})
+            return jsonify({'error': 'Account Does Not Exist'})
+
+    # for use to change email confirmation, email verification not operational
+    @app.route('/confirm_email', methods=['POST'])
+    def confirm_email():
+        id = request.json['email']
+
+        if User.user_exist(id) is False:
+            return jsonify({"error" : "invalid user id"})
+
+        # placeholder until email verification is up and running
+
+        token = generate_confirmation_token(id)
+
+        confirm_url = 'http://localhost:3000/change_password_new/' + token
+        html = render_template('password.html', confirm_url=confirm_url)
+        subject = "Confirm Email"
+        send_email(id, subject, html)
+
+        return jsonify({'error' : ""})
+
+    def send_email(to , subject, template):
+        msg = Message(subject, recipients=[to], html = template, sender="garagepredictions@gmail.com")
+        mail.send(msg)
+
+    @app.route("/confirm_registration/<token>", methods=["GET"])
+    def confirm_registration(token):
+        try:
+           email = confirm_token(token)
+           if not email:
+               return jsonify({'error': "invalid confirmation link"})
+        except:
+           return jsonify({'error' : "confirmation link expired"})
+
+        my_user = User().load(email)
+        if my_user.confirmed:
+            return jsonify({'error' : "already confirmed"})
+        else:
+            id_query = { "_id" : email }
+            new_query = { "$set": { "confirmed": True}}
+            db['users'].update_one(id_query, new_query)
+            return jsonify({'error' : ""})
+            # flash("You have confirmed your account")
+            # return redirect(url_for('/confirm_email'))
 
     # logout endpoint
     @app.route('/logout', methods=['POST'])
@@ -92,7 +144,8 @@ def generate_endpoints(app, mail):
     def del_acc():
         my_user = get_current_user()
 
-        count = db['users'].delete_one({"_id" : my_user.id})
+        db['users'].delete_one({"_id" : my_user.id})
+        db['favorites'].delete_many({"user_id" : my_user.id})
         return jsonify({"error" : ""})
 
     # test endpoint
@@ -220,49 +273,6 @@ def generate_endpoints(app, mail):
 
         except KeyError:
             return jsonify({'error': 'invalid arguments'})
-
-    # for use to change email confirmation, email verification not operational
-    @app.route('/confirm_email', methods=['POST'])
-    def confirm_email():
-        id = request.json['email']
-
-        if User.user_exist(id) is False:
-            return jsonify({"error" : "invalid user id"})
-
-        # placeholder until email verification is up and running
-
-        token = generate_confirmation_token(id)
-
-        confirm_url = 'https://ucfgaragepredictions.herokuapp.com/login' + token
-        html = render_template('mail.html', confirm_url=confirm_url)
-        subject = "Confirm Email"
-        send_email(id, subject, html)
-
-        return jsonify({'error' : ""})
-
-    def send_email(to , subject, template):
-        msg = Message(subject, recipients=[to], html = template, sender="garagepredictions@gmail.com")
-        mail.send(msg)
-
-    @app.route("/test/<token>")
-    def test(token):
-        try:
-           email = confirm_token(token)
-        except:
-           return jsonify({'error' : "confirmation link expired"})
-
-        my_user = User().load(email)
-
-        if my_user.confirmed:
-            flash("You are already confirmed dummy")
-        else:
-            id_query = { "_id" : email }
-            new_query = { "$set": { "confirmed": True}}
-            db['users'].update_one(id_query, new_query)
-            flash("You have confirmed your account")
-
-        return redirect(url_for('/confirm_email'))
-
 
     # adds a prediction to favorites collection
     @app.route('/add_favorite', methods = ['POST'])

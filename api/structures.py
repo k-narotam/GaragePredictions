@@ -40,6 +40,11 @@ class User(UserMixin):
             return True
         return False
 
+    @property
+    def confirmed_account(self):
+        if db['users'].find_one({'_id': self.id}):
+            return db['users'].find_one({'_id': self.id})['confirmed']
+
     # save a user to the database (WILL OVERWRITE)
     def save(self):
         db['users'].update_many({'_id': self.id}, {'$set': {'email': self.email, 'password': self.password_hash, 'salt': self.password_salt, 'confirmed': self.confirmed}}, upsert=True)
@@ -52,6 +57,7 @@ class User(UserMixin):
             self.email = user_record['email']
             self.password_hash = user_record['password']
             self.password_salt = user_record['salt']
+            self.confirmed = user_record['confirmed']
             self.logged_on = True
         return self
 

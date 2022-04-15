@@ -42,11 +42,10 @@ export default function SignUp() {
           setAlertContent("You have successfully registered. Please check your email to verify your account.");
           setAlert(true);
           setPass(true);
-          // setTimeout(() => {
-          //   window.location.href = '/login';
-          // }, 5000);
-          
-        } else {
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 5000);
+                  } else {
           setAlertContent(response.data.error);
           setAlert(true);
         }

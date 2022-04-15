@@ -38,9 +38,9 @@ export default function ProfileMenu() {
         setAnchorEl(event.currentTarget);
     }
 
-    // const handleClose = (event) => {
-    //     setAnchorEl(null);
-    // }
+    const handleClose = (event) => {
+        setAnchorEl(null);
+    }
 
     const handleLogout = (event) => {
         console.log("handle logout");
@@ -84,6 +84,7 @@ export default function ProfileMenu() {
                 <Tooltip title="Profile settings">
                     <IconButton
                     onClick={handleClick}
+                    
                     size="small"
                     sx={{ ml: 2 }}
                     aria-controls={open ? 'account-menu' : undefined}
@@ -98,6 +99,7 @@ export default function ProfileMenu() {
                 anchorEl={anchorEl}
                 id="account-menu"
                 open={open}
+                onClose={handleClose}
                 //onClick={handleClose}
                 PaperProps={{
                 elevation: 0,

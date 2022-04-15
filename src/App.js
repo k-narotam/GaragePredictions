@@ -5,7 +5,7 @@ import { Route, Routes, BrowserRouter} from "react-router-dom";
 import DashboardNew from './pages/DashboardNew';
 import About from "./pages/About";
 import Feedback from "./pages/Feedback";
-import Map from "./pages/Map";
+// import Map from "./pages/Map";
 import Settings from './pages/Settings';
 import TrendsPage from './pages/TrendsPage.js';
 import SignIn from './pages/SignIn';
@@ -29,7 +29,7 @@ function App() {
       <Route path="/home" exact element = {<DashboardNew/>}/>
       <Route path="/about" exact element={<About/>} />
       <Route path="/feedback" exact element={<Feedback/>} />
-      <Route path="/map" exact element={<Map/>} />
+      {/* <Route path="/map" exact element={<Map/>} /> */}
       <Route path="/settings" exact element={<Settings/>} />
       <Route path="/trends" exact element={<TrendsPage/>} />
       <Route path="/verify" exact element={<Verify/>}>

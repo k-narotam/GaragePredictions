@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tableIcons from "./TableIcons";
-import MaterialTable from 'material-table';
+import MaterialTable, { MTableToolbar } from 'material-table';
 import Title from '../components/Title';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
@@ -10,18 +10,19 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import MenuItem from '@mui/material/MenuItem';
 
 const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#c79632',
-            contrastText: '#fff',
-        },
-        cancel: {
-            main: '#000000',
-            contrastText: '#fff',
-        },
+  palette: {
+    primary: {
+      main: '#c79632',
+      contrastText: '#fff',
     },
+    cancel: {
+      main: '#000000',
+      contrastText: '#fff',
+    },
+  },
 });
 
 const days = {
@@ -76,6 +77,7 @@ export default function StickyHeadTable() {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [init, setInit] = useState(true);
+  const [filter, setFilter] = useState("");
 
   const columns = [
     {
@@ -125,51 +127,83 @@ export default function StickyHeadTable() {
     }
   ];
 
-  const handleGetFavorites = () => {
-    setLoading(true);
-    axios.get(global.config.host + '/list_favorites', { withCredentials: true })
-      .then(res => {
-        const data = res.data.favorites.map(row => {
-          return createData(row.weekday, row.time, row.garage_id, row.garage_fullness);
-        });
-        data.sort((a, b) => {
-          if (days_val[a.day] < days_val[b.day]) {
-            return -1;
-          }
-          else if (days_val[a.day] > days_val[b.day]) {
-            return 1;
-          }
-          else {
-            if (a.time < b.time) {
-              return -1;
-            }
-            else if (a.time > b.time) {
-              return 1;
-            }
-            else {
-              if (a.garage_id < b.garage_id) {
-                return -1;
-              }
-              else if (a.garage_id > b.garage_id) {
-                return 1;
-              }
-              else {
-                return 0;
-              }
-            }
-          }
-        });
-        setTableData(data);
-        setLoading(false);
-      })
+  const customFilter = () => {
+
+    const changeFilter = (event) => {
+      setFilter(event.target.value);
+      setInit(true);
+    }
+    return (
+      <div>
+        <TextField
+          select
+          value={filter}
+          onChange={event => changeFilter(event)}
+          style={{
+            display: 'flex',
+            textAlign : 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          type="text"
+          fullWidth
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="a">A</MenuItem>
+          <MenuItem value="c">C</MenuItem>
+          <MenuItem value="d">D</MenuItem>
+          <MenuItem value="i">I</MenuItem>
+          <MenuItem value="l">Libra</MenuItem>
+        </TextField>
+      </div>
+    );
   }
 
   useEffect(() => {
     if (init) {
+      const handleGetFavorites = () => {
+        setLoading(true);
+        axios.post(global.config.host + '/list_favorites', { "garage_id": filter }, { withCredentials: true })
+          .then(res => {
+            const data = res.data.favorites.map(row => {
+              return createData(row.weekday, row.time, row.garage_id, row.garage_fullness);
+            });
+            data.sort((a, b) => {
+              if (days_val[a.day] < days_val[b.day]) {
+                return -1;
+              }
+              else if (days_val[a.day] > days_val[b.day]) {
+                return 1;
+              }
+              else {
+                if (a.time < b.time) {
+                  return -1;
+                }
+                else if (a.time > b.time) {
+                  return 1;
+                }
+                else {
+                  if (a.garage_id < b.garage_id) {
+                    return -1;
+                  }
+                  else if (a.garage_id > b.garage_id) {
+                    return 1;
+                  }
+                  else {
+                    return 0;
+                  }
+                }
+              }
+            });
+            setTableData(data);
+            setLoading(false);
+          })
+      }
+
       handleGetFavorites();
       setInit(false);
     }
-  }, [init]);
+  }, [init, filter]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -178,10 +212,45 @@ export default function StickyHeadTable() {
           <CircularProgress />
         </div> :
         <MaterialTable
-          title={<Title>Favorite Predictions</Title>}
+          title=" "
           data={tableData}
           columns={columns}
           icons={tableIcons}
+
+          components={{
+            Toolbar: props => (
+              <div
+                style={{
+                  padding: '0px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  height: '50px',
+                  paddingLeft: '20px',
+                  backgroundColor: '#f5f5f5',
+                }}
+              >
+                <div style={{ marginRight: "650px", paddingTop: '10px',}}>
+                <Title>Favorite Predictions</Title>
+                </div>
+                <div 
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    height: '50px',
+                    paddingRight: '20px',
+                    
+                  }}
+                  
+                  >
+                    Filter by Garage:
+                  {customFilter()}
+                </div>
+                <MTableToolbar {...props} />
+              </div>
+            ),
+          }}
           options={{
             pageSize: 10,
             pageSizeOptions: [10, 50, 100],
@@ -189,6 +258,7 @@ export default function StickyHeadTable() {
             actionsColumnIndex: -1,
             paginationType: 'stepped',
             sorting: false,
+            search: false,
           }}
 
           editable={{

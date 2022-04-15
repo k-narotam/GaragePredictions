@@ -13,7 +13,7 @@ from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
 
-from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek, origins, front_head
+from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek, origins, front_head, garage_capacities
 from .structures import User, Favorite, user_sessions
 from .database import db
 from .ml_wrapper import models
@@ -322,14 +322,12 @@ def generate_endpoints(app, mail):
             return jsonify({"error" : "invalid day of the week"})
 
         time = request.json['time']
-        num = garage_pos(garage_id)
 
         if Favorite().exists(my_user.id, garage_id, time, weekday) == True:
             return jsonify({"error" : "favorite prediction already exists"})
 
-        garage_full = get_percentage_fullness()
         # creates an instance of a prediction and adds to favorites db with user_id
-        fav = Favorite().create(garage_full[num], weekday, time, my_user.id, garage_id)
+        fav = Favorite().create(weekday, time, my_user.id, garage_id)
         fav.save()
 
         return jsonify({"error" : ""})
@@ -359,37 +357,39 @@ def generate_endpoints(app, mail):
             db['favorites'].find_one_and_delete({'user_id' : my_user.id, 'garage_id' : garage_id, 'time' : time, 'weekday' : weekday})
             return jsonify({"error" : ""})
 
-    # similar as status endpoint to call from favorites, returns float percentage of each fullness of garage
-    def get_percentage_fullness():
-        r = requests.get('http://secure.parking.ucf.edu/GarageCount/iframe.aspx')
-        raw_text = r.text
-        soup = BeautifulSoup(raw_text, 'html.parser')
-        garage_full = []
-        for garage_html in list(soup.find_all('tr', {'class': 'dxgvDataRow_DevEx'})):
-            garage_cols = [col.text for col in garage_html.find_all('td')]
-            if len(garage_cols) >= 2:
-                spaces_avail = garage_cols[1].split('/')[0][1:]
-                spaces_total = garage_cols[1].split('/')[1].split('\r')[0]
-                fullness = float(spaces_avail)/float(spaces_total)
-                garage_full.append(fullness)
-
-        return garage_full
-
     @app.route('/list_favorites', methods=['POST'])
     @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def list_favorites():
+
+        def cap_percentage(percentage):
+            if percentage > 1:
+                return 1
+            elif percentage < 0:
+                return 0
+            else:
+                return percentage
+
         my_user = get_current_user()
         garage = request.json['garage_id']
 
         if garage == '':
-            test_list = db['favorites'].find({'user_id' : my_user.id})
+            favorites = db['favorites'].find({'user_id' : my_user.id})
 
         elif not detGarage(garage):
             return jsonify({"error" : "invalid garage id"})
 
         else:
-            test_list = db['favorites'].find({'user_id' : my_user.id, 'garage_id' : garage})
+            favorites = db['favorites'].find({'user_id' : my_user.id, 'garage_id' : garage})
+
+        favorites = list(favorites)
+        for favorite in favorites:
+            weekday = weekdays.index(favorite['weekday']) * 24
+            time = favorite['time']
+            week_hour = weekday + time
+            weather = 0.01 # placeholder
+            favorite['garage_fullness'] = models[favorite['garage_id']].predict([{'week_progress': week_hour, 'weather': weather}])[0]
+            favorite['garage_fullness'] = 1 - cap_percentage(favorite['garage_fullness'] / garage_capacities[favorite['garage_id']])
 
         # returns json data (even if it's empty)
-        return jsonify({'favorites': list(test_list), 'error': ''})
+        return jsonify({'favorites': list(favorites), 'error': ''})

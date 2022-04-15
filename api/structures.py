@@ -83,7 +83,6 @@ class Favorite():
     newid = itertools.count()
 
     def __init__(self):
-        self.garage_fullness = None
         self.weekday = None
         self.time = None
         self.user_id = None
@@ -91,8 +90,7 @@ class Favorite():
         self.fav_id = None
 
     # initialize a prediction based on fullness, day, and hour
-    def create(self, garage_fullness, weekday, time, user_id, garage_id):
-        self.garage_fullness = garage_fullness
+    def create(self, weekday, time, user_id, garage_id):
         self.weekday = weekday
         self.time = time
         self.user_id = user_id
@@ -101,7 +99,7 @@ class Favorite():
         return self
 
     def save(self):
-        db['favorites'].update_many({'_id' : self.fav_id}, {'$set': {'user_id' : self.user_id, 'garage_fullness': self.garage_fullness, 'weekday': self.weekday, 'time': self.time, 'garage_id': self.garage_id}}, upsert=True)
+        db['favorites'].update_many({'_id' : self.fav_id}, {'$set': {'user_id' : self.user_id, 'weekday': self.weekday, 'time': self.time, 'garage_id': self.garage_id}}, upsert=True)
 
     @staticmethod
     def exists(user_id, garage_id, time, weekday):

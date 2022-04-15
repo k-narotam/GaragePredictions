@@ -13,7 +13,7 @@ garage_to_id = {
 
 garages = {'a', 'b', 'c', 'd', 'h', 'i', 'l'}
 
-weekdays = {'mon', 'tue', 'wed', 'thr', 'fri', 'sat', 'sun'}
+weekdays = ['sun', 'mon', 'tue', 'wed', 'thr', 'fri', 'sat']
 
 garage_pos_map = {
     'a': 0,
@@ -25,6 +25,15 @@ garage_pos_map = {
     'l': 6,
 }
 
+garage_capacities = {
+    'a': 1623,
+    'b': 1259,
+    'c': 1852,
+    'd': 1241,
+    'h': 1284,
+    'i': 1231,
+    'l': 1007
+}
 origins = ["http://localhost:3000", "https://ucfgaragepredictions.herokuapp.com"]
 front_head = origins[1]
 

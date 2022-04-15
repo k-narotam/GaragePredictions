@@ -78,20 +78,17 @@ def generate_endpoints(app, mail):
             return jsonify({'error': 'Account Does Not Exist'})
 
     # for use to change email confirmation, email verification not operational
-    @app.route('/confirm_email', methods=['POST'])
-    def confirm_email():
+    @app.route('/send_recovery', methods=['POST'])
+    def recovery_email():
         id = request.json['email']
-
         if User.user_exist(id) is False:
             return jsonify({"error" : "invalid user id"})
 
-        # placeholder until email verification is up and running
-
         token = generate_confirmation_token(id)
 
-        confirm_url = front_head + '/change_password_new/' + token
+        confirm_url = front_head + '/recover_password/' + token
         html = render_template('password.html', confirm_url=confirm_url)
-        subject = "Confirm Email"
+        subject = "Reset Password"
         send_email(id, subject, html)
 
         return jsonify({'error' : ""})
@@ -100,7 +97,42 @@ def generate_endpoints(app, mail):
         msg = Message(subject, recipients=[to], html = template, sender="garagepredictions@gmail.com")
         mail.send(msg)
 
-    @app.route("/confirm_registration/<token>", methods=["GET"])
+    # used to recover password with token
+    @app.route('/recover_password/<token>', methods=['POST'])
+    def recover_change_password(token):
+        try:
+           email = confirm_token(token)
+           if not email:
+               return jsonify({'error': "invalid recovery link"})
+        except:
+           return jsonify({'error' : "recovery link expired"})
+
+        if email:
+            user = User().load(email)
+            id = user.id
+            new_password = request.json['new_password'].encode('utf-8')
+            db_info = db['users'].find_one({"_id" : id})
+
+            # check if the user exists
+            if not User().user_exist(id):
+                return jsonify({'error': 'No account associated with this email'})
+
+            # generate new password
+            salt = db_info['salt']
+            new_password_hash = bcrypt.hashpw(new_password, salt)
+
+            # update on the database
+            id_query = { "_id" : id }
+            new_query = { "$set": { "password": new_password_hash, "salt" : salt }}
+            db['users'].update_one(id_query, new_query)
+        else:
+            return jsonify({'error' : "No account associated with this email"})
+
+        return jsonify({"error" : ""})
+
+
+    # used to confirm account with registration token
+    @app.route("/confirm_registration/<token>", methods=['GET'])
     def confirm_registration(token):
         try:
            email = confirm_token(token)
@@ -229,7 +261,7 @@ def generate_endpoints(app, mail):
             db_info = db['users'].find_one({"_id" : id})
 
             # check if the user exists
-            if User().user_exist(id) is False:
+            if not User().user_exist(id):
                 return jsonify({"error" : "invalid user id"})
 
             # generate new password

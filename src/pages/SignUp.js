@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
-// import Image from '../components/cars.png';
 import AlertRegister from '../components/AlertRegister';
 
 
@@ -26,6 +25,7 @@ export default function SignUp() {
 
     const [alert, setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState('');
+    const [pass, setPass] = useState(false);
 
     function validateForm() {
 
@@ -35,15 +35,19 @@ export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // api stuff
+    setAlert(false);
     axios.post(global.config.host + "/register", {"email": email, "password": password})
       .then(response => {
         if (response.data.error === '') {
-          setAlertContent(response.data.result);
+          setAlertContent("You have successfully registered. Please check your email to verify your account.");
           setAlert(true);
-          window.location.href = '/login';
+          setPass(true);
+          // setTimeout(() => {
+          //   window.location.href = '/login';
+          // }, 5000);
           
         } else {
-          setAlertContent(response.data.result);
+          setAlertContent(response.data.error);
           setAlert(true);
         }
       });
@@ -114,7 +118,7 @@ export default function SignUp() {
               Sign Up
             </Button>
             <div>
-            {alert ? <AlertRegister severity='error'>{alertContent}</AlertRegister> : <></> }
+            {alert ? <AlertRegister severity='error' error={alertContent} pass={pass}/> : <></> }
             </div>
             <Grid container justifyContent="flex-end">
               <Grid item>

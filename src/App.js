@@ -13,6 +13,7 @@ import SignUp from './pages/SignUp';
 import ChangePasswordEmail from './pages/ChangePasswordEmail';
 import ChangePasswordNew from './pages/ChangePasswordNew';
 import Delete from './pages/Delete';
+import Verify from './pages/Verify';
 
 function App() {
   return (
@@ -23,7 +24,9 @@ function App() {
       <Route path="/login" element={<SignIn />} />
       <Route path="/register" exact element = {<SignUp/>}/>
       <Route path="/change_password_email" exact element = {<ChangePasswordEmail/>}/>
-      <Route path="/change_password_new" exact element = {<ChangePasswordNew/>}/>
+      <Route path="/change_password_new" exact element = {<ChangePasswordNew/>}>
+        <Route path="*" element={<ChangePasswordNew />} />
+      </Route>
       <Route path="/home" exact element = {<DashboardNew/>}/>
       <Route path="/about" exact element={<About/>} />
       <Route path="/feedback" exact element={<Feedback/>} />
@@ -31,6 +34,9 @@ function App() {
       <Route path="/settings" exact element={<Settings/>} />
       <Route path="/trends" exact element={<TrendsPage/>} />
       <Route path="/delete" exact element={<Delete/>} />
+      <Route path="/verify" exact element={<Verify/>}>
+        <Route path="*" element={<Verify/>} />
+      </Route>
     </Routes>
 
   </BrowserRouter>

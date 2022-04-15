@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React  from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -17,13 +17,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 export default function ProfileMenu() {
 
 
-    const [errorVisible, setErrorVisible] = useState("none");
-    const [error, setError] = useState("none");
+    // const [errorVisible, setErrorVisible] = useState("none");
+    // const [error, setError] = useState("none");
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     //const delOpen = Boolean(anchorEl);
-    const [deleteClick, setDeleteClick] = useState(false);
     const [delOpen, setDelOpen] = React.useState(false);
 
     const handleDelClickOpen = (event) => {
@@ -39,9 +38,9 @@ export default function ProfileMenu() {
         setAnchorEl(event.currentTarget);
     }
 
-    const handleClose = (event) => {
-        setAnchorEl(null);
-    }
+    // const handleClose = (event) => {
+    //     setAnchorEl(null);
+    // }
 
     const handleLogout = (event) => {
         console.log("handle logout");
@@ -66,9 +65,6 @@ export default function ProfileMenu() {
         .then(response => {
             if (response.data.error === '') {
                 window.location.href = '/login';
-            } else {
-                setErrorVisible("block");
-                setError(response.data.error);
             }
         });
         

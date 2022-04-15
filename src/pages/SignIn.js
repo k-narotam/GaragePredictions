@@ -45,7 +45,7 @@ export default function SignInSide() {
         if (response.data.error === '') {
           window.location.href = '/home';
         } else {
-          setAlertContent(response.data.result);
+          setAlertContent(response.data.error);
           setAlert(true);
           console.log("error");
         }
@@ -129,7 +129,7 @@ export default function SignInSide() {
               Sign In
             </Button>
             <div>
-            {alert ? <AlertLogin severity='error'>{alertContent}</AlertLogin> : <></> }
+            {alert ? <AlertLogin severity='error' error={alertContent}/> : <></> }
             </div>
             <Grid container>
               <Grid item xs>

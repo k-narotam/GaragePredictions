@@ -26,7 +26,7 @@ export default function ChangePasswordEmail() {
         axios.post(global.config.host + "/confirm_email", {"email": email})
         .then(response => {
             if (response.data.error === '') {
-                window.location.href = '/change_password_new';
+                window.location.href = '/login';
             }
         });
     };

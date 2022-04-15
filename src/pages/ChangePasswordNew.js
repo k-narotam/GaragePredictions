@@ -23,6 +23,12 @@ export default function ChangePasswordNew() {
     const [new_password, setPassword] = useState("");
 
     const [confirm_password, confirmPassword] = useState("");
+    const confirmToken = window.location.pathname.split('/')[2];
+
+    axios.get(global.config.host + "/test/" + confirmToken)
+    .then(res => {
+        console.log(res.data);
+    });
 
     function comparePassword(pass1, pass2) {
       return new_password === confirm_password;
@@ -61,7 +67,7 @@ export default function ChangePasswordNew() {
               <Typography component="h1" variant="h5">
                 Password Recovery
               </Typography>
-              <Typography component="body1" variant="h9">
+              <Typography variant="h9">
                 Click the link in a sent email to reset your password
               </Typography>
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt:3}}>

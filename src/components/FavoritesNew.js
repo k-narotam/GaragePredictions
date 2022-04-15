@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import tableIcons from "./TableIcons";
 import MaterialTable, { MTableToolbar } from 'material-table';
 import Title from '../components/Title';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import CircularProgress from '@mui/material/CircularProgress';
-
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 
@@ -52,6 +51,7 @@ const garages = {
   "i": "I",
   "l": "Libra",
 }
+
 function createData(day, num_time, garage_id, garage_fullness) {
 
   let time = new Date();
@@ -63,6 +63,11 @@ function createData(day, num_time, garage_id, garage_fullness) {
 }
 
 function convertTimeToNum(time) {
+
+  if (typeof (time) === 'string') {
+    time = new Date(time);
+  }
+
   let hours = time.getHours();
   let minutes = time.getMinutes();
   return hours + minutes / 60;
@@ -83,14 +88,27 @@ export default function StickyHeadTable() {
     {
       title: "Weekday",
       field: "day",
-      minWidth: 100,
       lookup: days,
+      editComponent: props => (
+        <TextField
+          select
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}
+          style={{ width: 'auto' }}
+          variant="standard"
+        >
+          {Object.keys(days).map(key => (
+            <MenuItem key={key} value={key}>
+              {days[key]}
+            </MenuItem>
+          ))}
+        </TextField>
+      ),
     },
 
     {
       title: "Time",
       field: "time",
-      minWidth: 100,
       type: "time",
       dateSetting: { locale: 'en-US' },
       render: rowData => rowData.time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
@@ -99,13 +117,15 @@ export default function StickyHeadTable() {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <TimePicker
               id="time-picker"
-              label="Time picker"
-              value={value}
+              label="Select time"
+              value={new Date(value)}
               onChange={onChange}
+              minutesPlaceholder="Minutes"
+              hoursPlaceholder="Hours"
+              theme={theme}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
-
         );
       }
     },
@@ -113,15 +133,28 @@ export default function StickyHeadTable() {
     {
       title: "Garage",
       field: "garage_id",
-      minWidth: 100,
-      lookup: garages
+      lookup: garages,
+      editComponent: props => (
+        <TextField
+          select
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}
+          style={{ width: 'auto' }}
+          variant="standard"
+        >
+          {Object.keys(garages).map(key => (
+            <MenuItem key={key} value={key}>
+              {garages[key]}
+            </MenuItem>
+          ))}
+        </TextField>
+      ),
     },
 
     {
-      title: 'Prediction',
+      title: 'Predicted Fullness',
       field: 'garage_fullness',
       align: 'right',
-      minWidth: 170,
       editable: 'never',
       render: rowData => formatPercentage(rowData.garage_fullness)
     }
@@ -136,17 +169,15 @@ export default function StickyHeadTable() {
     return (
       <div>
         <TextField
-          select
           value={filter}
           onChange={event => changeFilter(event)}
-          style={{
-            display: 'flex',
-            textAlign : 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          type="text"
-          fullWidth
+          select
+          label=" "
+          InputLabelProps={
+              { shrink: false }
+          }
+          size="small"
+          variant="standard"
         >
           <MenuItem value="">All</MenuItem>
           <MenuItem value="a">A</MenuItem>
@@ -230,21 +261,21 @@ export default function StickyHeadTable() {
                   backgroundColor: '#f5f5f5',
                 }}
               >
-                <div style={{ marginRight: "650px", paddingTop: '10px',}}>
-                <Title>Favorite Predictions</Title>
+                <div style={{ marginRight: "650px", paddingTop: '10px', }}>
+                  <Title>Favorite Predictions</Title>
                 </div>
-                <div 
+                <div
                   style={{
                     display: 'flex',
                     justifyContent: 'flex-end',
                     alignItems: 'center',
                     height: '50px',
-                    paddingRight: '20px',
-                    
                   }}
-                  
-                  >
-                    Filter by Garage:
+
+                >
+                  Filter by Garage:
+                </div>
+                <div>
                   {customFilter()}
                 </div>
                 <MTableToolbar {...props} />
@@ -299,6 +330,7 @@ export default function StickyHeadTable() {
                 },
                 { withCredentials: true }
               ).then(res => {
+                console.log("in")
                 axios.post(global.config.host + '/add_favorite',
                   {
                     "garage_id": newData.garage_id,

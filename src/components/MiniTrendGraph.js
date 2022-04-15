@@ -18,7 +18,7 @@ const theme = createTheme({
             contrastText: '#fff',
         },
     },
-});
+}); 
 
 const data = [
     {
@@ -176,34 +176,6 @@ const garage_spaces = {
     "i": 1231,
     "l": 1007,
 };
-
-// const days = {
-//     "0": "Sunday",
-//     "1": "Monday",
-//     "2": "Tuesday",
-//     "3": "Wednesday",
-//     "4": "Thursday",
-//     "5": "Friday",
-//     "6": "Saturday",
-// };
-
-// const api_days = {
-//     0: 'sun',
-//     1: 'mon',
-//     2: 'tue',
-//     3: 'wed',
-//     4: 'thr',
-//     5: 'fri',
-//     6: 'sat',
-// }
-
-// const garages = {
-//     "a": "A",
-//     "c": "C",
-//     "d": "D",
-//     "i": "I",
-//     "l": "Libra",
-// }
 
 export default function MiniTrendGraph() {
     const [isLoading, setLoading] = useState(true);

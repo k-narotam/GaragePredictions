@@ -29,7 +29,7 @@ export default function FutureTrends() {
         direction="row"
         justifyContent={"center"}
         alignItems={"center"}
-        mt={5}
+        mt={10}
       >
         <Grid item>
           <Typography variant="h5">Check next</Typography>

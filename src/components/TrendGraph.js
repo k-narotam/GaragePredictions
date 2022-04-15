@@ -274,9 +274,7 @@ export default function TrendGraph(props) {
         axios.post(global.config.host + "/add_favorite",
             {"garage_id": props.garage, "weekday":api_days[props.weekday], "time": prediction_hour},
             {withCredentials: true},
-        ).then(res => {
-            console.log(res.data);
-        });
+        );
 
         setFavorite(false);
     }
@@ -381,7 +379,7 @@ export default function TrendGraph(props) {
                                                 onClick={handleGraphClick}
                                             >
                                                 <CartesianGrid strokeDasharray="3 3" />
-                                                <XAxis dataKey="name" tick={{fontSize: '14px'}}/>
+                                                <XAxis dataKey="name" tick={{fontSize: '12px'}}/>
                                                 <YAxis domain={[0, 1]} tickFormatter={formatPercentage}/>
                                                 <Tooltip content={<CustomTooltip />} />
                                                 <Area type="monotone" dataKey="filled" stroke="#8884d8" activeDot={{ r: 8 }} />

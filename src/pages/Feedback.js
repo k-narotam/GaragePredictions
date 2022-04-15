@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from '../components/Navbar';
-
+import CssBaseline from '@mui/material/CssBaseline';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
@@ -9,10 +9,7 @@ import Typography from '@mui/material/Typography';
 import emailjs from '@emailjs/browser';
 //import SignIn from './SignIn';
 export default function Feedback () {
-  //const email = SignIn.email;
   const [email, setEmail] = useState("");
-
-  //const [name, setName] = useState("");
 
   const [message, setMessage] = useState("");
 
@@ -44,13 +41,16 @@ export default function Feedback () {
 
     return(
       <div>
+        <CssBaseline />
         <Navbar/>
         <Grid
           container
           direction="column"
           alignItems="center"
           justify="center"
-          onSubmit={handleEmail}>
+          onSubmit={handleEmail}
+          marginTop="5em"
+          >
             <Typography variant="h4" color="#c79632" m={2}>Send us a message!</Typography>
         
             <TextField

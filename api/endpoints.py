@@ -13,7 +13,7 @@ from flask_login import current_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_cors import cross_origin
 
-from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek, origins
+from .constants import garage_to_id, weekdays, garage_pos, detGarage, detWeek, origins, front_head
 from .structures import User, Favorite, user_sessions
 from .database import db
 from .ml_wrapper import models
@@ -49,7 +49,7 @@ def generate_endpoints(app, mail):
         else:
             new_user.save()
             token = generate_confirmation_token(email)
-            confirm_url = 'http://localhost:3000/verify/' + token
+            confirm_url = front_head + '/verify/' + token
             html = render_template('register.html', confirm_url=confirm_url)
             subject = "Verify UCF Garage Predictions Account"
             send_email(email, subject, html)
@@ -89,7 +89,7 @@ def generate_endpoints(app, mail):
 
         token = generate_confirmation_token(id)
 
-        confirm_url = 'http://localhost:3000/change_password_new/' + token
+        confirm_url = front_head + '/change_password_new/' + token
         html = render_template('password.html', confirm_url=confirm_url)
         subject = "Confirm Email"
         send_email(id, subject, html)
@@ -139,7 +139,7 @@ def generate_endpoints(app, mail):
 
     # delete account
     @app.route('/delete_acc', methods=['POST'])
-    @cross_origin(supports_credentials=True, origins=['http://localhost:3000', 'https://group17poos.herokuapp.com'])
+    @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def del_acc():
         my_user = get_current_user()

@@ -26,7 +26,6 @@ export default function SignUp() {
     const [alert, setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState('');
     const [pass, setPass] = useState(false);
-
     function validateForm() {
 
         return email.length > 0 && password.length > 5;
@@ -38,16 +37,24 @@ export default function SignUp() {
     setAlert(false);
     axios.post(global.config.host + "/register", {"email": email, "password": password})
       .then(response => {
+
+        let redirect = false;
+
         if (response.data.error === '') {
           setAlertContent("You have successfully registered. Please check your email to verify your account.");
           setAlert(true);
           setPass(true);
+          redirect = true;
+          } 
+        else {
+          setAlertContent(response.data.error);
+          setAlert(true);
+        }
+
+        if (redirect) {
           setTimeout(() => {
             window.location.href = '/login';
           }, 5000);
-                  } else {
-          setAlertContent(response.data.error);
-          setAlert(true);
         }
       });
   };

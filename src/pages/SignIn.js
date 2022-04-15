@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-//import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,7 +11,6 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-// import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import Image from '../components/logo.png'
@@ -133,7 +131,7 @@ export default function SignInSide() {
             </div>
             <Grid container>
               <Grid item xs>
-                <Link href="/change_password_email" variant="body2">
+                <Link href="/forgot_password" variant="body2">
                   {"Forgot password?"}
                 </Link>
               </Grid>

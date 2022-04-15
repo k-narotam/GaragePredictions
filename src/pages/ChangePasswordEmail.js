@@ -12,21 +12,42 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
-// import Image from '../components/logo.png'
+import Alert from '@mui/material/Alert';
 
 const theme = createTheme();
 
 export default function ChangePasswordEmail() {
 
     const [email, setEmail] = useState("");
+    const [alert, setAlert] = useState(false);
+    const [pass, setPass] = useState(false);
+    const [alertContent, setAlertContent] = useState('');
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post(global.config.host + "/confirm_email", {"email": email})
+        axios.post(global.config.host + "/send_recovery", {"email": email})
         .then(response => {
+
+            let redirect = false;
+
             if (response.data.error === '') {
-                window.location.href = '/login';
+                setPass(true);
+                setAlert(true);
+                setAlertContent("Recovery email sent. Please check your email to reset your password.");
+                redirect = true;
+              
+            }
+            else {
+                setAlertContent(response.data.error);
+                setAlert(true);
+            }
+
+            if (redirect === true) {
+              console.log("redirecting");
+              setTimeout(() => {
+                  window.location.href = '/login';
+              }, 5000);
             }
         });
     };
@@ -38,20 +59,19 @@ export default function ChangePasswordEmail() {
 
             <Box
               sx={{
-
-                marginTop: 8,
+                marginTop: '25vh',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-              }}
-            >
+                justifyContent: 'center',
+              }}>
               <Avatar sx={{ m: 1, bgcolor: '#c79632' }}>
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
                 Password Recovery
               </Typography>
-              <Typography component="body1" variant="h9">
+              <Typography variant="h9">
                 Enter your email below to reset your password
               </Typography>
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt:3}}>
@@ -77,10 +97,21 @@ export default function ChangePasswordEmail() {
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
+                  disabled={!email}
                 >
                   Reset your Password
                 </Button>
-
+                <div>
+                {alert ? 
+                  pass ? 
+                  <Alert severity='success'
+                  >{alertContent}</Alert>
+                  
+                  :
+                  <Alert severity='error'>{alertContent}</Alert>
+                : <></> 
+                }
+                </div>
 
                 <Grid container justifyContent="center">
                   <Grid item>

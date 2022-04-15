@@ -18,29 +18,24 @@ const theme = createTheme();
 
 export default function ChangePasswordNew() {
 
-    const [email, setEmail] = useState("");
-
     const [new_password, setPassword] = useState("");
 
     const [confirm_password, confirmPassword] = useState("");
     const confirmToken = window.location.pathname.split('/')[2];
 
-    axios.get(global.config.host + "/test/" + confirmToken)
-    .then(res => {
-        console.log(res.data);
-    });
-
     function comparePassword(pass1, pass2) {
-      return new_password === confirm_password;
+
+      return (new_password === confirm_password) && new_password !== '' && confirm_password !== '';
     }
 
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post(global.config.host + "/change_password", {"id": email, "new_password": new_password})
+        axios.post(global.config.host + "/recover_password/" + confirmToken, {"new_password": new_password})
         .then(response => {
             if (response.data.error === '') {
+              console.log("success");
                 window.location.href = '/login';
             }
         });
@@ -55,7 +50,7 @@ export default function ChangePasswordNew() {
             <Box
               sx={{
 
-                marginTop: 8,
+                marginTop: '20vh',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -68,28 +63,13 @@ export default function ChangePasswordNew() {
                 Password Recovery
               </Typography>
               <Typography variant="h9">
-                Click the link in a sent email to reset your password
+                Please enter your new password
               </Typography>
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt:3}}>
                 <Grid container spacing={2}>
-
                   <Grid item xs={12}>
                     <TextField
-                      required
-                      fullWidth
-                      type = "required"
-                      id="email"
-                      label="Repeat Email Address"
-                      name="email"
-                      value={email}
-                      autoComplete="email"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      margin="normal"
+                      // margin="normal"
                       required
                       fullWidth
                       type = "password"

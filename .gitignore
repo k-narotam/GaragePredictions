@@ -2,3 +2,4 @@
 /.vs
 /__pycache__
 /api/__pycache__
+__pycache__/app.cpython-310.pyc

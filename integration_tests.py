@@ -19,7 +19,7 @@ def test_login_invalid_email(client):
     r = client.post('/login', json={'email': 'qwertya@gmail.com', 'password': 'qwertypass'})
     assert r.status_code == 200
     assert isinstance(r.json, dict)
-    assert r.json['error'] == 'user does not exist'
+    assert r.json['error'] == 'Account Does Not Exist'
 
 def test_login_invalid_pass(client):
     r = client.post('/login', json={'email': 'qwerty@gmail.com', 'password': 'qwertypasss'})
@@ -126,14 +126,14 @@ def test_trend_invalid(client):
 
 def test_favorites(client):
     r = client.post('/login', json={'email': 'qwerty@gmail.com', 'password': 'qwertypass'})
-    r2 = client.get('/list_favorites')
+    r2 = client.post('/list_favorites', json={'garage_id': ''})
     r3 = client.post('/add_favorite', json={'garage_id': 'i', 'weekday': 'tue', 'time': 2.2})
     r4 = client.post('/add_favorite', json={'garage_id': 'i', 'weekday': 'tue', 'time': 3.2})
     r10 = client.post('/add_favorite', json={'garage_id': 'i', 'weekday': 'tue', 'time': 3.2})
-    r5 = client.get('/list_favorites')
+    r5 = client.post('/list_favorites', json={'garage_id': ''})
     r6 = client.post('/delete_favorite', json={'garage_id': 'i', 'weekday': 'tue', 'time': 2.2})
     r7 = client.post('/delete_favorite', json={'garage_id': 'i', 'weekday': 'tue', 'time': 3.2})
-    r8 = client.get('/list_favorites')
+    r8 = client.get('/list_favorites', json={'garage_id': ''})
     r9 = client.post('/delete_favorite', json={'garage_id': 'i', 'weekday': 'tue', 'time': 3.2})
 
     assert r.status_code == 200

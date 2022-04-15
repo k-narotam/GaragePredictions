@@ -375,14 +375,21 @@ def generate_endpoints(app, mail):
 
         return garage_full
 
-    @app.route('/list_favorites', methods=['GET'])
+    @app.route('/list_favorites', methods=['POST'])
     @cross_origin(supports_credentials=True, origins=origins)
     @login_required
     def list_favorites():
         my_user = get_current_user()
+        garage = request.json['garage_id']
 
-        # fetch all favorites with that user ID
-        test_list = db['favorites'].find({'user_id' : my_user.id})
+        if garage == '':
+            test_list = db['favorites'].find({'user_id' : my_user.id})
+
+        elif not detGarage(garage):
+            return jsonify({"error" : "invalid garage id"})
+
+        else:
+            test_list = db['favorites'].find({'user_id' : my_user.id, 'garage_id' : garage})
 
         # returns json data (even if it's empty)
         return jsonify({'favorites': list(test_list), 'error': ''})

@@ -63,6 +63,8 @@ export default function SignInSide() {
     if (localStorage.getItem('email') && localStorage.getItem('password')) {
       setEmail(localStorage.getItem('email'));
       setPassword(localStorage.getItem('password'));
+      setRememberMe(true);
+      localStorage.clear();
     }
   }, [email, password]);
 

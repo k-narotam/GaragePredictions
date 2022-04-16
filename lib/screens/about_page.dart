@@ -24,7 +24,7 @@ class AboutPage extends StatelessWidget {
           Container(
               padding: EdgeInsets.all(15.0),
               child: Text(
-                'Garage predictor uses state of the art Machine Learning so that you can find parking at UCF!',
+                'We hope our app has been helpful in predicting UCF garage capacity! We aim to help you plan accordingly where to park based on the days you need to attend campus. This helps save time knowing the specific garage to head to upon arrival. We also offer mobile app support and continuously strive to improve our features. We would love to hear your insights and how you use our app! We are Group 17, Super Amazing Garage Predictions!',
                 textAlign: TextAlign.center,
                 // style: kTitleTextStyle,
               )),

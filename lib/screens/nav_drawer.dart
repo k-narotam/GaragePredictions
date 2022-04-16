@@ -3,10 +3,14 @@ import 'package:flutter/painting.dart';
 import '../screens/settings_page.dart';
 import '../screens/feedback_page.dart';
 import '../screens/home_page.dart';
-import '../screens/profile_page.dart';
 import '../screens/map_page.dart';
 import '../screens/about_page.dart';
+import '../screens/login_page.dart';
 import '../constants.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 
 class NavDrawer extends StatelessWidget {
   @override
@@ -20,7 +24,7 @@ class NavDrawer extends StatelessWidget {
             DrawerHeader(
               child: Container(
                 child: Text(
-                  'Garage Predictor',
+                  'Garage Predictions',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                   textAlign: TextAlign.left,
                 ),
@@ -43,18 +47,6 @@ class NavDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => HomePage(),
-                  ),
-                ),
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.verified_user),
-              title: Text('Profile'),
-              onTap: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(),
                   ),
                 ),
               },
@@ -110,6 +102,11 @@ class NavDrawer extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () => {logout(context)},
+            ),
+            ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Close'),
               onTap: () => {Navigator.of(context).pop()},
@@ -118,5 +115,17 @@ class NavDrawer extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void logout(BuildContext context) {
+    print("Logging out!");
+    // No need to await since we do not need a response
+    http.post(Uri.parse(dotenv.env['root'] + "logout"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+    print("Logged out");
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
   }
 }

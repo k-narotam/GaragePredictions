@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -6,9 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-// import { deepPurple } from '@mui/material/colors';
 import axios from 'axios'
-//import Dialog from "../components/Dialog";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -16,14 +14,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 export default function ProfileMenu() {
 
-
-    // const [errorVisible, setErrorVisible] = useState("none");
-    // const [error, setError] = useState("none");
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    //const delOpen = Boolean(anchorEl);
-    const [delOpen, setDelOpen] = React.useState(false);
+
+    const [delOpen, setDelOpen] = useState(false);
 
     const handleDelClickOpen = (event) => {
         setDelOpen(true);
@@ -49,6 +43,7 @@ export default function ProfileMenu() {
         .then(response => {
             if (response.data.error === "") {
                 window.location.href = '/login';
+                localStorage.clear();
             } else {
                 console.log("error");
                 console.log(response.data.error);

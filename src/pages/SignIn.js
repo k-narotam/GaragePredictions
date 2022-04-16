@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import Image from '../components/logo.png'
 import AlertLogin from '../components/AlertLogin';
+
 const theme = createTheme();
 
 export default function SignInSide() {
@@ -25,7 +26,7 @@ export default function SignInSide() {
 
     const [alert, setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState('');
-
+    const [rememberMe, setRememberMe] = useState(false);
 
     // function validateForm() {
 
@@ -42,6 +43,12 @@ export default function SignInSide() {
       .then(response => {
         if (response.data.error === '') {
           window.location.href = '/home';
+
+          if (rememberMe) {
+            localStorage.setItem('email', email);
+            localStorage.setItem('password', password);
+          }
+
         } else {
           setAlertContent(response.data.error);
           setAlert(true);
@@ -51,6 +58,13 @@ export default function SignInSide() {
 
 
     };
+
+  useEffect(() => {
+    if (localStorage.getItem('email') && localStorage.getItem('password')) {
+      setEmail(localStorage.getItem('email'));
+      setPassword(localStorage.getItem('password'));
+    }
+  }, [email, password]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -117,6 +131,7 @@ export default function SignInSide() {
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
+              onChange={(e) => setRememberMe(e.target.checked)}
             />
             <Button
               type="submit"

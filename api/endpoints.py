@@ -253,6 +253,8 @@ def generate_endpoints(app, mail):
 
     # change password
     @app.route('/change_password', methods=['POST'])
+    @cross_origin(supports_credentials=True, origins=origins)
+    @login_required
     def change_password():
         try:
             # getting requests

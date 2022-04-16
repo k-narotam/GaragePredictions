@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../screens/nav_drawer.dart';
-import '../screens/check_future_page.dart';
 import '../screens/predictions_page.dart';
 
 import 'package:http/http.dart' as http;
@@ -32,11 +31,13 @@ class _HomePageState extends State<HomePage> {
 
   Future<String> fetchFavorites() async {
     try {
-      final http.Response answer = await http.get(
-          Uri.parse(dotenv.env['listFavorites']),
+      final http.Response answer = await http.post(
+          Uri.parse(dotenv.env['root'] + "list_favorites"),
           headers: <String, String>{
             'cookie': widget.cookie,
-          });
+            'Content-Type': 'application/json; charset=UTF-8'
+          },
+          body: jsonEncode(<String, dynamic>{'garage_id': ""}));
       //print("Sent successfully. " + answer.body);
       Map<String, dynamic> output = jsonDecode(answer.body);
       //print("Received value " + output.toString());
@@ -59,10 +60,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<String> status() async {
     try {
-      final http.Response answer = await http
-          .post(Uri.parse(dotenv.env['status']), headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
+      final http.Response answer = await http.post(
+          Uri.parse(dotenv.env['root'] + "status"),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          });
       //print("Sent successfully. " + answer.body);
       Map<String, dynamic> output = jsonDecode(answer.body);
       //print("Received listfavorites value " + output.toString());
@@ -132,7 +134,7 @@ class _HomePageState extends State<HomePage> {
       String myStr = "";
       int index = 0;
       //print("Done fetching.");
-      myStr = "Garage\tDay\t% Full\n";
+      myStr = "Garage  \tDay      \t% Full\n";
       while (index < favoriteGarages.length) {
         myStr += "Garage " +
             favoriteGarages.elementAt(index).toUpperCase() +
@@ -191,7 +193,7 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               'Current Availability',
               textAlign: TextAlign.center,
-              textScaleFactor: 2.0,
+              textScaleFactor: 3.0,
               // style: kTitleTextStyle,
             ),
           ),
@@ -212,7 +214,7 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               'Favorites',
               textAlign: TextAlign.center,
-              textScaleFactor: 2.0,
+              textScaleFactor: 3.0,
               // style: kTitleTextStyle,
             ),
           ),
@@ -226,22 +228,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SizedBox(width: 50.0, height: 3.0),
-          /*Image(
-              image: AssetImage('images/living_centerline.gif'),
-              height: 100,
-              width: 100),*/
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: kPrimaryColor,
-            ),
-            onPressed: () {
-              //Navigator.pushNamed(context, '/');
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CheckFuturePage()));
-            },
-            child: Text('Check Future Page'),
-          ),
-          SizedBox(width: 50.0, height: 10.0),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: kPrimaryColor,
@@ -251,7 +237,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => PredictionsPage()));
             },
-            child: Text('Predict A Day!'),
+            child: Text('Check Future Page'),
           )
         ],
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../screens/results_page.dart';
 import 'package:provider/provider.dart';
 import '../screens/settings_page.dart'; //Needed here if we enabled on page quick settings change, disabled for now
 import '../screens/nav_drawer.dart';

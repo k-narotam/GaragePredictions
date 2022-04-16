@@ -3,7 +3,6 @@ import 'package:flutter/painting.dart';
 import '../screens/settings_page.dart';
 import '../screens/feedback_page.dart';
 import '../screens/home_page.dart';
-import '../screens/profile_page.dart';
 import '../screens/map_page.dart';
 import '../screens/about_page.dart';
 import '../screens/login_page.dart';
@@ -48,18 +47,6 @@ class NavDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => HomePage(),
-                  ),
-                ),
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.verified_user),
-              title: Text('Profile'),
-              onTap: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(),
                   ),
                 ),
               },
@@ -133,9 +120,10 @@ class NavDrawer extends StatelessWidget {
   void logout(BuildContext context) {
     print("Logging out!");
     // No need to await since we do not need a response
-    http.post(Uri.parse(dotenv.env['logout']), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    });
+    http.post(Uri.parse(dotenv.env['root'] + "logout"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
     print("Logged out");
     Navigator.of(context).push(
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()));

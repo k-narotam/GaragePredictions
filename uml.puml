@@ -1,0 +1,251 @@
+@startuml
+set namespaceSeparator ::
+
+class "theme_manager::calculator_brain.dart::CalculatorBrain" {
+  +int* stress
+  +int* happiness
+  +int* sleep
+  +int* score
+  -double* _bmi
+  +int* makeScore()
+  +String* getOutput()
+}
+
+class "theme_manager::main.dart::MyApp" {
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::main.dart::MyApp"
+
+class "theme_manager::screens::about_page.dart::AboutPage" {
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::screens::about_page.dart::AboutPage"
+
+abstract class "theme_manager::screens::api_page.dart::Api_Object" {
+  +String* url
+  +String* value
+  +void apicall()
+}
+
+class "theme_manager::screens::feedback_page.dart::FeedbackPage" {
+  +State<FeedbackPage*>* createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "theme_manager::screens::feedback_page.dart::FeedbackPage"
+
+class "theme_manager::screens::feedback_page.dart::_FeedbackPageState" {
+  +TextEditingController* emailController
+  +TextEditingController* feedbackController
+  +GlobalKey<FormFieldState<dynamic>*>* formFieldKey
+  +bool* isEmailValid()
+  +Widget* build()
+}
+
+"theme_manager::screens::feedback_page.dart::_FeedbackPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"theme_manager::screens::feedback_page.dart::_FeedbackPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormFieldState<dynamic>>"
+"flutter::src::widgets::framework.dart::State" <|-- "theme_manager::screens::feedback_page.dart::_FeedbackPageState"
+
+class "theme_manager::screens::forgot_password_page.dart::ForgotPasswordPage" {
+  +GlobalKey<FormFieldState<dynamic>*>* formFieldKey
+  {static} +String* id
+  +int* code
+  +String* newPassword
+  +bool* validCode
+  +TextEditingController* myController
+  +TextEditingController* passwordController
+  +Widget* build()
+  +void dispose()
+}
+
+"theme_manager::screens::forgot_password_page.dart::ForgotPasswordPage" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormFieldState<dynamic>>"
+"theme_manager::screens::forgot_password_page.dart::ForgotPasswordPage" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::screens::forgot_password_page.dart::ForgotPasswordPage"
+
+class "theme_manager::screens::home_page.dart::HomePage" {
+  {static} +String* id
+  +String* cookie
+  +State<HomePage*>* createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "theme_manager::screens::home_page.dart::HomePage"
+
+class "theme_manager::screens::home_page.dart::_HomePageState" {
+  +List<String*>* garages
+  +List<String*>* garageIDs
+  +bool* calledStatus
+  +String* currentString
+  +String* favoriteString
+  +List<String*>* favoriteGarages
+  +List<double*>* favoriteStatus
+  +List<String*>* favoriteDays
+  +bool* calledFavorites
+  +void initState()
+  +Future<String*>* fetchFavorites()
+  +Future<String*>* status()
+  +dynamic getStatus()
+  +String* toDay()
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "theme_manager::screens::home_page.dart::_HomePageState"
+
+class "theme_manager::screens::input_page.dart::InputPage" {
+  +_InputPageState* createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "theme_manager::screens::input_page.dart::InputPage"
+
+class "theme_manager::screens::input_page.dart::_InputPageState" {
+  +Widget* build()
+  +String* sleepLabel()
+  +String* stressLabel()
+  +String* getLabel()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "theme_manager::screens::input_page.dart::_InputPageState"
+
+class "theme_manager::screens::login_page.dart::LoginPage" {
+  {static} +String* id
+  +LoginPageState* createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "theme_manager::screens::login_page.dart::LoginPage"
+
+class "theme_manager::screens::login_page.dart::LoginPageState" {
+  +String* password
+  +String* email
+  +TextEditingController* myController
+  +TextEditingController* passwordController
+  +void dispose()
+  +bool* isEmailValid()
+  +Future<int*>* login()
+  +Widget* build()
+}
+
+"theme_manager::screens::login_page.dart::LoginPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "theme_manager::screens::login_page.dart::LoginPageState"
+
+class "theme_manager::screens::map_page.dart::MapPage" {
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::screens::map_page.dart::MapPage"
+
+class "theme_manager::screens::nav_drawer.dart::NavDrawer" {
+  +Widget* build()
+  +void logout()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::screens::nav_drawer.dart::NavDrawer"
+
+class "theme_manager::screens::predictions_page.dart::PredictionsPage" {
+  +_PredictionsPageState* createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "theme_manager::screens::predictions_page.dart::PredictionsPage"
+
+class "theme_manager::screens::predictions_page.dart::_PredictionsPageState" {
+  +String* selectedValue
+  +String* garageValue
+  +List<DropdownMenuItem<String*>*>* dropdownItems
+  +List<DropdownMenuItem<String*>*>* dropdownGarages
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "theme_manager::screens::predictions_page.dart::_PredictionsPageState"
+
+class "theme_manager::screens::profile_page.dart::ProfilePage" {
+  {static} +String* name
+  +Widget* build()
+  {static} +void setName()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::screens::profile_page.dart::ProfilePage"
+
+class "theme_manager::screens::register_page.dart::RegisterPage" {
+  +String* password
+  +String* email
+  {static} +String* id
+  +RegisterPageState* createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "theme_manager::screens::register_page.dart::RegisterPage"
+
+class "theme_manager::screens::register_page.dart::RegisterPageState" {
+  +GlobalKey<FormFieldState<dynamic>*>* formFieldKey
+  +int* code
+  +bool* validCode
+  +TextEditingController* myController
+  +TextEditingController* passwordController
+  +void dispose()
+  +bool* isEmailValid()
+  +Future<int*>* register()
+  +bool* isNumeric()
+  +Widget* build()
+}
+
+"theme_manager::screens::register_page.dart::RegisterPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormFieldState<dynamic>>"
+"theme_manager::screens::register_page.dart::RegisterPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "theme_manager::screens::register_page.dart::RegisterPageState"
+
+class "theme_manager::screens::results_page.dart::ResultsPage" {
+  {static} +String* id
+  +String* resultText
+  +String* interpretation
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::screens::results_page.dart::ResultsPage"
+
+class "theme_manager::screens::settings_page.dart::SettingsPage" {
+  {static} +String* id
+  +String* title
+  +_SettingsPageState* createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "theme_manager::screens::settings_page.dart::SettingsPage"
+
+class "theme_manager::screens::settings_page.dart::_SettingsPageState" {
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "theme_manager::screens::settings_page.dart::_SettingsPageState"
+
+class "theme_manager::screens::welcome_page.dart::WelcomePage" {
+  {static} +String* id
+  +Widget* build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "theme_manager::screens::welcome_page.dart::WelcomePage"
+
+class "theme_manager::theme.dart::ThemeProvider" {
+  -ThemeData* _selectedTheme
+  -bool* _requireLogin
+  +ThemeData* light
+  +ThemeData* dark
+  +ThemeData* getTheme
+  +bool* isDarkMode()
+  +bool* isLoginRequired()
+  +Future<void>* swapTheme()
+  +Future<void>* setDark()
+  +Future<void>* setLight()
+  +Future<void>* requireLogin()
+  +Future<void>* noLogin()
+}
+
+"theme_manager::theme.dart::ThemeProvider" o-- "flutter::src::material::theme_data.dart::ThemeData"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "theme_manager::theme.dart::ThemeProvider"
+
+class "theme_manager::user.dart::User" {
+  {static} +int* created
+  -int* _id
+  +String* name
+  +String* email
+  +String* getName()
+  +String* getEmail()
+}
+
+
+@enduml

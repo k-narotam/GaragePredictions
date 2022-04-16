@@ -39,6 +39,8 @@ dependencies:
   table_calendar: ^3.0.4
   flutter_map: any
   latlong2: any
+  dcdg: any
+  charts_flutter: ^0.12.0
 assets:
   - .env
 

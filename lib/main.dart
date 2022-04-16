@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_manager/theme.dart';
 import 'package:provider/provider.dart';
-import 'screens/check_future_page.dart';
 import 'screens/home_page.dart';
-import 'screens/results_page.dart';
 import 'screens/settings_page.dart';
 import 'screens/login_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -57,7 +55,6 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginPage.id: (context) => LoginPage(),
             HomePage.id: (context) => HomePage(),
-            ResultsPage.id: (context) => ResultsPage(),
             SettingsPage.id: (context) => SettingsPage(title: 'Settings Page'),
           },
         );

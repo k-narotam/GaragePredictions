@@ -46,29 +46,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Container(
-                      //Must constrain with this container to stop uncontrolled width from breaking render, spread control a bonus
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      //height: MediaQuery.of(context).size.height*0.50,
-                      child: CheckboxListTile(
-                          title: const Text('Require Login'),
-                          secondary: Icon(Icons.account_circle_outlined),
-                          //value: _requireLogin,
-                          value: themeProvider.isLoginRequired(),
-                          onChanged: (bool value) {
-                            setState(() {
-                              _requireLogin = value;
-                            });
-                            _requireLogin == true
-                                ? themeProvider.requireLogin()
-                                : themeProvider.noLogin();
-                          }),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
                     Text('Light Theme'),
                     Switch(
                         activeColor: Theme.of(context).accentColor,
@@ -88,6 +65,21 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: kPrimaryColor,
+              // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              // textStyle: TextStyle(
+              //     fontSize: 30,
+              //     fontWeight: FontWeight.bold)
+            ),
+            onPressed: () {
+              //Navigator.pushNamed(context, '/');
+              // Confirmation
+              Navigator.pop(context);
+            },
+            child: Text('Delete Account'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(

@@ -5,8 +5,6 @@ import 'package:get/get.dart'; //May migrate to use get later
 import 'package:provider/provider.dart';
 import 'package:theme_manager/theme.dart';
 import '../constants.dart';
-import '../screens/check_future_page.dart';
-import '../screens/profile_page.dart';
 import '../screens/register_page.dart';
 import '../screens/home_page.dart';
 import '../screens/nav_drawer.dart';
@@ -47,7 +45,7 @@ class LoginPageState extends State<LoginPage> {
     try {
       final http.Response answer = await http
           .post(
-            Uri.parse(dotenv.env['login']),
+            Uri.parse(dotenv.env['root'] + "login"),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -85,6 +83,33 @@ class LoginPageState extends State<LoginPage> {
       print(e.toString());
       return 1;
     }
+  }
+
+  Future<int> register(String email, String password) async {
+    try {
+      final http.Response answer = await http
+          .post(
+            Uri.parse(dotenv.env['root'] + "register"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(
+                <String, dynamic>{'email': email, 'password': password}),
+          )
+          .timeout(Duration(seconds: 5));
+      Map<String, dynamic> output = jsonDecode(answer.body);
+      if (output["error"] == "") {
+        // Success
+        return 0;
+      } else {
+        print(output["error"]);
+        return 1;
+      }
+    } catch (e) {
+      print(e.toString());
+      return 1;
+    }
+    return 1;
   }
 
   Widget build(BuildContext context) {
@@ -179,7 +204,6 @@ class LoginPageState extends State<LoginPage> {
                           print("Email: $email");
                           print("Password: $password");
                           if (email != null && password != null) {
-                            ProfilePage.setName(email);
                             await login(email, password);
                           } else {
                             print("Empty email or password");
@@ -207,7 +231,7 @@ class LoginPageState extends State<LoginPage> {
                       InkWell(
                         //onTap: () => Get.to(InputPage()),
                         // onTap: () => Get.to(InputPage()),
-                        onTap: () {
+                        onTap: () async {
                           // Call register
                           email = myController.text;
                           password = passwordController.text;
@@ -215,6 +239,7 @@ class LoginPageState extends State<LoginPage> {
                           print("Password: $password");
                           //name = myController.text;
                           //ProfilePage.setName(name);
+                          await register(email, password);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

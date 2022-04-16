@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -12,12 +13,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+
 export default function ProfileMenu() {
+
+
+    const [new_password, set_password] = useState("");
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
     const [delOpen, setDelOpen] = useState(false);
+    const [resetOpen, setResetOpen] = useState(false);
 
     const handleDelClickOpen = (event) => {
         setDelOpen(true);
@@ -25,6 +32,17 @@ export default function ProfileMenu() {
 
     const handleDelClose = () => {
         setDelOpen(false);
+        handleClick();
+    };
+
+
+    const handleResetClickOpen = (event) => {
+        setResetOpen(true);
+    };
+
+    const handleResetClose = () => {
+        set_password(null);
+        setResetOpen(false);
         handleClick();
     };
 
@@ -51,6 +69,8 @@ export default function ProfileMenu() {
         });
     }
 
+
+
    
     const handleDelete = (event) => {
         event.preventDefault();
@@ -66,10 +86,15 @@ export default function ProfileMenu() {
     }
 
     const handleReset = (event) => {
-        console.log("reset password clicked");
-
         event.preventDefault();
-        window.location.href = '/change_password_email';
+        axios.post(global.config.host + "/change_password",{'new_password': new_password},
+      {withCredentials: true})
+      
+        .then(response => {
+            if (response.data.error === '') {
+                window.location.href = '/login';
+            }
+        });
     }
 
 
@@ -129,7 +154,7 @@ export default function ProfileMenu() {
    
         <MenuItem>
         <Button
-        onClick={handleReset}
+        onClick={handleResetClickOpen}
         
                 id="reset-button"
                 aria-controls={open ? 'reset-button' : undefined}
@@ -141,6 +166,28 @@ export default function ProfileMenu() {
             >
                 Reset Password
             </Button>
+            <Dialog 
+            open={resetOpen} onClose={handleResetClose}>
+        <DialogTitle>Change Password?</DialogTitle>
+        <DialogContent>
+         
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="New Password"
+            value = {new_password}
+            onChange={(e) => set_password(e.target.value)}
+            type="password"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleResetClose}>Cancel</Button>
+          <Button onClick={handleReset}>Reset Password</Button>
+        </DialogActions>
+      </Dialog>
         </MenuItem>
         <MenuItem>
         <Button

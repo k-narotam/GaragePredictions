@@ -258,7 +258,7 @@ def generate_endpoints(app, mail):
     def change_password():
         try:
             # getting requests
-            id = request.json['id']
+            id = get_current_user().id
             new_password = request.json['new_password'].encode('utf-8')
             db_info = db['users'].find_one({"_id" : id})
 

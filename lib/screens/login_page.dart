@@ -13,8 +13,6 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import '../user.dart';
-
 class LoginPage extends StatefulWidget {
   static const String id = '/login';
   LoginPageState createState() => LoginPageState();

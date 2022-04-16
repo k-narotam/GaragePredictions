@@ -7,11 +7,8 @@ import 'package:theme_manager/screens/nav_drawer.dart';
 import 'package:provider/provider.dart';
 import '../../../screens/settings_page.dart'; //Needed here if we enabled on page quick settings change, disabled for now
 import '../../../screens/nav_drawer.dart';
-import 'package:theme_manager/calculator_brain.dart';
 import '../../../constants.dart';
-import '../../../user.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:flutter/foundation.dart';
 
 class GraphPage extends StatefulWidget {
   GraphPage(this.data, this.garageid, this.day);

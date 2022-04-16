@@ -12,8 +12,6 @@ import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
-import '../user.dart';
-
 class ForgotPasswordPage extends StatefulWidget {
   static const String id = '/forgot_password';
 

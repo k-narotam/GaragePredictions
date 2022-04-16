@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart'; //May migrate to use get later
 import 'package:provider/provider.dart';
 import 'package:theme_manager/theme.dart';
 import '../constants.dart';
-import '../screens/home_page.dart';
 import '../screens/nav_drawer.dart';
-import 'package:http/http.dart' as http;
-import 'dart:async';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:convert';
-
-import '../user.dart';
 
 class RegisterPage extends StatefulWidget {
   String password = "";

@@ -17,8 +17,15 @@ class PredictionsPage extends StatefulWidget {
 }
 
 class _PredictionsPageState extends State<PredictionsPage> {
+  void initState() {
+    super.initState();
+    garageValue = "a";
+    selectedValue = "1";
+    //WidgetsBinding.instance.addPostFrameCallback((_) => fetchFavorites());
+  }
+
   String selectedValue;
-  String garageValue;
+  String garageValue = "a";
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(child: Text("Sunday"), value: "0"),
@@ -197,16 +204,17 @@ class _PredictionsPageState extends State<PredictionsPage> {
                 new GarageData(2, 100),
                 new GarageData(3, 75),
               ];*/
+              String tmp = garageValue;
               if (garageValue == "l") {
-                garageValue = "Libra";
+                tmp = "Libra";
               } else {
-                garageValue = "Garage " + garageValue.toUpperCase();
+                tmp = "Garage " + garageValue.toUpperCase();
               }
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => GraphPage(
-                          data, garageValue, intToDay(selectedValue))));
+                      builder: (context) =>
+                          GraphPage(data, tmp, intToDay(selectedValue))));
             },
             child: Text('Predict!'),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme_manager/screens/settings_page.dart';
 import '../constants.dart';
 import '../screens/nav_drawer.dart';
 import '../screens/predictions_page.dart';
@@ -10,12 +11,7 @@ import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   static const String id = '/home';
-  String cookie;
-
   HomePage();
-  HomePage.cookie(String myCookie) {
-    this.cookie = myCookie;
-  }
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -26,6 +22,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     print("Calling get Status");
     //WidgetsBinding.instance.addPostFrameCallback((_) => fetchFavorites());
+    this.calledFavorites = false;
+    this.calledStatus = false;
     WidgetsBinding.instance.addPostFrameCallback((_) => getStatus());
   }
 
@@ -34,19 +32,19 @@ class _HomePageState extends State<HomePage> {
       final http.Response answer = await http.post(
           Uri.parse(dotenv.env['root'] + "list_favorites"),
           headers: <String, String>{
-            'cookie': widget.cookie,
+            'cookie': SettingsPage.cookie,
             'Content-Type': 'application/json; charset=UTF-8'
           },
-          body: jsonEncode(<String, dynamic>{'garage_id': ""}));
+          body: jsonEncode(<String, dynamic>{"garage_id": ""}));
       //print("Sent successfully. " + answer.body);
       Map<String, dynamic> output = jsonDecode(answer.body);
       //print("Received value " + output.toString());
       int i = 0;
       while (i < output["favorites"].length) {
-        print("Accessing index " + i.toString());
         favoriteGarages.add(output["favorites"][i]["garage_id"]);
         favoriteStatus.add(output["favorites"][i]["garage_fullness"]);
         favoriteDays.add(output["favorites"][i]["weekday"]);
+        favoriteHours.add(getHour(output["favorites"][i]["time"].toString()));
         i++;
       }
 
@@ -56,6 +54,18 @@ class _HomePageState extends State<HomePage> {
       print(e.toString());
     }
     return "Sorry, no data received";
+  }
+
+  String getHour(var myHour) {
+    print("My hour is " + myHour);
+    int hourInt = int.parse(myHour);
+    if (hourInt == 0) {
+      return "12 AM";
+    }
+    if (hourInt <= 12) {
+      return hourInt.toString() + " AM";
+    }
+    return (hourInt -= 12).toString() + " PM";
   }
 
   Future<String> status() async {
@@ -102,12 +112,13 @@ class _HomePageState extends State<HomePage> {
   String currentString = "";
   String favoriteString = "";
   List<String> favoriteGarages;
-  List<double> favoriteStatus;
+  List<num> favoriteStatus;
   List<String> favoriteDays;
+  List<String> favoriteHours;
   bool calledFavorites = false;
 
   getStatus() async {
-    //print("Getting status");
+    print("Getting status");
     if (garages == null && calledStatus == false) {
       // Get status only once
       calledStatus = true;
@@ -126,23 +137,29 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     }
     if (favoriteGarages == null && calledFavorites == false) {
+      print("Time to fetch favorites again");
       calledFavorites = true;
       favoriteGarages = <String>[];
-      favoriteStatus = <double>[];
+      favoriteStatus = <num>[];
       favoriteDays = <String>[];
+      favoriteHours = <String>[];
       await fetchFavorites();
       String myStr = "";
       int index = 0;
       //print("Done fetching.");
       myStr = "Garage  \tDay      \t% Full\n";
       while (index < favoriteGarages.length) {
+        print("Status: " + favoriteStatus.elementAt(index).toString());
         myStr += "Garage " +
             favoriteGarages.elementAt(index).toUpperCase() +
             " " +
             toDay(favoriteDays.elementAt(index)) +
+            " at " +
+            favoriteHours.elementAt(index) +
             ": " +
-            favoriteStatus.elementAt(index).toString().substring(2, 5) +
+            (favoriteStatus.elementAt(index) * 100).toStringAsFixed(2) +
             "%\n";
+        print(myStr);
         index++;
       }
       favoriteString = myStr;
@@ -159,6 +176,7 @@ class _HomePageState extends State<HomePage> {
       case "wed":
         return "Wednesday";
       case "thu":
+      case "thr":
         return "Thursday";
       case "fri":
         return "Friday";
@@ -234,6 +252,11 @@ class _HomePageState extends State<HomePage> {
             ),
             onPressed: () {
               //Navigator.pushNamed(context, '/');
+              this.calledStatus = false;
+              this.calledFavorites = false;
+              this.garages = null;
+              this.favoriteGarages = null;
+              setState(() {});
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => PredictionsPage()));
             },

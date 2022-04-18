@@ -10,9 +10,18 @@ import '../../../screens/nav_drawer.dart';
 import '../../../constants.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
+
+import 'home_page.dart';
+
 class GraphPage extends StatefulWidget {
   GraphPage(this.data, this.garageid, this.day);
-  final String garageid;
+  final myController = TextEditingController();
+  final GlobalKey<FormFieldState> formFieldKey = GlobalKey();
+  String garageid;
   final String day;
   final List<GarageData>
       data; /*= [
@@ -26,21 +35,26 @@ class GraphPage extends StatefulWidget {
 }
 
 class _GraphPageState extends State<GraphPage> {
-  /// Create one series with sample hard coded data.
-  List<charts.Series<GarageData, int>> _createSampleData() {
-    return [
-      new charts.Series<GarageData, int>(
-        id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (GarageData sales, _) => sales.hour,
-        measureFn: (GarageData sales, _) => sales.available,
-        data: widget.data,
-      )
-    ];
-  }
-
   String selectedValue;
   String garageValue;
+
+  String intToDay(String day) {
+    List<String> days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+    return days[int.parse(day)];
+  }
+
+  String intToShortDay(String day) {
+    List<String> days = ["sun", "mon", "tue", "wed", "thr", "fri", "sat"];
+    return days[int.parse(day)];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +80,12 @@ class _GraphPageState extends State<GraphPage> {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Predictions for ' + widget.garageid + ' on ' + widget.day,
+            'Predictions for ' +
+                (widget.garageid == "l"
+                    ? "Libra"
+                    : "Garage " + widget.garageid.toUpperCase()) +
+                ' on ' +
+                intToDay(widget.day),
             textAlign: TextAlign.center,
             textScaleFactor: 2.0,
             // style: kTitleTextStyle,
@@ -84,6 +103,71 @@ class _GraphPageState extends State<GraphPage> {
               ),
             ), // your chart here
           ),
+          SizedBox(width: 30.0, height: 10.0),
+          TextFormField(
+            key: widget.formFieldKey,
+            controller: widget.myController,
+            decoration: InputDecoration(
+              // filled: true,
+              // fillColor: Color(0xFF1C2341),
+              hintText: "Add Favorite Hour (0-23)",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+            ),
+            validator: (value) {
+              try {
+                int hour = int.parse(value);
+                if (hour >= 0 && hour <= 23) {
+                  return "";
+                }
+                return "Must enter a valid hour from 0 to 23";
+              } catch (e) {
+                return "Must enter a valid hour from 0 to 23";
+              }
+            },
+          ),
+          InkWell(
+            //onTap: () => Get.to(InputPage()),
+            // onTap: () => Get.to(InputPage()),
+            onTap: () async {
+              // Call login
+              widget.formFieldKey.currentState.validate();
+              String favoriteHour = widget.myController.text;
+              print("Favorite hour: $favoriteHour");
+              try {
+                int hour = int.parse(favoriteHour);
+                if (hour <= 23 && hour >= 0) {
+                  await addFavorite(widget.garageid, widget.day, hour);
+                }
+                if (favoriteHour != null) {
+                  widget.myController.clear();
+                } else {
+                  print("Empty email or password");
+                }
+                widget.myController.clear();
+              } catch (e) {
+                print(e);
+              }
+            },
+
+            child: Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(kDefaultPadding * 0.75), // 15
+              decoration: BoxDecoration(
+                gradient: kPrimaryGradient,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Text(
+                "Add Favorite",
+                style: Theme.of(context)
+                    .textTheme
+                    .button
+                    .copyWith(color: Colors.black),
+              ),
+            ),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: kPrimaryColor,
@@ -99,5 +183,36 @@ class _GraphPageState extends State<GraphPage> {
         ],
       ),
     );
+  }
+
+  Future<String> addFavorite(String garage, String day, num hour) async {
+    try {
+      print("Awaiting response");
+      print("Weekday:" + intToShortDay(day));
+      print("Garage: " + garage);
+      print("Hour:" + hour.toString());
+      final http.Response answer = await http.post(
+          Uri.parse(dotenv.env['root'] + "add_favorite"),
+          headers: <String, String>{
+            'cookie': SettingsPage.cookie,
+            'Content-Type': 'application/json; charset=UTF-8'
+          },
+          body: jsonEncode(<String, dynamic>{
+            'garage_id': garage,
+            "weekday": intToShortDay(day),
+            "time": hour
+          }));
+      print("Sent successfully. " + answer.body);
+      Map<String, dynamic> output = jsonDecode(answer.body);
+      print("Received value " + output.toString());
+      print("Done adding favorite");
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+      return output.toString();
+    } catch (e) {
+      print("Caught exception");
+      print(e.toString());
+    }
+    return "Sorry, no data received";
   }
 }

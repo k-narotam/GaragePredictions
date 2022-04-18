@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import '../screens/settings_page.dart';
-import '../screens/feedback_page.dart';
 import '../screens/home_page.dart';
 import '../screens/map_page.dart';
 import '../screens/about_page.dart';
@@ -73,18 +72,6 @@ class NavDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MapPage(),
-                  ),
-                ),
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.border_color),
-              title: Text('Feedback'),
-              onTap: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FeedbackPage(),
                   ),
                 ),
               },

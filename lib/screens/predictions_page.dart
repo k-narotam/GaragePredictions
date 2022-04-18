@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 import 'graph_page.dart';
+import 'home_page.dart';
 
 class PredictionsPage extends StatefulWidget {
   @override
@@ -51,7 +52,7 @@ class _PredictionsPageState extends State<PredictionsPage> {
     return menuItems;
   }
 
-  String intToDay(String day) {
+  /* String dayToDay(String day) {
     List<String> days = [
       "Sunday",
       "Monday",
@@ -61,8 +62,10 @@ class _PredictionsPageState extends State<PredictionsPage> {
       "Friday",
       "Saturday"
     ];
+    List<String> shortDays = ["sun", "mon", "tue", "wed", "thr", "fri", "sat"];
+
     return days[int.parse(day)];
-  }
+  }*/
 
   int maxSpots(String garage) {
     if (garage == "a") {
@@ -199,11 +202,11 @@ class _PredictionsPageState extends State<PredictionsPage> {
               print("Done!");
 
               /*List<GarageData> data = [
-                new GarageData(0, 5),
-                new GarageData(1, 25),
-                new GarageData(2, 100),
-                new GarageData(3, 75),
-              ];*/
+                  new GarageData(0, 5),
+                  new GarageData(1, 25),
+                  new GarageData(2, 100),
+                  new GarageData(3, 75),
+                ];*/
               String tmp = garageValue;
               if (garageValue == "l") {
                 tmp = "Libra";
@@ -214,7 +217,7 @@ class _PredictionsPageState extends State<PredictionsPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          GraphPage(data, tmp, intToDay(selectedValue))));
+                          GraphPage(data, garageValue, selectedValue)));
             },
             child: Text('Predict!'),
           ),

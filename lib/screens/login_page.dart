@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; //May migrate to use get later
 import 'package:provider/provider.dart';
+import 'package:theme_manager/screens/settings_page.dart';
 import 'package:theme_manager/theme.dart';
 import '../constants.dart';
 import '../screens/register_page.dart';
@@ -64,11 +65,12 @@ class LoginPageState extends State<LoginPage> {
         print("Fetched cookie");
         //await fetchFavorites();
         // Success
+        SettingsPage.cookie = cookie;
         Navigator.push(
           context,
           MaterialPageRoute(
             //builder: (context) => SettingsPage(title: 'Settings'),
-            builder: (context) => HomePage.cookie(cookie),
+            builder: (context) => HomePage(),
           ),
         );
         return 0;

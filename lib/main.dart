@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginPage.id: (context) => LoginPage(),
             HomePage.id: (context) => HomePage(),
-            SettingsPage.id: (context) => SettingsPage(title: 'Settings Page'),
+            SettingsPage.id: (context) => SettingsPage(),
           },
         );
       },

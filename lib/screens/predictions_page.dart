@@ -11,6 +11,8 @@ import 'dart:async';
 
 import 'graph_page.dart';
 import 'home_page.dart';
+import '../theme.dart';
+import 'package:provider/provider.dart';
 
 class PredictionsPage extends StatefulWidget {
   @override
@@ -129,30 +131,24 @@ class _PredictionsPageState extends State<PredictionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Garage Predictor"),
+        title: Text("Garage Predictions"),
         backgroundColor: kPrimaryColor,
         centerTitle: true,
-        // leading: IconButton(
-        //   icon: Icon(Icons.menu),
-        //   onPressed: () {
-        //     print('menu');
-        //   },
-        // ), //disabled menu, using nav drawer
-        //actions: <Widget>[  //disabled settings from iconin appBar, use option from Nav drawer
-        // IconButton(
-        //   icon: Icon(Icons.settings),
-        //   onPressed: () {
-        //     print('settings');
-        //     Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //         //builder: (context) => SettingsPage(title: 'Settings'),
-        //         builder: (context) => SettingsPage(),
-        //       ),
-        //     );
-        //   },
-        // )
-        //],
+        actions: <Widget>[
+          IconButton(
+            // icon: Icon(Icons.settings),
+            // onPressed: (){
+            //   print('settings');
+            // }, //using nav drawer instead for now
+            icon: Icon(Icons.brightness_6),
+            color: Colors.white,
+            onPressed: () {
+              ThemeProvider themeProvider =
+                  Provider.of<ThemeProvider>(context, listen: false);
+              themeProvider.swapTheme();
+            },
+          )
+        ],
       ),
       drawer: NavDrawer(),
       body: Column(

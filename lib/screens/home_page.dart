@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:theme_manager/screens/settings_page.dart';
 import '../constants.dart';
 import '../screens/nav_drawer.dart';
@@ -8,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
+
+import '../theme.dart';
 
 class HomePage extends StatefulWidget {
   static const String id = '/home';
@@ -193,8 +196,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('Garage Predictions'),
         backgroundColor: kPrimaryColor,
+        actions: <Widget>[
+          IconButton(
+            // icon: Icon(Icons.settings),
+            // onPressed: (){
+            //   print('settings');
+            // }, //using nav drawer instead for now
+            icon: Icon(Icons.brightness_6),
+            color: Colors.white,
+            onPressed: () {
+              ThemeProvider themeProvider =
+                  Provider.of<ThemeProvider>(context, listen: false);
+              themeProvider.swapTheme();
+            },
+          )
+        ],
       ),
       drawer: NavDrawer(),
       body: Column(

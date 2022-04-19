@@ -16,6 +16,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 import 'home_page.dart';
+import '../theme.dart';
+import 'package:provider/provider.dart';
 
 class GraphPage extends StatefulWidget {
   GraphPage(this.data, this.garageid, this.day);
@@ -70,9 +72,24 @@ class _GraphPageState extends State<GraphPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Garage Predictor"),
+        title: Text("Garage Predictions"),
         backgroundColor: kPrimaryColor,
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            // icon: Icon(Icons.settings),
+            // onPressed: (){
+            //   print('settings');
+            // }, //using nav drawer instead for now
+            icon: Icon(Icons.brightness_6),
+            color: Colors.white,
+            onPressed: () {
+              ThemeProvider themeProvider =
+                  Provider.of<ThemeProvider>(context, listen: false);
+              themeProvider.swapTheme();
+            },
+          )
+        ],
       ),
       drawer: NavDrawer(),
       body: Column(

@@ -70,7 +70,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Scaffold(
       // No appbar until logged in
       appBar: AppBar(
-        title: Text("Garage Predictor"),
+        title: Text("Garage Predictions"),
         backgroundColor: kPrimaryColor,
         centerTitle: true,
         leading: IconButton(

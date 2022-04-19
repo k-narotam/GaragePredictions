@@ -116,9 +116,10 @@ class LoginPageState extends State<LoginPage> {
     return new WillPopScope(
         onWillPop: () async => Future.value(false),
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           // No appbar until logged in
           appBar: AppBar(
-            title: Text("Garage Predictor"),
+            title: Text("Garage Predictions"),
             backgroundColor: kPrimaryColor,
             centerTitle: true,
             leading: IconButton(
@@ -157,7 +158,7 @@ class LoginPageState extends State<LoginPage> {
                       SizedBox(width: 50.0, height: 35.0),
                       //Spacer(flex: 1), //2/6
                       Text(
-                        "Garage Predictor",
+                        "Garage Predictions",
                         // style: Theme.of(context).textTheme.headline4.copyWith(
                         //     color: Colors.white, fontWeight: FontWeight.bold),
                         style: Theme.of(context)

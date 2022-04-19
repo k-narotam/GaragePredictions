@@ -50,7 +50,7 @@ class RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       // No appbar until logged in
       appBar: AppBar(
-        title: Text("Please Confirm Your Email"),
+        title: Text("Garage Predictions"),
         backgroundColor: kPrimaryColor,
         centerTitle: true,
         leading: IconButton(

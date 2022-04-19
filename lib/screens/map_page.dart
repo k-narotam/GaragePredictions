@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import "package:latlong2/latlong.dart" as latLng;
 import 'package:theme_manager/screens/nav_drawer.dart';
 import '../constants.dart';
+import '../theme.dart';
+import 'package:provider/provider.dart';
 
 class MapPage extends StatelessWidget {
   MapPage();
@@ -10,8 +12,23 @@ class MapPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Garage Predictor'),
+          title: Text('Garage Predictions'),
           backgroundColor: kPrimaryColor,
+          actions: <Widget>[
+            IconButton(
+              // icon: Icon(Icons.settings),
+              // onPressed: (){
+              //   print('settings');
+              // }, //using nav drawer instead for now
+              icon: Icon(Icons.brightness_6),
+              color: Colors.white,
+              onPressed: () {
+                ThemeProvider themeProvider =
+                    Provider.of<ThemeProvider>(context, listen: false);
+                themeProvider.swapTheme();
+              },
+            )
+          ],
         ),
         drawer: NavDrawer(),
         body: new FlutterMap(

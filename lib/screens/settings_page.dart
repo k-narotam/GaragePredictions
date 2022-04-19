@@ -32,8 +32,23 @@ class _SettingsPageState extends State<SettingsPage> {
         Provider.of<ThemeProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Garage Predictor'),
+        title: Text('Garage Predictions'),
         backgroundColor: kPrimaryColor,
+        actions: <Widget>[
+          IconButton(
+            // icon: Icon(Icons.settings),
+            // onPressed: (){
+            //   print('settings');
+            // }, //using nav drawer instead for now
+            icon: Icon(Icons.brightness_6),
+            color: Colors.white,
+            onPressed: () {
+              ThemeProvider themeProvider =
+                  Provider.of<ThemeProvider>(context, listen: false);
+              themeProvider.swapTheme();
+            },
+          )
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
